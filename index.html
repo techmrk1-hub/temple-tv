@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Chinmaya Saraswati Ashram - Temple TV
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+<div class="tv-screen">
+
+
+    <!-- ==========================================
+         HEADER
+    =========================================== -->
+
+    <header class="header">
+
+        <img
+            src="images/logo.png"
+            class="temple-logo"
+            alt="Temple Logo"
+        >
+
+        <div class="temple-title">
+
+            <h1>
+                CHINMAYA SARASWATI ASHRAM
+            </h1>
+
+            <h2>
+                DEVI TEMPLE
+            </h2>
+
+            <p>
+                Orange, Connecticut
+            </p>
+
+        </div>
+
+        <div
+            id="clock"
+            class="clock">
+        </div>
+
+    </header>
+
+
+
+    <!-- ==========================================
+         MAIN DISPLAY
+    =========================================== -->
+
+    <main class="main-area">
+
+
+        <!-- FLYER -->
+
+        <div class="flyer-section">
+
+            <img
+                id="flyer"
+                src="images/flyer1.jpg"
+                alt="Temple Announcement"
+            >
+
+        </div>
+
+
+
+        <!-- RIGHT SIDE INFO -->
+
+        <div class="right-panel">
+
+
+            <!-- WHATSAPP QR -->
+
+            <div class="qr-card">
+
+                <div class="qr-title">
+                    JOIN OUR
+                    <br>
+                    WHATSAPP UPDATES
+                </div>
+
+                <img
+                    src="images/whatsapp-qr.png"
+                    class="whatsapp-qr"
+                    alt="WhatsApp Updates QR Code"
+                >
+
+                <div class="qr-text">
+                    Scan this QR code
+                    <br>
+                    to receive temple
+                    <br>
+                    announcements & updates
+                </div>
+
+                <div class="qr-footer">
+                    Stay Connected
+                </div>
+
+            </div>
+
+
+
+            <!-- TODAY AT THE TEMPLE -->
+
+            <div class="today-card">
+
+                <div class="today-heading">
+                    TODAY AT THE TEMPLE
+                </div>
+
+                <div
+                    id="today-day"
+                    class="today-day">
+                </div>
+
+                <div
+                    id="today-program"
+                    class="today-program">
+                </div>
+
+                <div
+                    id="today-time"
+                    class="today-time">
+                </div>
+
+                <div
+                    id="today-message"
+                    class="today-message">
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </main>
+
+
+
+    <!-- ==========================================
+         ANNOUNCEMENT BAR
+    =========================================== -->
+
+    <div class="announcement-bar">
+
+        <div class="announcement-label">
+            ANNOUNCEMENTS
+        </div>
+
+        <div class="ticker">
+
+            <div
+                class="ticker-text"
+                id="ticker-text">
+
+                Loading announcements...
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ==========================================
+         FOOTER
+    =========================================== -->
+
+    <footer>
+
+        <div id="date"></div>
+
+        <div>
+            Chinmaya Saraswati Ashram - Devi Temple
+        </div>
+
+    </footer>
+
+
+</div>
+
+
+
+<!-- ==========================================
+     BACKGROUND MUSIC
+=========================================== -->
+
+<audio
+    id="background-music"
+    src="music/music1.mp3"
+    autoplay
+    loop
+    preload="auto">
+</audio>
+
+
+
+<!-- IMPORTANT:
+     CONTENT FILE MUST LOAD FIRST
+-->
+
+<script src="announcements.js"></script>
+
+<script src="script.js"></script>
+
+
+</body>
+
+</html>
