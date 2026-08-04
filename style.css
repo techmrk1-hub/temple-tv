@@ -652,3 +652,19 @@ img {
     }
 
 }
+/* ==========================================
+   SAMSUNG TV SAFE AREA
+========================================== */
+
+.tv-screen {
+    padding-top: 1.2vh;
+    padding-bottom: 1.2vh;
+}
+
+.header {
+    height: 11vh;
+}
+
+footer {
+    height: 3vh;
+}
