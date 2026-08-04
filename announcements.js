@@ -63,18 +63,18 @@ const templeContent = {
     weeklySchedule: {
 
         1: {
-            title: "Shiva Puja",
+            title: "Shiva Abhishekam",
             time: "6:30 PM"
         },
 
         2: {
-            title: "Hanuman Puja",
+            title: "Hanuman Abhishekam Followed by Chalisa Parayanam",
             time: "6:30 PM"
         },
 
         5: {
-            title: "Saraswati Abhishekam",
-            time: "9:00 AM"
+            title: "Saraswati Devi Abhishekam",
+            time: "6:30 PM"
         }
 
     },
@@ -87,18 +87,18 @@ const templeContent = {
     saturdaySchedule: {
 
         1: {
-            title: "Lakshmi Abhishekam",
-            time: "9:00 AM"
+            title: "Lakshmi Devi Abhishekam",
+            time: "6:30 PM"
         },
 
         2: {
             title: "Durga Devi Abhishekam",
-            time: "9:00 AM"
+            time: "6:30 PM"
         },
 
         3: {
-            title: "Hanuman Abhishekam",
-            time: "9:00 AM"
+            title: "Hanuman Abhishekam & Tulasidas Sundarakanda Parayanam",
+            time: "10:00 AM"
         }
 
     },
