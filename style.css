@@ -6,14 +6,11 @@
     box-sizing: border-box;
 }
 
-
 html,
 body {
     margin: 0;
-
     width: 100%;
     height: 100%;
-
     overflow: hidden;
 
     font-family:
@@ -25,13 +22,11 @@ body {
 }
 
 
-
 /* ==========================================
    FULL TV SCREEN
 ========================================== */
 
 .tv-screen {
-
     width: 100vw;
     height: 100vh;
 
@@ -42,23 +37,17 @@ body {
 }
 
 
-
 /* ==========================================
    HEADER
 ========================================== */
 
 .header {
-
-    height: 14vh;
-
-    min-height: 105px;
+    height: 12vh;
 
     display: flex;
     align-items: center;
 
-    padding:
-        8px
-        35px;
+    padding: 6px 24px;
 
     background:
         linear-gradient(
@@ -71,45 +60,37 @@ body {
     color: white;
 
     border-bottom:
-        4px solid #e9b949;
+        3px solid #e9b949;
 
     flex-shrink: 0;
 }
 
 
-
 .temple-logo {
-
-    height: 11vh;
-
-    max-height: 95px;
-
+    height: 9.5vh;
+    max-height: 82px;
     width: auto;
 
     object-fit: contain;
 
     background: white;
 
-    border-radius: 10px;
+    border-radius: 8px;
 
-    padding: 5px;
+    padding: 4px;
 }
 
 
-
 .temple-title {
-
     flex: 1;
 
     text-align: center;
 
-    padding-left: 20px;
+    padding-left: 10px;
 }
 
 
-
 .temple-title h1 {
-
     margin: 0;
 
     font-family:
@@ -118,9 +99,9 @@ body {
 
     font-size:
         clamp(
-            27px,
-            2.7vw,
-            52px
+            23px,
+            2.3vw,
+            44px
         );
 
     letter-spacing: 1px;
@@ -129,12 +110,8 @@ body {
 }
 
 
-
 .temple-title h2 {
-
-    margin:
-        4px 0
-        0 0;
+    margin: 3px 0 0 0;
 
     font-family:
         Georgia,
@@ -144,45 +121,39 @@ body {
 
     font-size:
         clamp(
-            22px,
-            2vw,
-            38px
+            19px,
+            1.8vw,
+            32px
         );
 
     line-height: 1;
 }
-
 
 
 .temple-title p {
-
-    margin:
-        6px 0
-        0 0;
+    margin: 4px 0 0 0;
 
     font-size:
         clamp(
-            15px,
-            1.1vw,
-            22px
+            12px,
+            0.9vw,
+            18px
         );
 
     line-height: 1;
 }
 
 
-
 .clock {
-
-    min-width: 220px;
+    min-width: 170px;
 
     text-align: right;
 
     font-size:
         clamp(
-            22px,
-            1.8vw,
-            34px
+            18px,
+            1.5vw,
+            28px
         );
 
     font-weight: bold;
@@ -191,13 +162,11 @@ body {
 }
 
 
-
 /* ==========================================
    MAIN AREA
 ========================================== */
 
 .main-area {
-
     position: relative;
 
     flex: 1;
@@ -222,13 +191,11 @@ body {
 }
 
 
-
 /* ==========================================
    FLYER SECTION
 ========================================== */
 
 .flyer-section {
-
     width: 100%;
     height: 100%;
 
@@ -240,14 +207,19 @@ body {
     overflow: hidden;
 
     padding:
-        10px
+        8px
+        235px
+        8px
         20px;
 }
 
 
+/* Important:
+   Reserve right-side space for QR + Today cards
+   without pushing the flyer off-center visually.
+*/
 
 #flyer {
-
     display: block;
 
     width: auto;
@@ -268,17 +240,16 @@ body {
     filter:
         drop-shadow(
             0
-            5px
-            12px
+            4px
+            10px
             rgba(
                 0,
                 0,
                 0,
-                0.28
+                0.24
             )
         );
 }
-
 
 
 /* ==========================================
@@ -286,25 +257,23 @@ body {
 ========================================== */
 
 .right-panel {
-
     position: absolute;
 
-    right: 3%;
+    right: 2%;
 
     top: 50%;
 
     transform:
         translateY(-50%);
 
-    width: 205px;
+    width: 175px;
 
     display: flex;
 
     flex-direction: column;
 
-    gap: 14px;
+    gap: 10px;
 }
-
 
 
 /* ==========================================
@@ -312,7 +281,6 @@ body {
 ========================================== */
 
 .qr-card {
-
     width: 100%;
 
     text-align: center;
@@ -326,92 +294,28 @@ body {
         );
 
     padding:
-        11px
-        9px;
+        8px
+        7px;
 
-    border-radius: 14px;
+    border-radius: 12px;
 
     border:
         2px solid #e9b949;
 
     box-shadow:
         0
-        5px
-        16px
+        4px
+        12px
         rgba(
             0,
             0,
             0,
-            0.18
+            0.15
         );
 }
 
 
-
 .qr-title {
-
-    font-family:
-        Georgia,
-        serif;
-
-    font-size: 14px;
-
-    font-weight: bold;
-
-    line-height: 1.1;
-
-    color: #7a160d;
-
-    margin-bottom: 7px;
-}
-
-
-
-.whatsapp-qr {
-
-    display: block;
-
-    margin:
-        0 auto;
-
-    width: 115px;
-    height: 115px;
-
-    object-fit: contain;
-
-    background: white;
-
-    padding: 3px;
-
-    border-radius: 6px;
-
-    border:
-        1px solid #ddd;
-}
-
-
-
-.qr-text {
-
-    margin-top: 7px;
-
-    color: #351006;
-
-    font-size: 11px;
-
-    font-weight: 600;
-
-    line-height: 1.2;
-}
-
-
-
-.qr-footer {
-
-    margin-top: 5px;
-
-    color: #7a160d;
-
     font-family:
         Georgia,
         serif;
@@ -419,8 +323,62 @@ body {
     font-size: 12px;
 
     font-weight: bold;
+
+    line-height: 1.05;
+
+    color: #7a160d;
+
+    margin-bottom: 5px;
 }
 
+
+.whatsapp-qr {
+    display: block;
+
+    margin: 0 auto;
+
+    width: 95px;
+    height: 95px;
+
+    object-fit: contain;
+
+    background: white;
+
+    padding: 2px;
+
+    border-radius: 5px;
+
+    border:
+        1px solid #ddd;
+}
+
+
+.qr-text {
+    margin-top: 5px;
+
+    color: #351006;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    line-height: 1.15;
+}
+
+
+.qr-footer {
+    margin-top: 4px;
+
+    color: #7a160d;
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-size: 10px;
+
+    font-weight: bold;
+}
 
 
 /* ==========================================
@@ -428,7 +386,6 @@ body {
 ========================================== */
 
 .today-card {
-
     width: 100%;
 
     text-align: center;
@@ -442,35 +399,33 @@ body {
         );
 
     padding:
-        11px
-        10px;
+        8px
+        7px;
 
-    border-radius: 14px;
+    border-radius: 12px;
 
     border:
         2px solid #7a160d;
 
     box-shadow:
         0
-        5px
-        16px
+        4px
+        12px
         rgba(
             0,
             0,
             0,
-            0.15
+            0.13
         );
 }
 
 
-
 .today-heading {
-
     font-family:
         Georgia,
         serif;
 
-    font-size: 14px;
+    font-size: 12px;
 
     font-weight: bold;
 
@@ -479,48 +434,42 @@ body {
     border-bottom:
         1px solid #e9b949;
 
-    padding-bottom: 5px;
+    padding-bottom: 4px;
 
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 
-
 .today-day {
-
-    font-size: 13px;
+    font-size: 11px;
 
     font-weight: bold;
 
     color: #555;
 
-    margin-bottom: 5px;
+    margin-bottom: 3px;
 }
 
 
-
 .today-program {
-
     font-family:
         Georgia,
         serif;
 
-    font-size: 16px;
+    font-size: 13px;
 
     font-weight: bold;
 
     color: #351006;
 
-    line-height: 1.15;
+    line-height: 1.1;
 }
 
 
-
 .today-time {
+    margin-top: 4px;
 
-    margin-top: 5px;
-
-    font-size: 17px;
+    font-size: 14px;
 
     font-weight: bold;
 
@@ -528,18 +477,15 @@ body {
 }
 
 
-
 .today-message {
+    margin-top: 4px;
 
-    margin-top: 5px;
+    font-size: 9px;
 
-    font-size: 11px;
-
-    line-height: 1.25;
+    line-height: 1.15;
 
     color: #555;
 }
-
 
 
 /* ==========================================
@@ -547,10 +493,9 @@ body {
 ========================================== */
 
 .announcement-bar {
+    height: 5vh;
 
-    height: 6vh;
-
-    min-height: 50px;
+    min-height: 34px;
 
     display: flex;
     align-items: center;
@@ -562,13 +507,11 @@ body {
     color: white;
 
     border-top:
-        3px solid #e9b949;
+        2px solid #e9b949;
 }
 
 
-
 .announcement-label {
-
     height: 100%;
 
     display: flex;
@@ -576,7 +519,7 @@ body {
 
     padding:
         0
-        25px;
+        18px;
 
     background: #e9b949;
 
@@ -586,18 +529,16 @@ body {
 
     font-size:
         clamp(
-            15px,
-            1.2vw,
-            23px
+            12px,
+            1vw,
+            18px
         );
 
     white-space: nowrap;
 }
 
 
-
 .ticker {
-
     flex: 1;
 
     height: 100%;
@@ -611,9 +552,7 @@ body {
 }
 
 
-
 .ticker-text {
-
     display: inline-block;
 
     white-space: nowrap;
@@ -622,9 +561,9 @@ body {
 
     font-size:
         clamp(
-            17px,
-            1.3vw,
-            25px
+            13px,
+            1.05vw,
+            20px
         );
 
     animation:
@@ -635,9 +574,7 @@ body {
 }
 
 
-
 @keyframes ticker {
-
     from {
         transform:
             translateX(0);
@@ -647,9 +584,7 @@ body {
         transform:
             translateX(-100%);
     }
-
 }
-
 
 
 /* ==========================================
@@ -657,10 +592,9 @@ body {
 ========================================== */
 
 footer {
+    height: 3.5vh;
 
-    height: 4vh;
-
-    min-height: 35px;
+    min-height: 26px;
 
     display: flex;
     align-items: center;
@@ -669,7 +603,7 @@ footer {
 
     padding:
         0
-        30px;
+        22px;
 
     flex-shrink: 0;
 
@@ -679,8 +613,42 @@ footer {
 
     font-size:
         clamp(
-            13px,
-            1vw,
-            19px
+            10px,
+            0.8vw,
+            15px
         );
+}
+
+
+/* ==========================================
+   EXTRA TV BROWSER SAFETY
+========================================== */
+
+img {
+    max-width: 100%;
+}
+
+@media screen and (max-height: 720px) {
+
+    .header {
+        height: 11vh;
+    }
+
+    .temple-logo {
+        height: 8.5vh;
+    }
+
+    .right-panel {
+        width: 160px;
+    }
+
+    .whatsapp-qr {
+        width: 82px;
+        height: 82px;
+    }
+
+    .flyer-section {
+        padding-right: 210px;
+    }
+
 }
