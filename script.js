@@ -727,7 +727,138 @@ async function loadRemoteFlyers() {
     currentFlyer = 0;
 
 
-    showFlyer();
+    function showFlyer() {
+
+    if (
+        !flyerElement ||
+        activeFlyers.length === 0
+    ) {
+        return;
+    }
+
+
+    if (
+        currentFlyer >=
+        activeFlyers.length
+    ) {
+        currentFlyer = 0;
+    }
+
+
+    flyerElement.style.opacity = "0";
+
+
+    setTimeout(function () {
+
+        // Remove previous orientation classes
+
+        flyerElement.classList.remove(
+            "flyer-landscape",
+            "flyer-portrait",
+            "flyer-square"
+        );
+
+
+        flyerElement.onload = function () {
+
+            const width =
+                flyerElement.naturalWidth;
+
+            const height =
+                flyerElement.naturalHeight;
+
+
+            const ratio =
+                width / height;
+
+
+            // ==========================================
+            // LANDSCAPE
+            // ==========================================
+
+            if (ratio > 1.15) {
+
+                flyerElement.classList.add(
+                    "flyer-landscape"
+                );
+
+                console.log(
+                    "Landscape flyer:",
+                    width,
+                    "x",
+                    height
+                );
+
+            }
+
+
+            // ==========================================
+            // PORTRAIT
+            // ==========================================
+
+            else if (ratio < 0.85) {
+
+                flyerElement.classList.add(
+                    "flyer-portrait"
+                );
+
+                console.log(
+                    "Portrait flyer:",
+                    width,
+                    "x",
+                    height
+                );
+
+            }
+
+
+            // ==========================================
+            // SQUARE / NEAR SQUARE
+            // ==========================================
+
+            else {
+
+                flyerElement.classList.add(
+                    "flyer-square"
+                );
+
+                console.log(
+                    "Square flyer:",
+                    width,
+                    "x",
+                    height
+                );
+
+            }
+
+
+            flyerElement.style.opacity =
+                "1";
+
+        };
+
+
+        flyerElement.onerror =
+            function () {
+
+                console.log(
+                    "Flyer failed:",
+                    flyerElement.src
+                );
+
+                flyerElement.style.opacity =
+                    "1";
+
+            };
+
+
+        flyerElement.src =
+            activeFlyers[currentFlyer];
+
+
+    }, 500);
+
+}
 
 }
 
