@@ -74,7 +74,7 @@ const templeContent = {
         },
 
         2: {
-            title: "Hanuman Abhishekam Followed by Chalisa Parayanam",
+            title: "Hanuman Abhishekam Followed by Hanuman Chalisa Parayanam",
             time: "6:30 PM"
         },
 
