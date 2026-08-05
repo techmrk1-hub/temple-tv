@@ -1005,3 +1005,50 @@ footer {
             );
     }
 }
+/* ==========================================================
+   AUTOMATIC FLYER ORIENTATION
+========================================================== */
+
+/* Default */
+#flyer {
+    transition:
+        opacity 0.7s ease-in-out,
+        width 0.3s ease,
+        height 0.3s ease;
+}
+
+
+/* LANDSCAPE FLYER */
+#flyer.flyer-landscape {
+    width: 100%;
+    height: auto;
+
+    max-width: 100%;
+    max-height: 100%;
+
+    object-fit: contain;
+}
+
+
+/* PORTRAIT FLYER */
+#flyer.flyer-portrait {
+    width: auto;
+    height: 100%;
+
+    max-width: 100%;
+    max-height: 100%;
+
+    object-fit: contain;
+}
+
+
+/* SQUARE / NEAR-SQUARE FLYER */
+#flyer.flyer-square {
+    width: auto;
+    height: 100%;
+
+    max-width: 100%;
+    max-height: 100%;
+
+    object-fit: contain;
+}
