@@ -1,7 +1,7 @@
 const templeContent = {
 
     // ==========================================
-    // REMOTE ANNOUNCEMENTS SHEET
+    // REMOTE ANNOUNCEMENTS
     // ==========================================
 
     announcementSheetURL:
@@ -9,14 +9,22 @@ const templeContent = {
 
 
     // ==========================================
-    // REMOTE FLYERS SHEET
+    // REMOTE FLYERS
     // ==========================================
 
     flyerSheetURL:
         "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=1481450155&single=true&output=csv",
 
 
-    // Check Google Sheets every 5 minutes
+    // ==========================================
+    // SPECIAL EVENTS
+    // ==========================================
+
+    specialEventsSheetURL:
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=159824805&single=true&output=csv",
+
+
+    // Refresh remote data every 5 minutes
 
     remoteRefreshMinutes: 5,
 
@@ -30,8 +38,6 @@ const templeContent = {
         "images/flyer2.jpg"
     ],
 
-
-    // Seconds each flyer displays
 
     flyerDuration: 10,
 
@@ -57,7 +63,7 @@ const templeContent = {
 
 
     // ==========================================
-    // WEEKLY SCHEDULE
+    // REGULAR WEEKLY PROGRAMS
     // ==========================================
 
     weeklySchedule: {
@@ -73,7 +79,7 @@ const templeContent = {
         },
 
         5: {
-            title: "Saraswati Devi Abhishekam",
+            title: "Saraswati Abhishekam",
             time: "6:30 PM"
         }
 
@@ -81,7 +87,7 @@ const templeContent = {
 
 
     // ==========================================
-    // SATURDAY SCHEDULE
+    // SATURDAY PROGRAMS
     // ==========================================
 
     saturdaySchedule: {
@@ -97,7 +103,7 @@ const templeContent = {
         },
 
         3: {
-            title: "Hanuman Abhishekam & Tulasidas Sundarakanda Parayanam",
+            title: "Hanuman Abhishekam Tulasidas Sundarakanda Parayanam",
             time: "10:00 AM"
         }
 
