@@ -1,6 +1,11 @@
 // =====================================================
-// TEMPLE TV SYSTEM
-// Remote Announcements + Remote Flyers
+// CHINMAYA SARASWATI ASHRAM - TEMPLE TV
+//
+// Remote Announcements
+// Remote Flyers
+// Special Events
+// Regular Schedule
+// Clock + Music
 // =====================================================
 
 
@@ -55,7 +60,10 @@ function updateClock() {
 
 updateClock();
 
-setInterval(updateClock, 1000);
+setInterval(
+    updateClock,
+    1000
+);
 
 
 
@@ -104,7 +112,9 @@ function parseCSV(text) {
             !insideQuotes
         ) {
 
-            row.push(cell.trim());
+            row.push(
+                cell.trim()
+            );
 
             cell = "";
 
@@ -124,7 +134,9 @@ function parseCSV(text) {
                 row.length > 0
             ) {
 
-                row.push(cell.trim());
+                row.push(
+                    cell.trim()
+                );
 
                 rows.push(row);
 
@@ -150,7 +162,9 @@ function parseCSV(text) {
         row.length > 0
     ) {
 
-        row.push(cell.trim());
+        row.push(
+            cell.trim()
+        );
 
         rows.push(row);
 
@@ -164,11 +178,39 @@ function parseCSV(text) {
 
 
 // =====================================================
+// CACHE-BUSTER HELPER
+// =====================================================
+
+function addCacheBuster(url) {
+
+    const separator =
+        url.includes("?")
+            ? "&"
+            : "?";
+
+
+    return (
+        url
+        +
+        separator
+        +
+        "t="
+        +
+        Date.now()
+    );
+
+}
+
+
+
+// =====================================================
 // ANNOUNCEMENTS
 // =====================================================
 
 const tickerText =
-    document.getElementById("ticker-text");
+    document.getElementById(
+        "ticker-text"
+    );
 
 
 function displayAnnouncements(messages) {
@@ -191,25 +233,18 @@ async function loadRemoteAnnouncements() {
 
     try {
 
-        const separator =
-            templeContent.announcementSheetURL.includes("?")
-                ? "&"
-                : "?";
-
-
         const response =
             await fetch(
-                templeContent.announcementSheetURL
-                +
-                separator
-                +
-                "t="
-                +
-                Date.now(),
+
+                addCacheBuster(
+                    templeContent
+                        .announcementSheetURL
+                ),
 
                 {
                     cache: "no-store"
                 }
+
             );
 
 
@@ -254,26 +289,19 @@ async function loadRemoteAnnouncements() {
 
 
         if (
-            messages.length > 0
+            messages.length === 0
         ) {
-
-            displayAnnouncements(
-                messages
-            );
-
-            console.log(
-                "Remote announcements loaded."
-            );
-
-        }
-
-        else {
 
             throw new Error(
                 "No remote announcements"
             );
 
         }
+
+
+        displayAnnouncements(
+            messages
+        );
 
     }
 
@@ -296,21 +324,7 @@ async function loadRemoteAnnouncements() {
 
 
 // =====================================================
-// FLYER SYSTEM
-// =====================================================
-
-const flyerElement =
-    document.getElementById("flyer");
-
-
-let activeFlyers = [];
-
-let currentFlyer = 0;
-
-
-
-// =====================================================
-// GOOGLE DRIVE LINK CONVERTER
+// GOOGLE DRIVE IMAGE CONVERTER
 // =====================================================
 
 function convertDriveURL(url) {
@@ -322,13 +336,6 @@ function convertDriveURL(url) {
 
     let fileID = null;
 
-
-
-    // ------------------------------------------
-    // Standard Google Drive sharing URL
-    //
-    // drive.google.com/file/d/FILE_ID/view
-    // ------------------------------------------
 
     let match =
         url.match(
@@ -346,11 +353,6 @@ function convertDriveURL(url) {
 
     }
 
-
-
-    // ------------------------------------------
-    // Links containing ?id=FILE_ID
-    // ------------------------------------------
 
     if (!fileID) {
 
@@ -373,11 +375,6 @@ function convertDriveURL(url) {
     }
 
 
-
-    // ------------------------------------------
-    // Convert to Google image endpoint
-    // ------------------------------------------
-
     if (fileID) {
 
         return (
@@ -391,9 +388,6 @@ function convertDriveURL(url) {
     }
 
 
-
-    // Normal direct image URL
-
     return url;
 
 }
@@ -401,12 +395,13 @@ function convertDriveURL(url) {
 
 
 // =====================================================
-// TEST REMOTE IMAGE
+// TEST IMAGE
 // =====================================================
 
 function testImage(url) {
 
     return new Promise(
+
         function (resolve) {
 
             const image =
@@ -433,6 +428,7 @@ function testImage(url) {
                 url;
 
         }
+
     );
 
 }
@@ -440,8 +436,20 @@ function testImage(url) {
 
 
 // =====================================================
-// SHOW FLYER
+// REMOTE FLYERS
 // =====================================================
+
+const flyerElement =
+    document.getElementById(
+        "flyer"
+    );
+
+
+let activeFlyers = [];
+
+let currentFlyer = 0;
+
+
 
 function showFlyer() {
 
@@ -470,6 +478,7 @@ function showFlyer() {
 
 
     setTimeout(
+
         function () {
 
             flyerElement.src =
@@ -504,15 +513,12 @@ function showFlyer() {
         },
 
         500
+
     );
 
 }
 
 
-
-// =====================================================
-// NEXT FLYER
-// =====================================================
 
 function nextFlyer() {
 
@@ -539,40 +545,29 @@ function nextFlyer() {
 
 
 
-// =====================================================
-// LOAD REMOTE FLYERS
-// =====================================================
-
 async function loadRemoteFlyers() {
 
     try {
 
-        const separator =
-            templeContent.flyerSheetURL.includes("?")
-                ? "&"
-                : "?";
-
-
         const response =
             await fetch(
-                templeContent.flyerSheetURL
-                +
-                separator
-                +
-                "t="
-                +
-                Date.now(),
+
+                addCacheBuster(
+                    templeContent
+                        .flyerSheetURL
+                ),
 
                 {
                     cache: "no-store"
                 }
+
             );
 
 
         if (!response.ok) {
 
             throw new Error(
-                "Flyer Sheet failed"
+                "Flyer sheet failed"
             );
 
         }
@@ -589,9 +584,11 @@ async function loadRemoteFlyers() {
         const remoteFlyers = [];
 
 
-        // Expected Google Sheet:
+        // Columns:
         //
-        // ImageURL | Active | DisplayOrder
+        // ImageURL
+        // Active
+        // DisplayOrder
 
 
         for (
@@ -602,30 +599,30 @@ async function loadRemoteFlyers() {
 
             const imageURL =
                 rows[i][0]
-                ?
-                rows[i][0].trim()
-                :
-                "";
+                    ?
+                    rows[i][0].trim()
+                    :
+                    "";
 
 
             const active =
                 rows[i][1]
-                ?
-                rows[i][1]
-                    .trim()
-                    .toUpperCase()
-                :
-                "";
+                    ?
+                    rows[i][1]
+                        .trim()
+                        .toUpperCase()
+                    :
+                    "";
 
 
             const displayOrder =
                 rows[i][2]
-                ?
-                Number(
-                    rows[i][2]
-                )
-                :
-                9999;
+                    ?
+                    Number(
+                        rows[i][2]
+                    )
+                    :
+                    9999;
 
 
             if (
@@ -640,16 +637,12 @@ async function loadRemoteFlyers() {
                 )
             ) {
 
-                const convertedURL =
-                    convertDriveURL(
-                        imageURL
-                    );
-
-
                 remoteFlyers.push({
 
                     src:
-                        convertedURL,
+                        convertDriveURL(
+                            imageURL
+                        ),
 
                     order:
                         displayOrder
@@ -661,31 +654,27 @@ async function loadRemoteFlyers() {
         }
 
 
-
-        // Sort according to DisplayOrder
-
         remoteFlyers.sort(
+
             function (a, b) {
 
                 return (
-                    a.order -
+                    a.order
+                    -
                     b.order
                 );
 
             }
+
         );
 
-
-
-        // ------------------------------------------
-        // CHECK THAT EACH IMAGE ACTUALLY WORKS
-        // ------------------------------------------
 
         const workingFlyers = [];
 
 
         for (
-            const flyer of remoteFlyers
+            const flyer
+            of remoteFlyers
         ) {
 
             const works =
@@ -700,52 +689,14 @@ async function loadRemoteFlyers() {
                     flyer.src
                 );
 
-
-                console.log(
-                    "Remote flyer OK:",
-                    flyer.src
-                );
-
-            }
-
-            else {
-
-                console.log(
-                    "Remote flyer failed:",
-                    flyer.src
-                );
-
             }
 
         }
 
-
-
-        // ------------------------------------------
-        // USE REMOTE FLYERS
-        // ------------------------------------------
 
         if (
-            workingFlyers.length > 0
+            workingFlyers.length === 0
         ) {
-
-            activeFlyers =
-                workingFlyers;
-
-
-            console.log(
-                "Using remote flyers:",
-                activeFlyers
-            );
-
-        }
-
-
-        // ------------------------------------------
-        // FALLBACK
-        // ------------------------------------------
-
-        else {
 
             throw new Error(
                 "No working remote flyers"
@@ -753,8 +704,11 @@ async function loadRemoteFlyers() {
 
         }
 
-    }
 
+        activeFlyers =
+            workingFlyers;
+
+    }
 
     catch (error) {
 
@@ -770,7 +724,6 @@ async function loadRemoteFlyers() {
     }
 
 
-
     currentFlyer = 0;
 
 
@@ -781,64 +734,323 @@ async function loadRemoteFlyers() {
 
 
 // =====================================================
-// START REMOTE CONTENT
+// SPECIAL EVENTS
 // =====================================================
 
-loadRemoteAnnouncements();
+let specialEvents = [];
 
-loadRemoteFlyers();
+
+
+function normalizeDateString(
+    dateString
+) {
+
+    if (!dateString) {
+        return "";
+    }
+
+
+    const value =
+        dateString.trim();
+
+
+    // MM/DD/YYYY
+
+    const usMatch =
+        value.match(
+            /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
+        );
+
+
+    if (usMatch) {
+
+        const month =
+            usMatch[1]
+                .padStart(
+                    2,
+                    "0"
+                );
+
+
+        const day =
+            usMatch[2]
+                .padStart(
+                    2,
+                    "0"
+                );
+
+
+        const year =
+            usMatch[3];
+
+
+        return (
+            year
+            +
+            "-"
+            +
+            month
+            +
+            "-"
+            +
+            day
+        );
+
+    }
+
+
+
+    // YYYY-MM-DD
+
+    const isoMatch =
+        value.match(
+            /^(\d{4})-(\d{1,2})-(\d{1,2})$/
+        );
+
+
+    if (isoMatch) {
+
+        return (
+            isoMatch[1]
+            +
+            "-"
+            +
+            isoMatch[2]
+                .padStart(
+                    2,
+                    "0"
+                )
+            +
+            "-"
+            +
+            isoMatch[3]
+                .padStart(
+                    2,
+                    "0"
+                )
+        );
+
+    }
+
+
+    return value;
+
+}
+
+
+
+function getTodayKey() {
+
+    const now =
+        new Date();
+
+
+    const year =
+        now.getFullYear();
+
+
+    const month =
+        String(
+            now.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const day =
+        String(
+            now.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    return (
+        year
+        +
+        "-"
+        +
+        month
+        +
+        "-"
+        +
+        day
+    );
+
+}
+
+
+
+async function loadSpecialEvents() {
+
+    try {
+
+        const response =
+            await fetch(
+
+                addCacheBuster(
+                    templeContent
+                        .specialEventsSheetURL
+                ),
+
+                {
+                    cache: "no-store"
+                }
+
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "SpecialEvents sheet failed"
+            );
+
+        }
+
+
+        const text =
+            await response.text();
+
+
+        const rows =
+            parseCSV(text);
+
+
+        const events = [];
+
+
+        // Expected:
+        //
+        // Date
+        // Event
+        // Program
+        // Time
+        // Active
+
+
+        for (
+            let i = 1;
+            i < rows.length;
+            i++
+        ) {
+
+            const date =
+                rows[i][0]
+                    ?
+                    normalizeDateString(
+                        rows[i][0]
+                    )
+                    :
+                    "";
+
+
+            const event =
+                rows[i][1]
+                    ?
+                    rows[i][1].trim()
+                    :
+                    "";
+
+
+            const program =
+                rows[i][2]
+                    ?
+                    rows[i][2].trim()
+                    :
+                    "";
+
+
+            const time =
+                rows[i][3]
+                    ?
+                    rows[i][3].trim()
+                    :
+                    "";
+
+
+            const active =
+                rows[i][4]
+                    ?
+                    rows[i][4]
+                        .trim()
+                        .toUpperCase()
+                    :
+                    "";
+
+
+            if (
+                date !== ""
+                &&
+                event !== ""
+                &&
+                (
+                    active === "YES"
+                    ||
+                    active === "TRUE"
+                    ||
+                    active === "1"
+                )
+            ) {
+
+                events.push({
+
+                    date:
+                        date,
+
+                    event:
+                        event,
+
+                    program:
+                        program,
+
+                    time:
+                        time
+
+                });
+
+            }
+
+        }
+
+
+        specialEvents =
+            events;
+
+
+        console.log(
+            "Special events loaded:",
+            specialEvents
+        );
+
+
+        updateTodaySchedule();
+
+    }
+
+    catch (error) {
+
+        console.log(
+            "Special events unavailable:",
+            error
+        );
+
+
+        specialEvents = [];
+
+
+        updateTodaySchedule();
+
+    }
+
+}
 
 
 
 // =====================================================
-// AUTOMATIC REMOTE REFRESH
-// =====================================================
-
-setInterval(
-
-    loadRemoteAnnouncements,
-
-    templeContent.remoteRefreshMinutes
-    *
-    60
-    *
-    1000
-
-);
-
-
-setInterval(
-
-    loadRemoteFlyers,
-
-    templeContent.remoteRefreshMinutes
-    *
-    60
-    *
-    1000
-
-);
-
-
-
-// =====================================================
-// FLYER ROTATION
-// =====================================================
-
-setInterval(
-
-    nextFlyer,
-
-    templeContent.flyerDuration
-    *
-    1000
-
-);
-
-
-
-// =====================================================
-// TODAY AT THE TEMPLE
+// REGULAR SCHEDULE HELPERS
 // =====================================================
 
 function getSaturdayNumber(date) {
@@ -851,14 +1063,79 @@ function getSaturdayNumber(date) {
 
 
 
+function getRegularProgram(now) {
+
+    const dayNumber =
+        now.getDay();
+
+
+    let program = null;
+
+
+    if (
+        dayNumber === 6
+    ) {
+
+        const saturdayNumber =
+            getSaturdayNumber(
+                now
+            );
+
+
+        if (
+            templeContent
+                .saturdaySchedule
+            &&
+            templeContent
+                .saturdaySchedule[
+                    saturdayNumber
+                ]
+        ) {
+
+            program =
+                templeContent
+                    .saturdaySchedule[
+                        saturdayNumber
+                    ];
+
+        }
+
+    }
+
+
+    else if (
+        templeContent
+            .weeklySchedule
+        &&
+        templeContent
+            .weeklySchedule[
+                dayNumber
+            ]
+    ) {
+
+        program =
+            templeContent
+                .weeklySchedule[
+                    dayNumber
+                ];
+
+    }
+
+
+    return program;
+
+}
+
+
+
+// =====================================================
+// TODAY AT THE TEMPLE
+// =====================================================
+
 function updateTodaySchedule() {
 
     const now =
         new Date();
-
-
-    const dayNumber =
-        now.getDay();
 
 
     const todayDay =
@@ -906,102 +1183,284 @@ function updateTodaySchedule() {
         );
 
 
-    let program = null;
+    const todayKey =
+        getTodayKey();
+
+
+    const todaysSpecialEvents =
+        specialEvents.filter(
+
+            function (item) {
+
+                return (
+                    item.date
+                    ===
+                    todayKey
+                );
+
+            }
+
+        );
+
+
+    const regularProgram =
+        getRegularProgram(
+            now
+        );
 
 
 
-    // ------------------------------------------
-    // SATURDAY
-    // ------------------------------------------
+    // =================================================
+    // SPECIAL EVENT EXISTS
+    // =================================================
 
-    if (dayNumber === 6) {
+    if (
+        todaysSpecialEvents.length > 0
+    ) {
 
-        const saturdayNumber =
-            getSaturdayNumber(
-                now
+        const primary =
+            todaysSpecialEvents[0];
+
+
+        // Example:
+        // POURNAMI
+        // Sri Satyanarayana Puja
+
+        todayProgram.innerHTML =
+            primary.event
+            +
+            (
+                primary.program
+                    ?
+                    "<br>"
+                    +
+                    primary.program
+                    :
+                    ""
             );
 
 
+        todayTime.textContent =
+            primary.time || "";
+
+
+        let extraText = "";
+
+
+        // Additional special events
+
         if (
-            templeContent.saturdaySchedule
-            &&
-            templeContent.saturdaySchedule[
-                saturdayNumber
-            ]
+            todaysSpecialEvents.length > 1
         ) {
 
-            program =
-                templeContent.saturdaySchedule[
-                    saturdayNumber
-                ];
+            const additional =
+                todaysSpecialEvents
+                .slice(1)
+                .map(
+
+                    function (item) {
+
+                        return (
+                            item.event
+                            +
+                            (
+                                item.program
+                                    ?
+                                    " - "
+                                    +
+                                    item.program
+                                    :
+                                    ""
+                            )
+                            +
+                            (
+                                item.time
+                                    ?
+                                    " "
+                                    +
+                                    item.time
+                                    :
+                                    ""
+                            )
+                        );
+
+                    }
+
+                );
+
+
+            extraText +=
+                additional.join(
+                    " • "
+                );
 
         }
 
+
+
+        // Also show regular program if one exists
+
+        if (regularProgram) {
+
+            if (extraText !== "") {
+
+                extraText +=
+                    " • ";
+
+            }
+
+
+            extraText +=
+                "Regular: "
+                +
+                regularProgram.title
+                +
+                " - "
+                +
+                regularProgram.time;
+
+        }
+
+
+        todayMessage.textContent =
+            extraText;
+
+
+        return;
+
     }
 
 
 
-    // ------------------------------------------
-    // OTHER DAYS
-    // ------------------------------------------
+    // =================================================
+    // NO SPECIAL EVENT - REGULAR PROGRAM
+    // =================================================
 
-    else if (
-        templeContent.weeklySchedule
-        &&
-        templeContent.weeklySchedule[
-            dayNumber
-        ]
-    ) {
-
-        program =
-            templeContent.weeklySchedule[
-                dayNumber
-            ];
-
-    }
-
-
-
-    if (program) {
+    if (regularProgram) {
 
         todayProgram.textContent =
-            program.title;
+            regularProgram.title;
 
 
         todayTime.textContent =
-            program.time;
+            regularProgram.time;
 
 
         todayMessage.textContent =
             "";
 
-    }
 
-    else {
-
-        todayProgram.textContent =
-            "No Regular Program";
-
-
-        todayTime.textContent =
-            "";
-
-
-        todayMessage.textContent =
-            templeContent.noProgramMessage;
+        return;
 
     }
+
+
+
+    // =================================================
+    // NOTHING TODAY
+    // =================================================
+
+    todayProgram.textContent =
+        "No Regular Program";
+
+
+    todayTime.textContent =
+        "";
+
+
+    todayMessage.textContent =
+        templeContent
+            .noProgramMessage;
 
 }
 
 
 
+// =====================================================
+// LOAD EVERYTHING
+// =====================================================
+
+loadRemoteAnnouncements();
+
+loadRemoteFlyers();
+
+loadSpecialEvents();
+
 updateTodaySchedule();
 
 
+
+// =====================================================
+// AUTOMATIC REFRESH
+// =====================================================
+
+const refreshMilliseconds =
+
+    templeContent
+        .remoteRefreshMinutes
+
+    *
+
+    60
+
+    *
+
+    1000;
+
+
+
 setInterval(
+
+    loadRemoteAnnouncements,
+
+    refreshMilliseconds
+
+);
+
+
+setInterval(
+
+    loadRemoteFlyers,
+
+    refreshMilliseconds
+
+);
+
+
+setInterval(
+
+    loadSpecialEvents,
+
+    refreshMilliseconds
+
+);
+
+
+setInterval(
+
     updateTodaySchedule,
+
     300000
+
+);
+
+
+
+// =====================================================
+// FLYER ROTATION
+// =====================================================
+
+setInterval(
+
+    nextFlyer,
+
+    templeContent
+        .flyerDuration
+
+    *
+
+    1000
+
 );
 
 
@@ -1022,15 +1481,19 @@ if (backgroundMusic) {
         0.25;
 
 
-    backgroundMusic.play().catch(
-        function (error) {
+    backgroundMusic
+        .play()
+        .catch(
 
-            console.log(
-                "Chrome blocked automatic music:",
-                error
-            );
+            function (error) {
 
-        }
-    );
+                console.log(
+                    "Automatic music blocked:",
+                    error
+                );
+
+            }
+
+        );
 
 }
