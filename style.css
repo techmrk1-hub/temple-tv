@@ -1,5 +1,5 @@
 /* ==========================================
-   BASIC RESET
+   TEMPLE TV - 55" / 1080P / 6 FT VIEWING
 ========================================== */
 
 * {
@@ -13,18 +13,9 @@ body {
     height: 100%;
     overflow: hidden;
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
+    font-family: Arial, Helvetica, sans-serif;
     background: #111;
 }
-
-
-/* ==========================================
-   FULL TV SCREEN
-========================================== */
 
 .tv-screen {
     width: 100vw;
@@ -42,12 +33,12 @@ body {
 ========================================== */
 
 .header {
-    height: 12vh;
+    height: 13vh;
 
     display: flex;
     align-items: center;
 
-    padding: 6px 24px;
+    padding: 6px 28px;
 
     background:
         linear-gradient(
@@ -59,102 +50,72 @@ body {
 
     color: white;
 
-    border-bottom:
-        3px solid #e9b949;
+    border-bottom: 4px solid #e9b949;
 
     flex-shrink: 0;
 }
 
-
 .temple-logo {
-    height: 9.5vh;
-    max-height: 82px;
+    height: 10.5vh;
+    max-height: 100px;
+
     width: auto;
 
     object-fit: contain;
 
     background: white;
 
-    border-radius: 8px;
+    border-radius: 10px;
 
     padding: 4px;
 }
-
 
 .temple-title {
     flex: 1;
 
     text-align: center;
 
-    padding-left: 10px;
+    padding: 0 10px;
 }
-
 
 .temple-title h1 {
     margin: 0;
 
-    font-family:
-        Georgia,
-        serif;
+    font-family: Georgia, serif;
 
-    font-size:
-        clamp(
-            23px,
-            2.3vw,
-            44px
-        );
+    font-size: 44px;
 
-    letter-spacing: 1px;
+    font-weight: bold;
 
     line-height: 1;
 }
 
-
 .temple-title h2 {
-    margin: 3px 0 0 0;
+    margin: 4px 0 0 0;
 
-    font-family:
-        Georgia,
-        serif;
+    font-family: Georgia, serif;
+
+    font-size: 32px;
 
     color: #ffd86b;
 
-    font-size:
-        clamp(
-            19px,
-            1.8vw,
-            32px
-        );
-
     line-height: 1;
 }
-
 
 .temple-title p {
-    margin: 4px 0 0 0;
+    margin: 5px 0 0 0;
 
-    font-size:
-        clamp(
-            12px,
-            0.9vw,
-            18px
-        );
+    font-size: 18px;
 
-    line-height: 1;
+    font-weight: 600;
 }
 
-
 .clock {
-    min-width: 170px;
+    min-width: 210px;
 
     text-align: right;
 
-    font-size:
-        clamp(
-            18px,
-            1.5vw,
-            28px
-        );
+    font-size: 30px;
 
     font-weight: bold;
 
@@ -192,7 +153,7 @@ body {
 
 
 /* ==========================================
-   FLYER SECTION
+   FLYER
 ========================================== */
 
 .flyer-section {
@@ -207,17 +168,11 @@ body {
     overflow: hidden;
 
     padding:
-        8px
-        235px
-        8px
-        20px;
+        10px
+        230px
+        10px
+        25px;
 }
-
-
-/* Important:
-   Reserve right-side space for QR + Today cards
-   without pushing the flyer off-center visually.
-*/
 
 #flyer {
     display: block;
@@ -232,47 +187,35 @@ body {
 
     opacity: 1;
 
-    transition:
-        opacity
-        0.7s
-        ease-in-out;
+    transition: opacity 0.7s ease-in-out;
 
     filter:
         drop-shadow(
-            0
-            4px
-            10px
-            rgba(
-                0,
-                0,
-                0,
-                0.24
-            )
+            0 4px 10px rgba(0,0,0,0.22)
         );
 }
 
 
 /* ==========================================
-   RIGHT SIDE PANEL
+   RIGHT PANEL
 ========================================== */
 
 .right-panel {
     position: absolute;
 
-    right: 2%;
+    right: 1.8%;
 
     top: 50%;
 
-    transform:
-        translateY(-50%);
+    transform: translateY(-50%);
 
-    width: 175px;
+    width: 210px;
 
     display: flex;
 
     flex-direction: column;
 
-    gap: 10px;
+    gap: 14px;
 }
 
 
@@ -285,97 +228,71 @@ body {
 
     text-align: center;
 
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            0.95
-        );
+    background: rgba(255,255,255,0.96);
 
-    padding:
-        8px
-        7px;
+    padding: 12px 10px;
 
-    border-radius: 12px;
+    border-radius: 14px;
 
-    border:
-        2px solid #e9b949;
+    border: 3px solid #e9b949;
 
     box-shadow:
-        0
-        4px
-        12px
-        rgba(
-            0,
-            0,
-            0,
-            0.15
-        );
+        0 5px 16px rgba(0,0,0,0.18);
 }
 
-
 .qr-title {
-    font-family:
-        Georgia,
-        serif;
+    font-family: Georgia, serif;
 
-    font-size: 12px;
+    font-size: 17px;
 
     font-weight: bold;
 
-    line-height: 1.05;
+    line-height: 1.1;
 
     color: #7a160d;
 
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
-
 
 .whatsapp-qr {
     display: block;
 
     margin: 0 auto;
 
-    width: 95px;
-    height: 95px;
+    width: 135px;
+    height: 135px;
 
     object-fit: contain;
 
     background: white;
 
-    padding: 2px;
+    padding: 3px;
 
-    border-radius: 5px;
+    border-radius: 6px;
 
-    border:
-        1px solid #ddd;
+    border: 1px solid #ddd;
 }
 
-
 .qr-text {
-    margin-top: 5px;
+    margin-top: 8px;
 
     color: #351006;
 
-    font-size: 9px;
+    font-size: 13px;
 
     font-weight: 600;
 
-    line-height: 1.15;
+    line-height: 1.25;
 }
 
-
 .qr-footer {
-    margin-top: 4px;
+    margin-top: 6px;
 
     color: #7a160d;
 
-    font-family:
-        Georgia,
-        serif;
+    font-family: Georgia, serif;
 
-    font-size: 10px;
+    font-size: 15px;
 
     font-weight: bold;
 }
@@ -390,99 +307,72 @@ body {
 
     text-align: center;
 
-    background:
-        rgba(
-            255,
-            250,
-            230,
-            0.97
-        );
+    background: rgba(255,250,230,0.98);
 
-    padding:
-        8px
-        7px;
+    padding: 12px 10px;
 
-    border-radius: 12px;
+    border-radius: 14px;
 
-    border:
-        2px solid #7a160d;
+    border: 3px solid #7a160d;
 
     box-shadow:
-        0
-        4px
-        12px
-        rgba(
-            0,
-            0,
-            0,
-            0.13
-        );
+        0 5px 16px rgba(0,0,0,0.15);
 }
 
-
 .today-heading {
-    font-family:
-        Georgia,
-        serif;
+    font-family: Georgia, serif;
 
-    font-size: 12px;
+    font-size: 17px;
 
     font-weight: bold;
 
     color: #7a160d;
 
-    border-bottom:
-        1px solid #e9b949;
+    border-bottom: 2px solid #e9b949;
 
-    padding-bottom: 4px;
+    padding-bottom: 6px;
 
-    margin-bottom: 4px;
+    margin-bottom: 7px;
 }
 
-
 .today-day {
-    font-size: 11px;
+    font-size: 15px;
 
     font-weight: bold;
 
     color: #555;
 
-    margin-bottom: 3px;
+    margin-bottom: 5px;
 }
 
-
 .today-program {
-    font-family:
-        Georgia,
-        serif;
+    font-family: Georgia, serif;
 
-    font-size: 13px;
+    font-size: 20px;
 
     font-weight: bold;
 
     color: #351006;
 
-    line-height: 1.1;
+    line-height: 1.15;
 }
 
-
 .today-time {
-    margin-top: 4px;
+    margin-top: 7px;
 
-    font-size: 14px;
+    font-size: 22px;
 
     font-weight: bold;
 
     color: #b72a18;
 }
 
-
 .today-message {
-    margin-top: 4px;
+    margin-top: 6px;
 
-    font-size: 9px;
+    font-size: 13px;
 
-    line-height: 1.15;
+    line-height: 1.25;
 
     color: #555;
 }
@@ -493,9 +383,9 @@ body {
 ========================================== */
 
 .announcement-bar {
-    height: 5vh;
+    height: 6vh;
 
-    min-height: 34px;
+    min-height: 48px;
 
     display: flex;
     align-items: center;
@@ -506,10 +396,8 @@ body {
 
     color: white;
 
-    border-top:
-        2px solid #e9b949;
+    border-top: 3px solid #e9b949;
 }
-
 
 .announcement-label {
     height: 100%;
@@ -517,9 +405,7 @@ body {
     display: flex;
     align-items: center;
 
-    padding:
-        0
-        18px;
+    padding: 0 22px;
 
     background: #e9b949;
 
@@ -527,16 +413,10 @@ body {
 
     font-weight: bold;
 
-    font-size:
-        clamp(
-            12px,
-            1vw,
-            18px
-        );
+    font-size: 20px;
 
     white-space: nowrap;
 }
-
 
 .ticker {
     flex: 1;
@@ -551,7 +431,6 @@ body {
     white-space: nowrap;
 }
 
-
 .ticker-text {
     display: inline-block;
 
@@ -559,30 +438,20 @@ body {
 
     padding-left: 100%;
 
-    font-size:
-        clamp(
-            13px,
-            1.05vw,
-            20px
-        );
+    font-size: 22px;
 
-    animation:
-        ticker
-        30s
-        linear
-        infinite;
+    font-weight: 500;
+
+    animation: ticker 30s linear infinite;
 }
-
 
 @keyframes ticker {
     from {
-        transform:
-            translateX(0);
+        transform: translateX(0);
     }
 
     to {
-        transform:
-            translateX(-100%);
+        transform: translateX(-100%);
     }
 }
 
@@ -592,18 +461,16 @@ body {
 ========================================== */
 
 footer {
-    height: 3.5vh;
+    height: 4vh;
 
-    min-height: 26px;
+    min-height: 34px;
 
     display: flex;
     align-items: center;
 
     justify-content: space-between;
 
-    padding:
-        0
-        22px;
+    padding: 0 24px;
 
     flex-shrink: 0;
 
@@ -611,60 +478,46 @@ footer {
 
     color: white;
 
-    font-size:
-        clamp(
-            10px,
-            0.8vw,
-            15px
-        );
+    font-size: 16px;
 }
 
 
 /* ==========================================
-   EXTRA TV BROWSER SAFETY
+   1080P TV OPTIMIZATION
 ========================================== */
 
-img {
-    max-width: 100%;
-}
+@media screen and (min-width: 1800px) {
 
-@media screen and (max-height: 720px) {
-
-    .header {
-        height: 11vh;
+    .temple-title h1 {
+        font-size: 46px;
     }
 
-    .temple-logo {
-        height: 8.5vh;
+    .temple-title h2 {
+        font-size: 34px;
+    }
+
+    .clock {
+        font-size: 32px;
     }
 
     .right-panel {
-        width: 160px;
+        width: 220px;
     }
 
     .whatsapp-qr {
-        width: 82px;
-        height: 82px;
+        width: 145px;
+        height: 145px;
     }
 
-    .flyer-section {
-        padding-right: 210px;
+    .today-program {
+        font-size: 21px;
     }
 
-}
-/* ==========================================
-   SAMSUNG TV SAFE AREA
-========================================== */
+    .today-time {
+        font-size: 23px;
+    }
 
-.tv-screen {
-    padding-top: 1.2vh;
-    padding-bottom: 1.2vh;
-}
-
-.header {
-    height: 11vh;
-}
-
-footer {
-    height: 3vh;
+    .ticker-text {
+        font-size: 23px;
+    }
 }
