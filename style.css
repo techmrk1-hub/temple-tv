@@ -1052,3 +1052,65 @@ footer {
 
     object-fit: contain;
 }
+/* ==========================================================
+   FINAL TV HEADER FIX
+========================================================== */
+
+.header {
+    height: clamp(115px, 15vh, 155px);
+    min-height: 115px;
+
+    padding-top: 8px;
+    padding-bottom: 8px;
+
+    overflow: hidden;
+}
+
+.temple-logo {
+    height: clamp(75px, 9vh, 105px);
+}
+
+.temple-title h1 {
+    font-size: clamp(27px, 2.5vw, 46px);
+    line-height: 1.05;
+}
+
+.temple-title h2 {
+    font-size: clamp(22px, 2vw, 36px);
+    line-height: 1.05;
+}
+
+.temple-title p {
+    font-size: clamp(14px, 1vw, 20px);
+    margin-top: 4px;
+}
+
+.clock {
+    font-size: clamp(22px, 1.8vw, 34px);
+}
+
+
+/* Current BMAX / scaled-display optimization */
+@media screen and (max-height: 850px) {
+
+    .header {
+        height: 120px;
+        min-height: 120px;
+    }
+
+    .temple-logo {
+        height: 82px;
+    }
+
+    .temple-title h1 {
+        font-size: 34px;
+    }
+
+    .temple-title h2 {
+        font-size: 27px;
+    }
+
+    .temple-title p {
+        font-size: 15px;
+    }
+}
