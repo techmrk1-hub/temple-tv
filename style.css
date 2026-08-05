@@ -1,6 +1,13 @@
-/* ==========================================
-   TEMPLE TV - 55" / 1080P / 6 FT VIEWING
-========================================== */
+/* ==========================================================
+   TEMPLE TV - RESPONSIVE DIGITAL SIGNAGE
+   Designed for TV viewing from approximately 6+ feet
+   Automatically adapts to browser/screen resolution
+========================================================== */
+
+
+/* ==========================================================
+   GLOBAL RESET
+========================================================== */
 
 * {
     box-sizing: border-box;
@@ -9,13 +16,22 @@
 html,
 body {
     margin: 0;
+    padding: 0;
+
     width: 100%;
     height: 100%;
+
     overflow: hidden;
 
     font-family: Arial, Helvetica, sans-serif;
+
     background: #111;
 }
+
+
+/* ==========================================================
+   FULL TV SCREEN
+========================================================== */
 
 .tv-screen {
     width: 100vw;
@@ -24,21 +40,35 @@ body {
     display: flex;
     flex-direction: column;
 
+    overflow: hidden;
+
     background: #f8edcf;
 }
 
 
-/* ==========================================
+/* ==========================================================
    HEADER
-========================================== */
+========================================================== */
 
 .header {
-    height: 13vh;
+    height: clamp(105px, 14vh, 150px);
 
-    display: flex;
+    flex-shrink: 0;
+
+    display: grid;
+
+    grid-template-columns:
+        clamp(100px, 10vw, 170px)
+        minmax(0, 1fr)
+        clamp(180px, 16vw, 280px);
+
     align-items: center;
 
-    padding: 6px 28px;
+    gap: clamp(8px, 1vw, 20px);
+
+    padding:
+        clamp(6px, 0.7vh, 12px)
+        clamp(18px, 2vw, 40px);
 
     background:
         linear-gradient(
@@ -50,32 +80,41 @@ body {
 
     color: white;
 
-    border-bottom: 4px solid #e9b949;
-
-    flex-shrink: 0;
+    border-bottom:
+        clamp(3px, 0.3vh, 5px)
+        solid
+        #e9b949;
 }
 
-.temple-logo {
-    height: 10.5vh;
-    max-height: 100px;
 
-    width: auto;
+/* ==========================================================
+   TEMPLE LOGO
+========================================================== */
+
+.temple-logo {
+    width: 100%;
+    height: clamp(80px, 11vh, 120px);
 
     object-fit: contain;
 
     background: white;
 
-    border-radius: 10px;
+    border-radius:
+        clamp(6px, 0.7vw, 12px);
 
-    padding: 4px;
+    padding:
+        clamp(3px, 0.4vw, 6px);
 }
 
+
+/* ==========================================================
+   TEMPLE TITLE
+========================================================== */
+
 .temple-title {
-    flex: 1;
+    min-width: 0;
 
     text-align: center;
-
-    padding: 0 10px;
 }
 
 .temple-title h1 {
@@ -83,63 +122,130 @@ body {
 
     font-family: Georgia, serif;
 
-    font-size: 44px;
-
-    font-weight: bold;
+    font-size:
+        clamp(
+            30px,
+            3vw,
+            58px
+        );
 
     line-height: 1;
+
+    letter-spacing:
+        clamp(
+            0px,
+            0.05vw,
+            1px
+        );
+
+    white-space: nowrap;
 }
 
 .temple-title h2 {
-    margin: 4px 0 0 0;
+    margin:
+        clamp(3px, 0.4vh, 6px)
+        0
+        0;
 
     font-family: Georgia, serif;
 
-    font-size: 32px;
+    font-size:
+        clamp(
+            23px,
+            2.2vw,
+            42px
+        );
+
+    line-height: 1;
 
     color: #ffd86b;
 
-    line-height: 1;
+    white-space: nowrap;
 }
 
 .temple-title p {
-    margin: 5px 0 0 0;
+    margin:
+        clamp(4px, 0.5vh, 8px)
+        0
+        0;
 
-    font-size: 18px;
+    font-size:
+        clamp(
+            15px,
+            1.25vw,
+            24px
+        );
+
+    line-height: 1.1;
 
     font-weight: 600;
 }
 
+
+/* ==========================================================
+   CLOCK
+========================================================== */
+
 .clock {
-    min-width: 210px;
+    min-width: 0;
 
     text-align: right;
 
-    font-size: 30px;
+    font-size:
+        clamp(
+            23px,
+            2.1vw,
+            40px
+        );
 
     font-weight: bold;
 
     color: #ffd86b;
+
+    white-space: nowrap;
 }
 
 
-/* ==========================================
-   MAIN AREA
-========================================== */
+/* ==========================================================
+   MAIN DISPLAY AREA
+
+   GRID automatically gives:
+   LEFT  = Flyer
+   RIGHT = QR + Today Card
+========================================================== */
 
 .main-area {
-    position: relative;
-
     flex: 1;
 
     min-height: 0;
+    min-width: 0;
 
     width: 100%;
 
-    display: flex;
+    display: grid;
 
-    justify-content: center;
-    align-items: center;
+    grid-template-columns:
+        minmax(0, 1fr)
+        clamp(210px, 15vw, 300px);
+
+    gap:
+        clamp(
+            12px,
+            1.5vw,
+            30px
+        );
+
+    padding:
+        clamp(
+            8px,
+            1vh,
+            16px
+        )
+        clamp(
+            12px,
+            1.5vw,
+            28px
+        );
 
     overflow: hidden;
 
@@ -152,11 +258,14 @@ body {
 }
 
 
-/* ==========================================
-   FLYER
-========================================== */
+/* ==========================================================
+   FLYER SECTION
+========================================================== */
 
 .flyer-section {
+    min-width: 0;
+    min-height: 0;
+
     width: 100%;
     height: 100%;
 
@@ -167,12 +276,17 @@ body {
 
     overflow: hidden;
 
-    padding:
-        10px
-        230px
-        10px
-        25px;
+    padding: 0;
 }
+
+
+/* ==========================================================
+   FLYER IMAGE
+
+   Never stretches.
+   Never crops.
+   Automatically uses maximum available area.
+========================================================== */
 
 #flyer {
     display: block;
@@ -187,63 +301,116 @@ body {
 
     opacity: 1;
 
-    transition: opacity 0.7s ease-in-out;
+    transition:
+        opacity
+        0.7s
+        ease-in-out;
 
     filter:
         drop-shadow(
-            0 4px 10px rgba(0,0,0,0.22)
+            0
+            5px
+            12px
+            rgba(0, 0, 0, 0.25)
         );
 }
 
 
-/* ==========================================
+/* ==========================================================
    RIGHT PANEL
-========================================== */
+========================================================== */
 
 .right-panel {
-    position: absolute;
+    position: static;
 
-    right: 1.8%;
-
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    width: 210px;
+    width: 100%;
+    height: 100%;
 
     display: flex;
 
     flex-direction: column;
 
-    gap: 14px;
+    justify-content: center;
+
+    gap:
+        clamp(
+            10px,
+            1.3vh,
+            18px
+        );
+
+    transform: none;
 }
 
 
-/* ==========================================
+/* ==========================================================
    QR CARD
-========================================== */
+========================================================== */
 
 .qr-card {
     width: 100%;
 
+    flex-shrink: 0;
+
     text-align: center;
 
-    background: rgba(255,255,255,0.96);
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.97
+        );
 
-    padding: 12px 10px;
+    padding:
+        clamp(
+            8px,
+            1vh,
+            14px
+        );
 
-    border-radius: 14px;
+    border-radius:
+        clamp(
+            10px,
+            1vw,
+            16px
+        );
 
-    border: 3px solid #e9b949;
+    border:
+        clamp(
+            2px,
+            0.2vw,
+            3px
+        )
+        solid
+        #e9b949;
 
     box-shadow:
-        0 5px 16px rgba(0,0,0,0.18);
+        0
+        5px
+        16px
+        rgba(
+            0,
+            0,
+            0,
+            0.18
+        );
 }
+
+
+/* ==========================================================
+   QR TITLE
+========================================================== */
 
 .qr-title {
     font-family: Georgia, serif;
 
-    font-size: 17px;
+    font-size:
+        clamp(
+            15px,
+            1.15vw,
+            22px
+        );
 
     font-weight: bold;
 
@@ -251,16 +418,34 @@ body {
 
     color: #7a160d;
 
-    margin-bottom: 8px;
+    margin-bottom:
+        clamp(
+            5px,
+            0.6vh,
+            9px
+        );
 }
+
+
+/* ==========================================================
+   QR IMAGE
+========================================================== */
 
 .whatsapp-qr {
     display: block;
 
     margin: 0 auto;
 
-    width: 135px;
-    height: 135px;
+    width:
+        clamp(
+            115px,
+            9vw,
+            175px
+        );
+
+    aspect-ratio: 1 / 1;
+
+    height: auto;
 
     object-fit: contain;
 
@@ -270,85 +455,192 @@ body {
 
     border-radius: 6px;
 
-    border: 1px solid #ddd;
+    border:
+        1px
+        solid
+        #ddd;
 }
 
+
+/* ==========================================================
+   QR TEXT
+========================================================== */
+
 .qr-text {
-    margin-top: 8px;
+    margin-top:
+        clamp(
+            5px,
+            0.6vh,
+            9px
+        );
 
     color: #351006;
 
-    font-size: 13px;
+    font-size:
+        clamp(
+            12px,
+            0.9vw,
+            17px
+        );
 
     font-weight: 600;
 
-    line-height: 1.25;
+    line-height: 1.2;
 }
 
 .qr-footer {
-    margin-top: 6px;
+    margin-top:
+        clamp(
+            4px,
+            0.5vh,
+            7px
+        );
 
     color: #7a160d;
 
     font-family: Georgia, serif;
 
-    font-size: 15px;
+    font-size:
+        clamp(
+            13px,
+            1vw,
+            18px
+        );
 
     font-weight: bold;
 }
 
 
-/* ==========================================
-   TODAY CARD
-========================================== */
+/* ==========================================================
+   TODAY AT THE TEMPLE CARD
+========================================================== */
 
 .today-card {
     width: 100%;
 
     text-align: center;
 
-    background: rgba(255,250,230,0.98);
+    background:
+        rgba(
+            255,
+            250,
+            230,
+            0.98
+        );
 
-    padding: 12px 10px;
+    padding:
+        clamp(
+            10px,
+            1.1vh,
+            16px
+        );
 
-    border-radius: 14px;
+    border-radius:
+        clamp(
+            10px,
+            1vw,
+            16px
+        );
 
-    border: 3px solid #7a160d;
+    border:
+        clamp(
+            2px,
+            0.2vw,
+            3px
+        )
+        solid
+        #7a160d;
 
     box-shadow:
-        0 5px 16px rgba(0,0,0,0.15);
+        0
+        5px
+        16px
+        rgba(
+            0,
+            0,
+            0,
+            0.15
+        );
 }
+
+
+/* ==========================================================
+   TODAY HEADING
+========================================================== */
 
 .today-heading {
     font-family: Georgia, serif;
 
-    font-size: 17px;
+    font-size:
+        clamp(
+            16px,
+            1.2vw,
+            23px
+        );
 
     font-weight: bold;
 
     color: #7a160d;
 
-    border-bottom: 2px solid #e9b949;
+    border-bottom:
+        2px
+        solid
+        #e9b949;
 
-    padding-bottom: 6px;
+    padding-bottom:
+        clamp(
+            4px,
+            0.5vh,
+            7px
+        );
 
-    margin-bottom: 7px;
+    margin-bottom:
+        clamp(
+            5px,
+            0.6vh,
+            8px
+        );
 }
 
+
+/* ==========================================================
+   DAY
+========================================================== */
+
 .today-day {
-    font-size: 15px;
+    font-size:
+        clamp(
+            14px,
+            1vw,
+            19px
+        );
 
     font-weight: bold;
 
     color: #555;
 
-    margin-bottom: 5px;
+    margin-bottom:
+        clamp(
+            4px,
+            0.5vh,
+            7px
+        );
 }
+
+
+/* ==========================================================
+   PROGRAM
+========================================================== */
 
 .today-program {
     font-family: Georgia, serif;
 
-    font-size: 20px;
+    font-size:
+        clamp(
+            19px,
+            1.45vw,
+            28px
+        );
 
     font-weight: bold;
 
@@ -357,20 +649,50 @@ body {
     line-height: 1.15;
 }
 
-.today-time {
-    margin-top: 7px;
 
-    font-size: 22px;
+/* ==========================================================
+   PROGRAM TIME
+========================================================== */
+
+.today-time {
+    margin-top:
+        clamp(
+            5px,
+            0.6vh,
+            8px
+        );
+
+    font-size:
+        clamp(
+            20px,
+            1.55vw,
+            30px
+        );
 
     font-weight: bold;
 
     color: #b72a18;
 }
 
-.today-message {
-    margin-top: 6px;
 
-    font-size: 13px;
+/* ==========================================================
+   TODAY MESSAGE
+========================================================== */
+
+.today-message {
+    margin-top:
+        clamp(
+            5px,
+            0.6vh,
+            8px
+        );
+
+    font-size:
+        clamp(
+            12px,
+            0.9vw,
+            17px
+        );
 
     line-height: 1.25;
 
@@ -378,34 +700,53 @@ body {
 }
 
 
-/* ==========================================
+/* ==========================================================
    ANNOUNCEMENT BAR
-========================================== */
+========================================================== */
 
 .announcement-bar {
-    height: 6vh;
-
-    min-height: 48px;
-
-    display: flex;
-    align-items: center;
+    height:
+        clamp(
+            50px,
+            6vh,
+            70px
+        );
 
     flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
 
     background: #351006;
 
     color: white;
 
-    border-top: 3px solid #e9b949;
+    border-top:
+        3px
+        solid
+        #e9b949;
 }
+
+
+/* ==========================================================
+   ANNOUNCEMENT LABEL
+========================================================== */
 
 .announcement-label {
     height: 100%;
 
     display: flex;
+
     align-items: center;
 
-    padding: 0 22px;
+    padding:
+        0
+        clamp(
+            16px,
+            1.5vw,
+            28px
+        );
 
     background: #e9b949;
 
@@ -413,17 +754,30 @@ body {
 
     font-weight: bold;
 
-    font-size: 20px;
+    font-size:
+        clamp(
+            17px,
+            1.25vw,
+            24px
+        );
 
     white-space: nowrap;
 }
 
+
+/* ==========================================================
+   TICKER
+========================================================== */
+
 .ticker {
     flex: 1;
+
+    min-width: 0;
 
     height: 100%;
 
     display: flex;
+
     align-items: center;
 
     overflow: hidden;
@@ -438,86 +792,216 @@ body {
 
     padding-left: 100%;
 
-    font-size: 22px;
+    font-size:
+        clamp(
+            19px,
+            1.4vw,
+            27px
+        );
 
     font-weight: 500;
 
-    animation: ticker 30s linear infinite;
+    animation:
+        ticker
+        30s
+        linear
+        infinite;
 }
 
+
+/* ==========================================================
+   TICKER ANIMATION
+========================================================== */
+
 @keyframes ticker {
+
     from {
-        transform: translateX(0);
+        transform:
+            translateX(0);
     }
 
     to {
-        transform: translateX(-100%);
+        transform:
+            translateX(-100%);
     }
+
 }
 
 
-/* ==========================================
+/* ==========================================================
    FOOTER
-========================================== */
+========================================================== */
 
 footer {
-    height: 4vh;
+    height:
+        clamp(
+            34px,
+            4vh,
+            48px
+        );
 
-    min-height: 34px;
+    flex-shrink: 0;
 
     display: flex;
+
     align-items: center;
 
     justify-content: space-between;
 
-    padding: 0 24px;
+    gap: 20px;
 
-    flex-shrink: 0;
+    padding:
+        0
+        clamp(
+            18px,
+            2vw,
+            32px
+        );
 
     background: #7a160d;
 
     color: white;
 
-    font-size: 16px;
+    font-size:
+        clamp(
+            14px,
+            1vw,
+            20px
+        );
+
+    font-weight: 500;
 }
 
 
-/* ==========================================
-   1080P TV OPTIMIZATION
-========================================== */
+/* ==========================================================
+   LOWER-HEIGHT DISPLAYS
 
-@media screen and (min-width: 1800px) {
+   Useful when Windows scaling reduces Chrome's effective
+   viewport height.
+========================================================== */
 
-    .temple-title h1 {
-        font-size: 46px;
+@media screen and (max-height: 800px) {
+
+    .header {
+        height: 13vh;
+        min-height: 90px;
     }
 
-    .temple-title h2 {
-        font-size: 34px;
+    .temple-logo {
+        height: 10vh;
     }
 
-    .clock {
-        font-size: 32px;
+    .main-area {
+        padding-top: 7px;
+        padding-bottom: 7px;
     }
 
     .right-panel {
-        width: 220px;
+        gap: 8px;
+    }
+
+    .qr-card,
+    .today-card {
+        padding: 8px;
     }
 
     .whatsapp-qr {
-        width: 145px;
-        height: 145px;
+        width:
+            clamp(
+                100px,
+                8vw,
+                140px
+            );
+    }
+
+    .announcement-bar {
+        min-height: 44px;
+    }
+
+    footer {
+        min-height: 30px;
+    }
+}
+
+
+/* ==========================================================
+   SMALLER / LOWER RESOLUTION DISPLAYS
+========================================================== */
+
+@media screen and (max-width: 1400px) {
+
+    .header {
+        grid-template-columns:
+            95px
+            minmax(0, 1fr)
+            170px;
+
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .main-area {
+        grid-template-columns:
+            minmax(0, 1fr)
+            clamp(190px, 17vw, 230px);
+    }
+
+    .temple-title h1 {
+        font-size:
+            clamp(
+                27px,
+                2.8vw,
+                40px
+            );
+    }
+
+    .temple-title h2 {
+        font-size:
+            clamp(
+                21px,
+                2vw,
+                31px
+            );
+    }
+}
+
+
+/* ==========================================================
+   VERY WIDE FULL-HD / LARGE DISPLAYS
+========================================================== */
+
+@media screen and (min-width: 1800px) {
+
+    .main-area {
+        grid-template-columns:
+            minmax(0, 1fr)
+            clamp(240px, 14vw, 310px);
     }
 
     .today-program {
-        font-size: 21px;
+        font-size:
+            clamp(
+                22px,
+                1.45vw,
+                30px
+            );
     }
 
     .today-time {
-        font-size: 23px;
+        font-size:
+            clamp(
+                24px,
+                1.55vw,
+                32px
+            );
     }
 
     .ticker-text {
-        font-size: 23px;
+        font-size:
+            clamp(
+                22px,
+                1.4vw,
+                29px
+            );
     }
 }
