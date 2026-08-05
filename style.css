@@ -1114,3 +1114,43 @@ footer {
         font-size: 15px;
     }
 }
+/* ==========================================================
+   FINAL TV FOOTER FIX
+========================================================== */
+
+footer {
+    height: clamp(38px, 4.5vh, 52px);
+    min-height: 38px;
+
+    padding:
+        0
+        clamp(18px, 2vw, 32px);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    overflow: hidden;
+
+    font-size: clamp(14px, 1vw, 19px);
+    line-height: 1;
+
+    flex-shrink: 0;
+}
+
+
+/* BMAX / Windows scaled-display optimization */
+
+@media screen and (max-height: 850px) {
+
+    footer {
+        height: 40px;
+        min-height: 40px;
+
+        font-size: 14px;
+
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+}
