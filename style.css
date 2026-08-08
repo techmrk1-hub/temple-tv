@@ -361,3 +361,196 @@ body {
     transform: translateX(-100%);
   }
 }
+/* ==========================================================
+   FINAL DISTANCE-READABILITY OVERRIDE
+   Paste at the VERY BOTTOM of style.css
+========================================================== */
+
+
+/* =========================
+   HEADER TEXT
+========================= */
+
+.temple-title {
+  font-size: clamp(32px, 2.35vw, 42px) !important;
+  line-height: 1 !important;
+}
+
+.temple-subtitle {
+  font-size: clamp(21px, 1.5vw, 27px) !important;
+  font-weight: 800 !important;
+  margin-top: 3px !important;
+  line-height: 1 !important;
+}
+
+.temple-address {
+  display: block !important;
+
+  font-family: Arial, Helvetica, sans-serif !important;
+
+  font-size: clamp(13px, 0.9vw, 16px) !important;
+
+  font-weight: 700 !important;
+
+  line-height: 1.1 !important;
+
+  margin-top: 5px !important;
+
+  color: #ffffff !important;
+
+  opacity: 1 !important;
+}
+
+
+/* Give subtitle/address enough room */
+
+.header {
+  min-height: 96px !important;
+  height: 96px !important;
+}
+
+.tv-screen {
+  grid-template-rows:
+    96px
+    minmax(0, 1fr)
+    44px
+    38px !important;
+}
+
+
+/* =========================
+   CLOCK
+========================= */
+
+.clock {
+  font-size: clamp(26px, 1.8vw, 32px) !important;
+}
+
+.header-date {
+  font-size: clamp(11px, 0.78vw, 14px) !important;
+  font-weight: 700 !important;
+}
+
+
+/* =========================
+   RIGHT SIDE PANEL
+   Slightly narrower
+========================= */
+
+.main-area {
+  grid-template-columns:
+    minmax(0, 1fr)
+    275px !important;
+}
+
+
+/* =========================
+   RIGHT CARD HEADINGS
+========================= */
+
+.card-title {
+  font-size: clamp(21px, 1.4vw, 26px) !important;
+
+  font-weight: 800 !important;
+
+  line-height: 1.05 !important;
+
+  margin-bottom: 10px !important;
+}
+
+
+/* Temple Updates heading */
+
+.qr-card .card-title {
+  font-size: clamp(21px, 1.4vw, 26px) !important;
+}
+
+
+/* Smaller QR image */
+
+.qr-image {
+  width: 125px !important;
+  height: 125px !important;
+
+  max-width: 125px !important;
+  max-height: 125px !important;
+}
+
+
+/* QR description */
+
+.qr-message {
+  font-size: clamp(12px, 0.85vw, 15px) !important;
+
+  font-weight: 600 !important;
+
+  margin-top: 8px !important;
+}
+
+
+/* =========================
+   TODAY AT THE TEMPLE
+========================= */
+
+.today-title {
+  font-size: clamp(21px, 1.4vw, 26px) !important;
+
+  font-weight: 800 !important;
+
+  line-height: 1.05 !important;
+}
+
+
+.today-day {
+  font-size: clamp(15px, 1vw, 18px) !important;
+
+  font-weight: 800 !important;
+
+  margin-bottom: 8px !important;
+}
+
+
+.today-program {
+  font-size: clamp(23px, 1.6vw, 29px) !important;
+
+  line-height: 1.05 !important;
+}
+
+
+.today-time {
+  font-size: clamp(21px, 1.4vw, 26px) !important;
+
+  margin-top: 10px !important;
+}
+
+
+/* Slightly more compact cards */
+
+.info-card {
+  padding: 12px 10px !important;
+}
+
+
+/* =========================
+   BOTTOM LABELS
+========================= */
+
+.ticker-label {
+  font-size: clamp(17px, 1.15vw, 21px) !important;
+
+  font-weight: 800 !important;
+}
+
+
+.ticker-text {
+  font-size: clamp(16px, 1.05vw, 20px) !important;
+
+  font-weight: 700 !important;
+}
+
+
+.upcoming-events-text {
+  font-size: clamp(16px, 1.05vw, 20px) !important;
+
+  font-weight: 700 !important;
+}
