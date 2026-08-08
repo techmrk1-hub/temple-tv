@@ -1,220 +1,79 @@
-/* ==========================================================
-   OLD VERSION STYLE HEADER
-========================================================== */
-
-.header {
-  position: relative;
-
-  display: grid;
-
-  grid-template-columns:
-    90px
-    minmax(0, 1fr)
-    180px;
-
-  align-items: center;
-
-  min-width: 0;
-
-  padding:
-    6px
-    18px;
-
-  background:
-    linear-gradient(
-      90deg,
-      #6f170d,
-      #8a2013,
-      #6f170d
-    );
-
-  border-bottom:
-    2px solid #d6a52d;
-
-  color: white;
-
-  box-shadow:
-    0 2px 6px
-    rgba(0, 0, 0, 0.18);
-}
-
-
-/* LEFT SIDE LOGO */
-
-.temple-brand {
-  display: contents;
-}
-
+/* HEADER REFINEMENT */
 
 .temple-logo {
-  grid-column: 1;
-
-  width: 68px;
-  height: 68px;
-
-  object-fit: contain;
-
-  background: white;
-
-  padding: 5px;
-
-  border-radius: 5px;
-
-  justify-self: start;
+  width: 74px;
+  height: 74px;
 }
-
-
-/* CENTER TITLE AREA */
-
-.temple-title-area {
-  grid-column: 2;
-
-  text-align: center;
-
-  align-self: center;
-
-  min-width: 0;
-}
-
 
 .temple-title {
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size:
-    clamp(
-      25px,
-      2.25vw,
-      38px
-    );
-
-  font-weight: 700;
-
-  line-height: 1;
-
-  letter-spacing:
-    0.01em;
-
-  color: #ffffff;
-
-  white-space: nowrap;
-
-  text-shadow:
-    1px 1px 2px
-    rgba(0, 0, 0, 0.22);
+  font-size: clamp(24px, 2.1vw, 36px);
 }
-
 
 .temple-subtitle {
-  margin-top: 2px;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size:
-    clamp(
-      15px,
-      1.3vw,
-      22px
-    );
-
-  font-weight: 700;
-
-  line-height: 1;
-
-  color: #f3cf62;
+  font-size: clamp(14px, 1.15vw, 20px);
 }
-
 
 .temple-address {
-  margin-top: 4px;
-
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
-  font-size:
-    clamp(
-      9px,
-      0.72vw,
-      12px
-    );
-
-  font-weight: 500;
-
-  color:
-    rgba(
-      255,
-      255,
-      255,
-      0.95
-    );
+  font-size: clamp(8px, 0.65vw, 11px);
 }
-
-
-/* RIGHT SIDE CLOCK */
-
-.header-time-area {
-  grid-column: 3;
-
-  text-align: right;
-
-  align-self: center;
-
-  padding-left: 10px;
-}
-
 
 .clock {
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
+  font-size: clamp(19px, 1.55vw, 27px);
+}
 
-  font-size:
-    clamp(
-      20px,
-      1.6vw,
-      29px
-    );
-
-  font-weight: 700;
-
-  line-height: 1;
-
-  color: #f3cf62;
-
-  white-space: nowrap;
-
-  text-shadow:
-    1px 1px 2px
-    rgba(0, 0, 0, 0.22);
+.header-date {
+  font-size: clamp(8px, 0.6vw, 10px);
 }
 
 
-.header-date {
-  margin-top: 5px;
+/* SLIMMER BOTTOM BARS */
 
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
+.tv-screen {
+  grid-template-rows:
+    clamp(76px, 9.5vh, 94px)
+    minmax(0, 1fr)
+    clamp(36px, 4.7vh, 46px)
+    clamp(32px, 4.2vh, 40px);
+}
 
-  font-size:
-    clamp(
-      8px,
-      0.65vw,
-      11px
-    );
 
+/* TICKER LABELS */
+
+.ticker-row {
+  grid-template-columns:
+    clamp(170px, 15vw, 255px)
+    minmax(0, 1fr);
+}
+
+.ticker-label {
+  font-size: clamp(13px, 1.05vw, 18px);
+  padding: 0 10px;
+}
+
+
+/* TICKER TEXT */
+
+.ticker-text {
+  font-size: clamp(13px, 1.05vw, 19px);
   font-weight: 600;
+}
 
-  color: white;
+.upcoming-events-text {
+  font-size: clamp(13px, 1vw, 18px);
+}
 
-  white-space: nowrap;
+
+/* ANNOUNCEMENTS LABEL */
+
+.announcements-label {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+}
+
+
+/* UPCOMING EVENTS LABEL */
+
+.upcoming-label {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
 }
