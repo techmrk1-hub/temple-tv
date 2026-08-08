@@ -23,7 +23,6 @@
   <!-- =====================================================
        HEADER
   ====================================================== -->
-
   <header class="top-header">
 
     <div class="brand-zone">
@@ -44,13 +43,9 @@
 
           <span>DEVI TEMPLE</span>
 
-          <span class="meta-dot">
-            •
-          </span>
+          <span class="meta-dot">•</span>
 
-          <span>
-            Orange, Connecticut
-          </span>
+          <span>Orange, Connecticut</span>
 
         </div>
 
@@ -80,15 +75,16 @@
   </header>
 
 
+
   <!-- =====================================================
        MAIN CONTENT
   ====================================================== -->
-
   <main class="content-grid">
 
 
-    <!-- MAIN FEATURE FLYER -->
-
+    <!-- ===================================================
+         MAIN FEATURE FLYER
+    ==================================================== -->
     <section class="feature-panel">
 
       <img
@@ -101,20 +97,34 @@
     </section>
 
 
-    <!-- RIGHT INFORMATION PANEL -->
 
+    <!-- ===================================================
+         RIGHT INFORMATION PANEL
+    ==================================================== -->
     <aside class="info-rail">
 
 
-      <!-- TODAY'S SCHEDULE -->
+      <!-- =================================================
+           TODAY'S SCHEDULE
+      ================================================== -->
+      <section class="rail-section today-section schedule-card">
 
-      <section class="rail-section today-section">
+        <div
+          class="schedule-ornament"
+          aria-hidden="true"
+        >
+          <span></span>
+        </div>
 
-        <div class="section-eyebrow">
+        <div class="schedule-heading">
           TODAY'S SCHEDULE
         </div>
 
-        <div class="section-rule"></div>
+        <div class="schedule-heading-divider">
+
+          <span class="divider-diamond"></span>
+
+        </div>
 
         <div
           id="today-schedule-list"
@@ -130,11 +140,13 @@
       </section>
 
 
-      <!-- COMMUNITY -->
 
+      <!-- =================================================
+           JOIN OUR COMMUNITY
+      ================================================== -->
       <section class="rail-section community-section">
 
-        <div class="section-rule"></div>
+        <div class="community-divider"></div>
 
         <div class="section-eyebrow community-heading">
           JOIN OUR COMMUNITY
@@ -157,10 +169,10 @@
   </main>
 
 
+
   <!-- =====================================================
        ANNOUNCEMENTS
   ====================================================== -->
-
   <section class="ticker-row announcement-row">
 
     <div class="ticker-label">
@@ -181,10 +193,10 @@
   </section>
 
 
+
   <!-- =====================================================
        UPCOMING EVENTS
   ====================================================== -->
-
   <section class="ticker-row upcoming-row">
 
     <div class="ticker-label upcoming-label">
@@ -204,17 +216,13 @@
 
   </section>
 
-
 </div>
 
 
+
 <!-- =======================================================
-     BACKGROUND MUSIC PLAYER
-
-     No music file is hard-coded here.
-     Google Sheet controls the playlist.
+     BGM PLAYER
 ======================================================== -->
-
 <audio
   id="background-music"
   autoplay
@@ -223,9 +231,7 @@
 
 
 <script src="announcements.js"></script>
-
 <script src="script.js"></script>
-
 
 </body>
 
