@@ -1,8 +1,34 @@
 /* ==========================================================
    CHINMAYA SARASWATI ASHRAM - DEVI TEMPLE
-   TEMPLE TV DIGITAL SIGNAGE
-   PREMIUM CLASSIC / CORPORATE INTERFACE
+   CORPORATE DIGITAL SIGNAGE
 ========================================================== */
+
+
+/* ==========================================================
+   DESIGN SYSTEM
+========================================================== */
+
+:root {
+  --maroon: #74190f;
+  --maroon-dark: #48100b;
+  --maroon-soft: #8d2317;
+
+  --gold: #d4a33c;
+  --gold-soft: #ecd58f;
+
+  --ivory: #fbf8f0;
+  --cream: #f4eedf;
+
+  --ink: #27211e;
+  --muted: #756861;
+
+  --line: #dfd5c2;
+
+  --radius: 10px;
+
+  --shadow:
+    0 5px 16px rgba(58, 39, 27, 0.08);
+}
 
 
 /* ==========================================================
@@ -25,21 +51,22 @@ body {
 
 
 body {
-  background: #f6f0df;
+  background: var(--cream);
 
-  color: #311a12;
+  color: var(--ink);
 
   font-family:
     "Segoe UI",
     Arial,
     Helvetica,
     sans-serif;
+
+  -webkit-font-smoothing: antialiased;
 }
 
 
-
 /* ==========================================================
-   COMPLETE SCREEN
+   TV CANVAS
 ========================================================== */
 
 .tv-screen {
@@ -49,196 +76,152 @@ body {
   display: grid;
 
   grid-template-rows:
-    98px
+    96px
     minmax(0, 1fr)
-    44px
-    38px;
-
-  background: #f6f0df;
+    46px
+    40px;
 
   overflow: hidden;
-}
 
+  background:
+    linear-gradient(
+      180deg,
+      #f8f4ea 0%,
+      #f3ecdc 100%
+    );
+}
 
 
 /* ==========================================================
    HEADER
 ========================================================== */
 
-.header {
-  width: 100%;
-
-  display: grid;
-
-  grid-template-columns:
-    100px
-    minmax(0, 1fr)
-    220px;
-
-  align-items: center;
-
-  padding:
-    7px
-    18px;
-
-  background:
-    linear-gradient(
-      90deg,
-      #72170d 0%,
-      #8b2013 50%,
-      #72170d 100%
-    );
-
-  border-bottom:
-    3px solid #d9ab39;
-
-  color: white;
-}
-
-
-
-/* ==========================================================
-   HEADER LOGO
-========================================================== */
-
-.header-logo-area {
+.top-header {
   display: flex;
 
   align-items: center;
 
-  justify-content: flex-start;
+  justify-content: space-between;
+
+  gap: 30px;
+
+  padding:
+    10px
+    24px;
+
+  background: var(--maroon);
+
+  border-bottom:
+    3px solid var(--gold);
+
+  color: white;
+}
+
+
+/* ==========================================================
+   HEADER BRAND
+========================================================== */
+
+.brand-zone {
+  min-width: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 18px;
 }
 
 
 .temple-logo {
-  width: 74px;
-  height: 74px;
+  width: 68px;
+  height: 68px;
+
+  flex: 0 0 68px;
 
   object-fit: contain;
 
-  padding: 5px;
+  padding: 4px;
 
   background: white;
 
-  border-radius: 7px;
+  border-radius: 8px;
 
   box-shadow:
-    0 2px 5px
-    rgba(0, 0, 0, 0.2);
-}
-
-
-
-/* ==========================================================
-   HEADER CENTER
-========================================================== */
-
-.header-center {
-  min-width: 0;
-
-  text-align: center;
-
-  align-self: center;
-}
-
-
-.temple-title {
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  color: white;
-
-  font-size:
-    clamp(
-      32px,
-      2.45vw,
-      44px
-    );
-
-  font-weight: 700;
-
-  line-height: 1;
-
-  letter-spacing:
-    0.01em;
-
-  white-space: nowrap;
-
-  text-shadow:
-    1px 1px 2px
+    0 2px 6px
     rgba(0, 0, 0, 0.18);
 }
 
 
+.brand-copy {
+  min-width: 0;
+}
 
-/* ==========================================================
-   DEVI TEMPLE
-========================================================== */
 
-.temple-subtitle {
-  margin-top: 4px;
-
+.temple-name {
   font-family:
     Georgia,
     "Times New Roman",
     serif;
 
-  color: #ffd765;
-
   font-size:
     clamp(
-      21px,
-      1.45vw,
-      27px
-    );
-
-  font-weight: 800;
-
-  line-height: 1;
-}
-
-
-
-/* ==========================================================
-   ADDRESS
-========================================================== */
-
-.temple-address {
-  margin-top: 5px;
-
-  color: #ffffff;
-
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
-  font-size:
-    clamp(
-      12px,
-      0.84vw,
-      15px
+      29px,
+      2.25vw,
+      42px
     );
 
   font-weight: 700;
 
   line-height: 1;
 
+  letter-spacing: 0.008em;
+
+  color: #ffffff;
+
   white-space: nowrap;
 }
 
+
+.temple-meta {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 8px;
+
+  color: #f8df97;
+
+  font-size:
+    clamp(
+      14px,
+      0.95vw,
+      18px
+    );
+
+  font-weight: 700;
+
+  line-height: 1;
+}
+
+
+.meta-dot {
+  opacity: 0.6;
+}
 
 
 /* ==========================================================
    CLOCK
 ========================================================== */
 
-.header-time-area {
-  text-align: right;
+.time-zone {
+  flex-shrink: 0;
 
-  align-self: center;
+  min-width: 200px;
+
+  text-align: right;
 }
 
 
@@ -248,27 +231,25 @@ body {
     "Times New Roman",
     serif;
 
-  color: #ffd765;
+  color: #ffdf74;
 
   font-size:
     clamp(
-      27px,
-      1.85vw,
+      26px,
+      1.8vw,
       34px
     );
 
   font-weight: 700;
 
   line-height: 1;
-
-  white-space: nowrap;
 }
 
 
 .header-date {
   margin-top: 7px;
 
-  color: white;
+  color: rgba(255, 255, 255, 0.94);
 
   font-size:
     clamp(
@@ -277,72 +258,64 @@ body {
       14px
     );
 
-  font-weight: 700;
+  font-weight: 600;
 
-  white-space: nowrap;
+  letter-spacing: 0.015em;
 }
 
 
-
 /* ==========================================================
-   MAIN AREA
+   MAIN CONTENT GRID
 ========================================================== */
 
-.main-area {
-  min-width: 0;
+.content-grid {
   min-height: 0;
+  min-width: 0;
 
   display: grid;
 
   grid-template-columns:
     minmax(0, 1fr)
-    255px;
+    clamp(265px, 19vw, 330px);
 
-  gap: 12px;
+  gap: 14px;
 
   padding:
-    10px
-    13px;
+    14px
+    16px;
 
   overflow: hidden;
 }
-
 
 
 /* ==========================================================
-   FLYER
+   MAIN FEATURE PANEL
 ========================================================== */
 
-.flyer-section {
-  position: relative;
-
-  min-width: 0;
+.feature-panel {
   min-height: 0;
+  min-width: 0;
 
   display: flex;
 
-  justify-content: center;
-
   align-items: center;
+
+  justify-content: center;
 
   overflow: hidden;
 
-  background: #fffdf8;
+  background: #ffffff;
 
   border:
-    1px solid
-    rgba(95, 58, 35, 0.15);
+    1px solid rgba(71, 51, 38, 0.12);
 
-  border-radius: 12px;
+  border-radius: var(--radius);
 
-  box-shadow:
-    0 3px 11px
-    rgba(59, 32, 18, 0.11);
+  box-shadow: var(--shadow);
 }
 
 
-
-.flyer-image {
+.feature-flyer {
   width: auto;
   height: auto;
 
@@ -356,303 +329,258 @@ body {
   opacity: 0;
 
   transition:
-    opacity
-    0.45s
-    ease;
+    opacity 0.45s ease;
 }
 
 
-.flyer-image.flyer-visible {
+.feature-flyer.flyer-visible {
   opacity: 1;
 }
 
 
-
-.flyer-image.flyer-landscape {
+.feature-flyer.flyer-landscape {
   width: 100%;
   height: auto;
-
-  max-height: 100%;
 }
 
 
-
-.flyer-image.flyer-portrait {
+.feature-flyer.flyer-portrait {
   width: auto;
   height: 100%;
-
-  max-width: 100%;
 }
 
 
-
-.flyer-image.flyer-square {
+.feature-flyer.flyer-square {
   width: auto;
   height: 100%;
-
-  max-width: 100%;
 }
-
 
 
 /* ==========================================================
-   RIGHT PANEL
+   RIGHT INFORMATION RAIL
 ========================================================== */
 
-.right-panel {
-  min-width: 0;
-  min-height: 0;
-
-  display: grid;
-
-  /*
-      QR intentionally smaller.
-      TODAY card has slightly more space.
-  */
-
-  grid-template-rows:
-    40%
-    minmax(0, 1fr);
-
-  gap: 10px;
-}
-
-
-
-/* ==========================================================
-   INFORMATION CARDS
-========================================================== */
-
-.info-card {
-  min-width: 0;
+.info-rail {
   min-height: 0;
 
   display: flex;
 
   flex-direction: column;
 
-  align-items: center;
-
-  justify-content: center;
-
   overflow: hidden;
 
   padding:
-    10px
-    9px;
+    22px
+    20px;
 
-  background:
-    linear-gradient(
-      180deg,
-      #fffefa,
-      #fffaf0
-    );
+  background: var(--ivory);
 
   border:
-    1px solid #d4ad4c;
+    1px solid var(--line);
 
   border-top:
-    3px solid #c9931f;
+    4px solid var(--gold);
 
-  border-radius: 11px;
+  border-radius: var(--radius);
 
-  box-shadow:
-    0 2px 7px
-    rgba(70, 38, 17, 0.08);
+  box-shadow: var(--shadow);
 }
 
 
-
 /* ==========================================================
-   CARD TITLE
+   RIGHT RAIL SECTIONS
 ========================================================== */
 
-.card-title {
+.rail-section {
   width: 100%;
+}
 
-  margin-bottom: 8px;
 
-  color: #77180e;
+.today-section {
+  flex:
+    1 1 auto;
+}
 
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
 
-  font-size:
-    clamp(
-      17px,
-      1.13vw,
-      21px
-    );
-
-  font-weight: 700;
-
-  line-height: 1.05;
+.community-section {
+  flex:
+    0 0 auto;
 
   text-align: center;
 }
 
 
-
 /* ==========================================================
-   QR CARD
+   SECTION HEADING
 ========================================================== */
 
-.qr-card {
-  padding:
-    9px
-    8px;
+.section-eyebrow {
+  color: var(--maroon);
+
+  font-size:
+    clamp(
+      17px,
+      1.1vw,
+      21px
+    );
+
+  font-weight: 800;
+
+  letter-spacing: 0.06em;
 }
 
 
-.qr-image {
-  width: 105px;
-  height: 105px;
+.section-rule {
+  width: 100%;
 
-  max-width: 105px;
-  max-height: 105px;
+  height: 1px;
+
+  margin:
+    13px 0
+    16px;
+
+  background: var(--line);
+}
+
+
+/* ==========================================================
+   TODAY SCHEDULE
+========================================================== */
+
+.schedule-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 19px;
+}
+
+
+.schedule-item {
+  position: relative;
+
+  padding-left: 15px;
+
+  border-left:
+    3px solid var(--gold);
+}
+
+
+.schedule-time {
+  margin-bottom: 4px;
+
+  color: var(--maroon);
+
+  font-size:
+    clamp(
+      17px,
+      1.05vw,
+      20px
+    );
+
+  font-weight: 800;
+}
+
+
+.schedule-name {
+  color: var(--ink);
+
+  font-size:
+    clamp(
+      18px,
+      1.15vw,
+      22px
+    );
+
+  font-weight: 650;
+
+  line-height: 1.18;
+}
+
+
+.schedule-note {
+  margin-top: 4px;
+
+  color: var(--muted);
+
+  font-size:
+    clamp(
+      11px,
+      0.7vw,
+      13px
+    );
+
+  line-height: 1.25;
+}
+
+
+.empty-schedule {
+  color: var(--muted);
+
+  font-size:
+    clamp(
+      14px,
+      0.9vw,
+      17px
+    );
+
+  line-height: 1.4;
+}
+
+
+/* ==========================================================
+   COMMUNITY / QR
+========================================================== */
+
+.community-heading {
+  margin-bottom: 12px;
+}
+
+
+.community-qr {
+  width:
+    clamp(
+      95px,
+      7vw,
+      120px
+    );
+
+  height:
+    clamp(
+      95px,
+      7vw,
+      120px
+    );
 
   object-fit: contain;
 }
 
 
-.qr-message {
-  margin-top: 7px;
+.community-copy {
+  margin-top: 9px;
 
-  color: #3c271f;
+  color: var(--muted);
 
   font-size:
     clamp(
-      10px,
-      0.68vw,
-      12px
+      11px,
+      0.72vw,
+      14px
     );
 
   font-weight: 600;
-
-  line-height: 1.2;
-
-  text-align: center;
 }
-
 
 
 /* ==========================================================
-   TODAY AT THE TEMPLE
-========================================================== */
-
-.today-card {
-  padding:
-    12px
-    9px;
-
-  text-align: center;
-}
-
-
-.today-title {
-  margin-bottom: 8px;
-}
-
-
-.today-day {
-  margin-bottom: 8px;
-
-  color: #a47819;
-
-  font-size:
-    clamp(
-      12px,
-      0.82vw,
-      15px
-    );
-
-  font-weight: 800;
-
-  letter-spacing:
-    0.07em;
-
-  text-transform: uppercase;
-}
-
-
-.today-program {
-  color: #6b160e;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size:
-    clamp(
-      20px,
-      1.4vw,
-      26px
-    );
-
-  font-weight: 700;
-
-  line-height: 1.08;
-
-  text-align: center;
-}
-
-
-.today-time {
-  margin-top: 10px;
-
-  color: #9c7119;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size:
-    clamp(
-      19px,
-      1.23vw,
-      23px
-    );
-
-  font-weight: 700;
-}
-
-
-.today-message {
-  margin-top: 7px;
-
-  color: #5c4940;
-
-  font-size:
-    clamp(
-      9px,
-      0.63vw,
-      12px
-    );
-
-  line-height: 1.2;
-
-  text-align: center;
-}
-
-
-
-/* ==========================================================
-   TICKERS
+   COMMON TICKERS
 ========================================================== */
 
 .ticker-row {
-  width: 100%;
-
-  min-width: 0;
-
   display: grid;
 
   grid-template-columns:
-    215px
+    205px
     minmax(0, 1fr);
 
   overflow: hidden;
@@ -660,39 +588,41 @@ body {
 
 
 .ticker-label {
+  position: relative;
+
+  z-index: 2;
+
   display: flex;
 
   align-items: center;
 
-  justify-content: center;
+  padding:
+    0
+    18px;
 
-  padding: 0 10px;
+  background: var(--gold);
 
-  white-space: nowrap;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
+  color: var(--maroon-dark);
 
   font-size:
     clamp(
-      15px,
-      1vw,
-      19px
+      14px,
+      0.95vw,
+      18px
     );
 
-  font-weight: 700;
+  font-weight: 800;
 
-  letter-spacing:
-    0.02em;
+  letter-spacing: 0.035em;
+
+  white-space: nowrap;
 }
 
 
-.ticker-window {
-  position: relative;
-
+.ticker-viewport {
   min-width: 0;
+
+  position: relative;
 
   overflow: hidden;
 
@@ -702,18 +632,14 @@ body {
 }
 
 
-.ticker-text {
+.ticker-track {
   position: absolute;
 
   left: 100%;
 
   white-space: nowrap;
 
-  font-family:
-    "Segoe UI",
-    Arial,
-    Helvetica,
-    sans-serif;
+  color: white;
 
   font-size:
     clamp(
@@ -722,42 +648,28 @@ body {
       19px
     );
 
-  font-weight: 650;
+  font-weight: 600;
 
   will-change: transform;
 
   animation:
-    ticker-scroll
+    scroll-left
     44s
     linear
     infinite;
 }
 
 
-
 /* ==========================================================
    ANNOUNCEMENTS
 ========================================================== */
 
-.announcements-row {
-  background: #44140d;
+.announcement-row {
+  background: var(--maroon-dark);
 
   border-top:
-    2px solid #cc9d2b;
+    2px solid var(--gold);
 }
-
-
-.announcements-label {
-  background: #ddb242;
-
-  color: #36150c;
-}
-
-
-.announcements-text {
-  color: white;
-}
-
 
 
 /* ==========================================================
@@ -765,54 +677,35 @@ body {
 ========================================================== */
 
 .upcoming-row {
-  background: #8b2014;
+  background: var(--maroon-soft);
 
   border-top:
     1px solid
-    rgba(255, 255, 255, 0.15);
+    rgba(255, 255, 255, 0.16);
 }
 
 
 .upcoming-label {
-  background: #ead17a;
-
-  color: #6d170e;
-
-  font-size:
-    clamp(
-      14px,
-      0.95vw,
-      18px
-    );
+  background: #ead17c;
 }
 
 
-.upcoming-events-text {
-  color: #fff3ce;
+.upcoming-track {
+  color: #fff4cf;
 
-  font-size:
-    clamp(
-      14px,
-      0.95vw,
-      18px
-    );
-
-  font-weight: 650;
-
-  animation-duration:
-    48s;
+  animation-duration: 50s;
 }
-
 
 
 /* ==========================================================
-   TICKER ANIMATION
+   SCROLL ANIMATION
 ========================================================== */
 
-@keyframes ticker-scroll {
+@keyframes scroll-left {
 
   0% {
-    transform: translateX(0);
+    transform:
+      translateX(0);
   }
 
   100% {
@@ -827,86 +720,109 @@ body {
 }
 
 
-
 /* ==========================================================
-   BMAX / 1680 x 1050
+   1680 x 1050 OPTIMIZATION
 ========================================================== */
 
 @media (max-width: 1700px) {
 
-  .header {
-    grid-template-columns:
+  .tv-screen {
+    grid-template-rows:
       92px
       minmax(0, 1fr)
-      195px;
+      43px
+      37px;
   }
 
 
-  .temple-title {
+  .top-header {
+    padding:
+      8px
+      20px;
+  }
+
+
+  .temple-logo {
+    width: 64px;
+    height: 64px;
+
+    flex-basis: 64px;
+  }
+
+
+  .temple-name {
     font-size:
       clamp(
-        30px,
-        2.25vw,
-        39px
+        28px,
+        2.15vw,
+        36px
       );
   }
 
 
-  .temple-subtitle {
+  .temple-meta {
     font-size:
       clamp(
-        20px,
-        1.4vw,
-        25px
+        13px,
+        0.9vw,
+        16px
       );
   }
 
 
-  .temple-address {
-    font-size:
-      clamp(
-        11px,
-        0.8vw,
-        14px
-      );
-  }
-
-
-  .main-area {
+  .content-grid {
     grid-template-columns:
       minmax(0, 1fr)
-      250px;
+      280px;
+
+    gap: 12px;
+
+    padding:
+      10px
+      12px;
+  }
+
+
+  .info-rail {
+    padding:
+      18px
+      16px;
   }
 
 }
 
 
-
 /* ==========================================================
-   SHORTER DISPLAYS
+   SHORTER VIEWPORT
 ========================================================== */
 
 @media (max-height: 850px) {
 
   .tv-screen {
     grid-template-rows:
-      92px
+      86px
       minmax(0, 1fr)
-      42px
-      36px;
+      40px
+      35px;
   }
 
 
-  .temple-logo {
-    width: 66px;
-    height: 66px;
-  }
-
-
-  .main-area {
+  .content-grid {
     padding:
-      7px
-      9px;
+      8px
+      10px;
+  }
+
+
+  .info-rail {
+    padding:
+      14px
+      14px;
+  }
+
+
+  .schedule-list {
+    gap: 13px;
   }
 
 }
