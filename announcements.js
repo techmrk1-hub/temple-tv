@@ -1,5 +1,6 @@
 const templeContent = {
 
+
   // =======================================================
   // GOOGLE SHEETS
   // =======================================================
@@ -7,24 +8,34 @@ const templeContent = {
   announcementSheetURL:
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?output=csv",
 
+
   flyerSheetURL:
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=1481450155&single=true&output=csv",
+
 
   specialEventsSheetURL:
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=159824805&single=true&output=csv",
 
+
   upcomingEventsSheetURL:
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=519294883&single=true&output=csv",
 
+
+  // =======================================================
+  // BACKGROUND MUSIC GOOGLE SHEET
+  // =======================================================
+
   bgmSheetURL:
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=397630639&single=true&output=csv",
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=397630639&single=true&output=csv",
+
 
 
   // =======================================================
-  // REFRESH
+  // REMOTE REFRESH
   // =======================================================
 
   remoteRefreshMinutes: 5,
+
 
 
   // =======================================================
@@ -32,11 +43,18 @@ const templeContent = {
   // =======================================================
 
   localFlyers: [
+
     "images/flyer1.jpg",
+
     "images/flyer2.jpg"
+
   ],
 
+
+  // Each flyer remains for 10 seconds
+
   flyerDuration: 10,
+
 
 
   // =======================================================
@@ -44,91 +62,178 @@ const templeContent = {
   // =======================================================
 
   announcements: [
+
     "Welcome to Chinmaya Saraswati Ashram - Devi Temple",
+
     "Please join us for our upcoming temple programs",
+
     "Scan the QR code to receive temple updates",
+
     "Hari Om"
+
   ],
 
-  separator: "     •     ",
+
+  separator:
+    "     •     ",
+
 
 
   // =======================================================
-  // FALLBACK UPCOMING EVENTS
+  // UPCOMING EVENTS FALLBACK
   // =======================================================
 
   upcomingEventsFallback: [
+
     "Please check temple announcements for upcoming events"
+
   ],
+
 
 
   // =======================================================
   // WEEKLY PROGRAMS
+  //
   // JavaScript weekday:
-  // Sunday 0
-  // Monday 1
-  // Tuesday 2
-  // Wednesday 3
-  // Thursday 4
-  // Friday 5
-  // Saturday 6
+  //
+  // Sunday    = 0
+  // Monday    = 1
+  // Tuesday   = 2
+  // Wednesday = 3
+  // Thursday  = 4
+  // Friday    = 5
+  // Saturday  = 6
   // =======================================================
 
   weeklySchedule: {
 
+
+    // MONDAY
+
     1: [
+
       {
-        title: "Shiva Abhishekam",
-        time: "6:30 PM"
+
+        title:
+          "Shiva Abhishekam",
+
+        time:
+          "6:30 PM"
+
       }
+
     ],
+
+
+
+    // TUESDAY
 
     2: [
+
       {
-        title: "Hanuman Abhishekam Followed By Hanumana Chalisa Parayanam, Archana, Aarati",
-        time: "6:30 PM"
+
+        title:
+          "Hanuman Abhishekam Followed By Hanumana Chalisa Parayanam, Archana, Aarati",
+
+        time:
+          "6:30 PM"
+
       }
+
     ],
 
+
+
+    // FRIDAY
+
     5: [
+
       {
-        title: "Saraswati Devi Abhishekam",
-        time: "6:30 PM"
+
+        title:
+          "Saraswati Devi Abhishekam",
+
+        time:
+          "6:30 PM"
+
       }
+
     ]
 
   },
+
 
 
   // =======================================================
   // SATURDAY PROGRAMS
+  //
+  // 1 = First Saturday
+  // 2 = Second Saturday
+  // 3 = Third Saturday
   // =======================================================
 
   saturdaySchedule: {
 
+
+    // FIRST SATURDAY
+
     1: [
+
       {
-        title: "Lakshmi Devi Abhishekam",
-        time: "6:30 PM"
+
+        title:
+          "Lakshmi Devi Abhishekam",
+
+        time:
+          "6:30 PM"
+
       }
+
     ],
+
+
+
+    // SECOND SATURDAY
 
     2: [
+
       {
-        title: "Durga Devi Abhishekam",
-        time: "6:30 PM"
+
+        title:
+          "Durga Devi Abhishekam",
+
+        time:
+          "6:30 PM"
+
       }
+
     ],
 
+
+
+    // THIRD SATURDAY
+
     3: [
+
       {
-        title: "Hanuman Abhishekam Followed by Tulasidas Sundarakanda Parayanam",
-        time: "10:00 AM"
+
+        title:
+          "Hanuman Abhishekam Followed by Tulasidas Sundarakanda Parayanam",
+
+        time:
+          "10:00 AM"
+
       }
+
     ]
 
   },
 
+
+
+  // =======================================================
+  // NO REGULAR PROGRAM
+  // =======================================================
 
   noProgramMessage:
     "Please check announcements for today's temple programs."
