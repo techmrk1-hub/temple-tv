@@ -1,12 +1,12 @@
-// ============================================================
-// TEMPLE TV DIGITAL SIGNAGE SYSTEM
-// Chinmaya Saraswati Ashram - Devi Temple
-// ============================================================
+/* ==========================================================
+   TEMPLE TV DIGITAL SIGNAGE
+   Chinmaya Saraswati Ashram - Devi Temple
+========================================================== */
 
 
-// ============================================================
-// GLOBAL VARIABLES
-// ============================================================
+// ==========================================================
+// STATE
+// ==========================================================
 
 let flyers = [];
 let currentFlyerIndex = 0;
@@ -14,9 +14,9 @@ let currentFlyerIndex = 0;
 let specialEvents = [];
 
 
-// ============================================================
-// ELEMENT REFERENCES
-// ============================================================
+// ==========================================================
+// ELEMENTS
+// ==========================================================
 
 const flyerElement =
   document.getElementById("flyer");
@@ -27,17 +27,8 @@ const tickerText =
 const upcomingEventsText =
   document.getElementById("upcoming-events-text");
 
-const todayDay =
-  document.getElementById("today-day");
-
-const todayProgram =
-  document.getElementById("today-program");
-
-const todayTime =
-  document.getElementById("today-time");
-
-const todayMessage =
-  document.getElementById("today-message");
+const scheduleList =
+  document.getElementById("today-schedule-list");
 
 const clockElement =
   document.getElementById("clock");
@@ -46,10 +37,9 @@ const headerDateElement =
   document.getElementById("header-date");
 
 
-
-// ============================================================
+// ==========================================================
 // CACHE BUSTER
-// ============================================================
+// ==========================================================
 
 function addCacheBuster(url) {
 
@@ -61,87 +51,91 @@ function addCacheBuster(url) {
 }
 
 
-
-// ============================================================
+// ==========================================================
 // CSV PARSER
-// ============================================================
+// ==========================================================
 
-function parseCSV(csvText) {
+function parseCSV(text) {
 
   const rows = [];
 
   let row = [];
-  let value = "";
-  let insideQuotes = false;
+  let field = "";
+  let inQuotes = false;
+
 
   for (
     let i = 0;
-    i < csvText.length;
+    i < text.length;
     i++
   ) {
 
-    const character =
-      csvText[i];
+    const char =
+      text[i];
 
-    const nextCharacter =
-      csvText[i + 1];
+    const next =
+      text[i + 1];
 
 
-    if (character === '"') {
+    if (char === '"') {
 
       if (
-        insideQuotes &&
-        nextCharacter === '"'
+        inQuotes &&
+        next === '"'
       ) {
 
-        value += '"';
-
+        field += '"';
         i++;
 
-      } else {
+      }
 
-        insideQuotes =
-          !insideQuotes;
+      else {
+
+        inQuotes =
+          !inQuotes;
 
       }
 
     }
 
     else if (
-      character === "," &&
-      !insideQuotes
+      char === "," &&
+      !inQuotes
     ) {
 
-      row.push(value.trim());
+      row.push(
+        field.trim()
+      );
 
-      value = "";
+      field = "";
 
     }
 
     else if (
-      (character === "\n" ||
-       character === "\r") &&
-      !insideQuotes
+      (char === "\n" ||
+       char === "\r") &&
+      !inQuotes
     ) {
 
       if (
-        character === "\r" &&
-        nextCharacter === "\n"
+        char === "\r" &&
+        next === "\n"
       ) {
-
         i++;
-
       }
 
-      row.push(value.trim());
 
-      value = "";
+      row.push(
+        field.trim()
+      );
+
+      field = "";
 
 
       if (
         row.some(
-          cell =>
-            cell.trim() !== ""
+          value =>
+            value !== ""
         )
       ) {
 
@@ -149,13 +143,14 @@ function parseCSV(csvText) {
 
       }
 
+
       row = [];
 
     }
 
     else {
 
-      value += character;
+      field += char;
 
     }
 
@@ -163,16 +158,19 @@ function parseCSV(csvText) {
 
 
   if (
-    value.length > 0 ||
-    row.length > 0
+    field ||
+    row.length
   ) {
 
-    row.push(value.trim());
+    row.push(
+      field.trim()
+    );
+
 
     if (
       row.some(
-        cell =>
-          cell.trim() !== ""
+        value =>
+          value !== ""
       )
     ) {
 
@@ -188,10 +186,9 @@ function parseCSV(csvText) {
 }
 
 
-
-// ============================================================
-// CLOCK AND DATE
-// ============================================================
+// ==========================================================
+// CLOCK
+// ==========================================================
 
 function updateClock() {
 
@@ -199,35 +196,26 @@ function updateClock() {
     new Date();
 
 
-  if (clockElement) {
-
-    clockElement.textContent =
-      now.toLocaleTimeString(
-        "en-US",
-        {
-          hour: "numeric",
-          minute: "2-digit",
-          hour12: true
-        }
-      );
-
-  }
+  clockElement.textContent =
+    now.toLocaleTimeString(
+      "en-US",
+      {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true
+      }
+    );
 
 
-  if (headerDateElement) {
-
-    headerDateElement.textContent =
-      now.toLocaleDateString(
-        "en-US",
-        {
-          weekday: "long",
-          month: "long",
-          day: "numeric",
-          year: "numeric"
-        }
-      );
-
-  }
+  headerDateElement.textContent =
+    now.toLocaleDateString(
+      "en-US",
+      {
+        weekday: "short",
+        month: "short",
+        day: "numeric"
+      }
+    ).toUpperCase();
 
 }
 
@@ -240,10 +228,119 @@ setInterval(
 );
 
 
+// ==========================================================
+// DATE HELPERS
+// ==========================================================
 
-// ============================================================
+function dateKey(date) {
+
+  const year =
+    date.getFullYear();
+
+  const month =
+    String(
+      date.getMonth() + 1
+    ).padStart(
+      2,
+      "0"
+    );
+
+  const day =
+    String(
+      date.getDate()
+    ).padStart(
+      2,
+      "0"
+    );
+
+
+  return `${year}-${month}-${day}`;
+
+}
+
+
+function normalizeDate(value) {
+
+  if (!value) {
+    return "";
+  }
+
+
+  const text =
+    String(value).trim();
+
+
+  const us =
+    text.match(
+      /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
+    );
+
+
+  if (us) {
+
+    return (
+      us[3] +
+      "-" +
+      us[1].padStart(2, "0") +
+      "-" +
+      us[2].padStart(2, "0")
+    );
+
+  }
+
+
+  const iso =
+    text.match(
+      /^(\d{4})-(\d{1,2})-(\d{1,2})$/
+    );
+
+
+  if (iso) {
+
+    return (
+      iso[1] +
+      "-" +
+      iso[2].padStart(2, "0") +
+      "-" +
+      iso[3].padStart(2, "0")
+    );
+
+  }
+
+
+  const parsed =
+    new Date(text);
+
+
+  if (
+    !isNaN(
+      parsed.getTime()
+    )
+  ) {
+
+    return dateKey(parsed);
+
+  }
+
+
+  return "";
+
+}
+
+
+// ==========================================================
 // ANNOUNCEMENTS
-// ============================================================
+// ==========================================================
+
+function loadLocalAnnouncements() {
+
+  tickerText.textContent =
+    templeContent.announcements.join(
+      templeContent.separator
+    );
+
+}
+
 
 async function loadAnnouncements() {
 
@@ -261,11 +358,9 @@ async function loadAnnouncements() {
 
 
     if (!response.ok) {
-
       throw new Error(
-        "Announcement sheet could not be loaded"
+        "Announcement data unavailable"
       );
-
     }
 
 
@@ -277,39 +372,37 @@ async function loadAnnouncements() {
       parseCSV(csv);
 
 
-    const announcements = [];
+    const messages = [];
 
 
     rows.forEach(
       (row, index) => {
 
-        if (
-          index === 0 &&
-          row.some(
-            cell =>
-              cell.toLowerCase()
-                .includes("announcement")
-          )
-        ) {
-
-          return;
-
-        }
-
-
         row.forEach(
           cell => {
 
-            const text =
+            const value =
               cell.trim();
 
-            if (text) {
 
-              announcements.push(
-                text
-              );
-
+            if (!value) {
+              return;
             }
+
+
+            if (
+              index === 0 &&
+              value
+                .toLowerCase()
+                .includes(
+                  "announcement"
+                )
+            ) {
+              return;
+            }
+
+
+            messages.push(value);
 
           }
         );
@@ -319,11 +412,11 @@ async function loadAnnouncements() {
 
 
     if (
-      announcements.length > 0
+      messages.length
     ) {
 
       tickerText.textContent =
-        announcements.join(
+        messages.join(
           templeContent.separator
         );
 
@@ -340,10 +433,8 @@ async function loadAnnouncements() {
   catch (error) {
 
     console.error(
-      "Announcement load error:",
       error
     );
-
 
     loadLocalAnnouncements();
 
@@ -352,44 +443,30 @@ async function loadAnnouncements() {
 }
 
 
-
-function loadLocalAnnouncements() {
-
-  tickerText.textContent =
-    templeContent.announcements.join(
-      templeContent.separator
-    );
-
-}
-
-
-
-// ============================================================
-// GOOGLE DRIVE IMAGE CONVERSION
-// ============================================================
+// ==========================================================
+// DRIVE URL
+// ==========================================================
 
 function convertDriveURL(url) {
 
   if (!url) {
-
     return "";
-
   }
 
 
   let fileId = "";
 
 
-  const fileMatch =
+  const slashMatch =
     url.match(
       /\/file\/d\/([^/]+)/
     );
 
 
-  if (fileMatch) {
+  if (slashMatch) {
 
     fileId =
-      fileMatch[1];
+      slashMatch[1];
 
   }
 
@@ -400,7 +477,10 @@ function convertDriveURL(url) {
     );
 
 
-  if (!fileId && idMatch) {
+  if (
+    !fileId &&
+    idMatch
+  ) {
 
     fileId =
       idMatch[1];
@@ -409,9 +489,7 @@ function convertDriveURL(url) {
 
 
   if (!fileId) {
-
     return url;
-
   }
 
 
@@ -423,10 +501,9 @@ function convertDriveURL(url) {
 }
 
 
-
-// ============================================================
-// IMAGE TEST
-// ============================================================
+// ==========================================================
+// IMAGE VALIDATION
+// ==========================================================
 
 function testImage(url) {
 
@@ -438,13 +515,11 @@ function testImage(url) {
 
 
       image.onload =
-        () =>
-          resolve(true);
+        () => resolve(true);
 
 
       image.onerror =
-        () =>
-          resolve(false);
+        () => resolve(false);
 
 
       image.src =
@@ -456,10 +531,9 @@ function testImage(url) {
 }
 
 
-
-// ============================================================
-// LOAD REMOTE FLYERS
-// ============================================================
+// ==========================================================
+// FLYERS
+// ==========================================================
 
 async function loadRemoteFlyers() {
 
@@ -477,26 +551,24 @@ async function loadRemoteFlyers() {
 
 
     if (!response.ok) {
-
       throw new Error(
-        "Flyer sheet could not be loaded"
+        "Flyer sheet unavailable"
       );
-
     }
 
 
-    const csv =
-      await response.text();
-
-
     const rows =
-      parseCSV(csv);
+      parseCSV(
+        await response.text()
+      );
 
 
-    if (rows.length < 2) {
+    if (
+      rows.length < 2
+    ) {
 
       throw new Error(
-        "Flyer sheet has no data"
+        "No remote flyers"
       );
 
     }
@@ -504,23 +576,22 @@ async function loadRemoteFlyers() {
 
     const headers =
       rows[0].map(
-        item =>
-          item.trim()
+        value =>
+          value
+            .trim()
             .toLowerCase()
       );
 
 
-    const imageURLIndex =
+    const imageIndex =
       headers.indexOf(
         "imageurl"
       );
-
 
     const activeIndex =
       headers.indexOf(
         "active"
       );
-
 
     const orderIndex =
       headers.indexOf(
@@ -528,7 +599,7 @@ async function loadRemoteFlyers() {
       );
 
 
-    const remoteFlyers =
+    const remote =
       [];
 
 
@@ -554,54 +625,43 @@ async function loadRemoteFlyers() {
       if (
         active !== "YES"
       ) {
-
         continue;
-
       }
 
 
-      const originalURL =
+      const original =
         (
-          row[imageURLIndex] ||
+          row[imageIndex] ||
           ""
         ).trim();
 
 
-      if (!originalURL) {
-
+      if (!original) {
         continue;
-
       }
 
 
-      const convertedURL =
+      const url =
         convertDriveURL(
-          originalURL
+          original
         );
 
 
-      const displayOrder =
+      const order =
         parseInt(
           row[orderIndex],
           10
         ) || 999;
 
 
-      const works =
-        await testImage(
-          convertedURL
-        );
+      if (
+        await testImage(url)
+      ) {
 
-
-      if (works) {
-
-        remoteFlyers.push(
+        remote.push(
           {
-            url:
-              convertedURL,
-
-            order:
-              displayOrder
+            url,
+            order
           }
         );
 
@@ -610,30 +670,21 @@ async function loadRemoteFlyers() {
     }
 
 
-    remoteFlyers.sort(
+    remote.sort(
       (a, b) =>
         a.order - b.order
     );
 
 
-    if (
-      remoteFlyers.length > 0
-    ) {
-
-      flyers =
-        remoteFlyers.map(
+    flyers =
+      remote.length
+        ?
+        remote.map(
           item =>
             item.url
-        );
-
-    }
-
-    else {
-
-      flyers =
+        )
+        :
         templeContent.localFlyers;
-
-    }
 
 
     currentFlyerIndex = 0;
@@ -645,7 +696,6 @@ async function loadRemoteFlyers() {
   catch (error) {
 
     console.error(
-      "Flyer loading error:",
       error
     );
 
@@ -663,27 +713,18 @@ async function loadRemoteFlyers() {
 }
 
 
-
-// ============================================================
-// FLYER DISPLAY / ORIENTATION
-// ============================================================
+// ==========================================================
+// DISPLAY FLYER
+// ==========================================================
 
 function showFlyer() {
 
   if (
     !flyerElement ||
-    flyers.length === 0
+    !flyers.length
   ) {
-
     return;
-
   }
-
-
-  const flyerURL =
-    flyers[
-      currentFlyerIndex
-    ];
 
 
   flyerElement.classList.remove(
@@ -695,63 +736,55 @@ function showFlyer() {
 
 
   flyerElement.onload =
-    function () {
+    () => {
 
-      const width =
-        flyerElement.naturalWidth;
-
-      const height =
+      const ratio =
+        flyerElement.naturalWidth /
         flyerElement.naturalHeight;
 
 
       if (
-        width > 0 &&
-        height > 0
+        ratio > 1.15
       ) {
 
-        const ratio =
-          width / height;
-
-
-        if (
-          ratio > 1.15
-        ) {
-
-          flyerElement.classList.add(
+        flyerElement
+          .classList
+          .add(
             "flyer-landscape"
           );
 
-        }
+      }
 
-        else if (
-          ratio < 0.85
-        ) {
+      else if (
+        ratio < 0.85
+      ) {
 
-          flyerElement.classList.add(
+        flyerElement
+          .classList
+          .add(
             "flyer-portrait"
           );
 
-        }
+      }
 
-        else {
+      else {
 
-          flyerElement.classList.add(
+        flyerElement
+          .classList
+          .add(
             "flyer-square"
           );
-
-        }
 
       }
 
 
       requestAnimationFrame(
-        () => {
-
-          flyerElement.classList.add(
-            "flyer-visible"
-          );
-
-        }
+        () =>
+          flyerElement
+            .classList
+            .add(
+              "flyer-visible"
+            )
       );
 
     };
@@ -759,25 +792,20 @@ function showFlyer() {
 
   flyerElement.src =
     addCacheBuster(
-      flyerURL
+      flyers[
+        currentFlyerIndex
+      ]
     );
 
 }
 
-
-
-// ============================================================
-// FLYER ROTATION
-// ============================================================
 
 function rotateFlyer() {
 
   if (
     flyers.length <= 1
   ) {
-
     return;
-
   }
 
 
@@ -793,10 +821,60 @@ function rotateFlyer() {
 }
 
 
+// ==========================================================
+// REGULAR SCHEDULE
+// ==========================================================
 
-// ============================================================
+function getSaturdayNumber(date) {
+
+  return Math.ceil(
+    date.getDate() / 7
+  );
+
+}
+
+
+function getRegularPrograms(date) {
+
+  const day =
+    date.getDay();
+
+
+  if (
+    day === 6
+  ) {
+
+    const number =
+      getSaturdayNumber(
+        date
+      );
+
+
+    return (
+      templeContent
+        .saturdaySchedule[
+          number
+        ] ||
+      []
+    );
+
+  }
+
+
+  return (
+    templeContent
+      .weeklySchedule[
+        day
+      ] ||
+    []
+  );
+
+}
+
+
+// ==========================================================
 // SPECIAL EVENTS
-// ============================================================
+// ==========================================================
 
 async function loadSpecialEvents() {
 
@@ -814,20 +892,16 @@ async function loadSpecialEvents() {
 
 
     if (!response.ok) {
-
       throw new Error(
-        "Special Events sheet could not be loaded"
+        "Special events unavailable"
       );
-
     }
 
 
-    const csv =
-      await response.text();
-
-
     const rows =
-      parseCSV(csv);
+      parseCSV(
+        await response.text()
+      );
 
 
     if (
@@ -836,7 +910,7 @@ async function loadSpecialEvents() {
 
       specialEvents = [];
 
-      updateTodayCard();
+      renderTodaySchedule();
 
       return;
 
@@ -845,8 +919,9 @@ async function loadSpecialEvents() {
 
     const headers =
       rows[0].map(
-        item =>
-          item.trim()
+        value =>
+          value
+            .trim()
             .toLowerCase()
       );
 
@@ -904,12 +979,9 @@ async function loadSpecialEvents() {
 
 
       if (
-        active &&
         active !== "YES"
       ) {
-
         continue;
-
       }
 
 
@@ -920,17 +992,13 @@ async function loadSpecialEvents() {
 
 
       if (!date) {
-
         continue;
-
       }
 
 
       specialEvents.push(
         {
-          date:
-
-            date,
+          date,
 
           event:
             (
@@ -955,359 +1023,219 @@ async function loadSpecialEvents() {
     }
 
 
-    updateTodayCard();
+    renderTodaySchedule();
 
   }
 
   catch (error) {
 
     console.error(
-      "Special Events error:",
       error
     );
 
 
     specialEvents = [];
 
-    updateTodayCard();
+    renderTodaySchedule();
 
   }
 
 }
 
 
+// ==========================================================
+// TODAY SCHEDULE
+// Supports multiple programs
+// ==========================================================
 
-// ============================================================
-// DATE NORMALIZATION
-// ============================================================
+function renderTodaySchedule() {
 
-function normalizeDate(value) {
-
-  if (!value) {
-
-    return "";
-
-  }
-
-
-  const clean =
-    value.trim();
-
-
-  // MM/DD/YYYY
-  const usDate =
-    clean.match(
-      /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
-    );
-
-
-  if (usDate) {
-
-    const month =
-      usDate[1]
-        .padStart(
-          2,
-          "0"
-        );
-
-    const day =
-      usDate[2]
-        .padStart(
-          2,
-          "0"
-        );
-
-    const year =
-      usDate[3];
-
-
-    return (
-      `${year}-${month}-${day}`
-    );
-
-  }
-
-
-  // YYYY-MM-DD
-  const isoDate =
-    clean.match(
-      /^(\d{4})-(\d{1,2})-(\d{1,2})$/
-    );
-
-
-  if (isoDate) {
-
-    const year =
-      isoDate[1];
-
-    const month =
-      isoDate[2]
-        .padStart(
-          2,
-          "0"
-        );
-
-    const day =
-      isoDate[3]
-        .padStart(
-          2,
-          "0"
-        );
-
-
-    return (
-      `${year}-${month}-${day}`
-    );
-
-  }
-
-
-  const parsed =
-    new Date(clean);
-
-
-  if (
-    !isNaN(
-      parsed.getTime()
-    )
-  ) {
-
-    return dateKey(
-      parsed
-    );
-
-  }
-
-
-  return "";
-
-}
-
-
-
-// ============================================================
-// DATE KEY
-// ============================================================
-
-function dateKey(date) {
-
-  const year =
-    date.getFullYear();
-
-  const month =
-    String(
-      date.getMonth() + 1
-    )
-      .padStart(
-        2,
-        "0"
-      );
-
-  const day =
-    String(
-      date.getDate()
-    )
-      .padStart(
-        2,
-        "0"
-      );
-
-
-  return (
-    `${year}-${month}-${day}`
-  );
-
-}
-
-
-
-// ============================================================
-// SATURDAY NUMBER IN MONTH
-// ============================================================
-
-function getSaturdayNumber(date) {
-
-  return Math.ceil(
-    date.getDate() / 7
-  );
-
-}
-
-
-
-// ============================================================
-// REGULAR PROGRAM
-// ============================================================
-
-function getRegularProgram(date) {
-
-  const weekday =
-    date.getDay();
-
-
-  if (
-    weekday === 6
-  ) {
-
-    const saturdayNumber =
-      getSaturdayNumber(
-        date
-      );
-
-
-    if (
-      templeContent.saturdaySchedule[
-        saturdayNumber
-      ]
-    ) {
-
-      return (
-        templeContent.saturdaySchedule[
-          saturdayNumber
-        ]
-      );
-
-    }
-
-  }
-
-
-  if (
-    templeContent.weeklySchedule[
-      weekday
-    ]
-  ) {
-
-    return (
-      templeContent.weeklySchedule[
-        weekday
-      ]
-    );
-
-  }
-
-
-  return null;
-
-}
-
-
-
-// ============================================================
-// TODAY CARD
-// ============================================================
-
-function updateTodayCard() {
-
-  const today =
+  const now =
     new Date();
 
 
   const key =
-    dateKey(
-      today
-    );
+    dateKey(now);
 
 
-  const dayName =
-    today.toLocaleDateString(
-      "en-US",
-      {
-        weekday: "long"
+  const programs =
+    [];
+
+
+  // Regular programs
+  getRegularPrograms(
+    now
+  ).forEach(
+    item => {
+
+      programs.push(
+        {
+          title:
+            item.title,
+
+          time:
+            item.time,
+
+          note:
+            ""
+        }
+      );
+
+    }
+  );
+
+
+  // Special events for today
+  specialEvents
+    .filter(
+      event =>
+        event.date === key
+    )
+    .forEach(
+      event => {
+
+        const title =
+          event.program ||
+          event.event ||
+          "Special Temple Program";
+
+
+        const duplicate =
+          programs.some(
+            item =>
+              item.title
+                .toLowerCase() ===
+              title
+                .toLowerCase()
+          );
+
+
+        if (
+          !duplicate
+        ) {
+
+          programs.push(
+            {
+              title,
+
+              time:
+                event.time,
+
+              note:
+                event.event &&
+                event.event !== title
+                  ?
+                  event.event
+                  :
+                  ""
+            }
+          );
+
+        }
+
       }
     );
 
 
-  todayDay.textContent =
-    dayName;
+  if (
+    programs.length === 0
+  ) {
 
-
-  const special =
-    specialEvents.find(
-      item =>
-        item.date === key
-    );
-
-
-  const regular =
-    getRegularProgram(
-      today
-    );
-
-
-  if (special) {
-
-    todayProgram.textContent =
-      special.program ||
-      special.event ||
-      "Special Temple Program";
-
-
-    todayTime.textContent =
-      special.time || "";
-
-
-    if (
-      regular &&
-      special.program !==
-        regular.title
-    ) {
-
-      todayMessage.textContent =
-        `Regular: ${regular.title} - ${regular.time}`;
-
-    }
-
-    else {
-
-      todayMessage.textContent =
-        special.event || "";
-
-    }
-
+    scheduleList.innerHTML =
+      `
+        <div class="empty-schedule">
+          ${templeContent.noProgramMessage}
+        </div>
+      `;
 
     return;
 
   }
 
 
-  if (regular) {
+  scheduleList.innerHTML =
+    programs
+      .map(
+        program =>
+          `
+            <article class="schedule-item">
 
-    todayProgram.textContent =
-      regular.title;
+              <div class="schedule-time">
+                ${escapeHTML(program.time || "Temple Program")}
+              </div>
 
+              <div class="schedule-name">
+                ${escapeHTML(program.title)}
+              </div>
 
-    todayTime.textContent =
-      regular.time;
+              ${
+                program.note
+                  ?
+                  `
+                    <div class="schedule-note">
+                      ${escapeHTML(program.note)}
+                    </div>
+                  `
+                  :
+                  ""
+              }
 
-
-    todayMessage.textContent =
-      "";
-
-  }
-
-  else {
-
-    todayProgram.textContent =
-      "Temple Open";
-
-
-    todayTime.textContent =
-      "";
-
-
-    todayMessage.textContent =
-      templeContent.noProgramMessage;
-
-  }
+            </article>
+          `
+      )
+      .join("");
 
 }
 
 
+// ==========================================================
+// HTML SAFETY
+// ==========================================================
 
-// ============================================================
+function escapeHTML(value) {
+
+  return String(
+    value || ""
+  )
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+
+}
+
+
+// ==========================================================
 // UPCOMING EVENTS
-// ============================================================
+// ==========================================================
+
+function showUpcomingFallback() {
+
+  upcomingEventsText.textContent =
+    templeContent
+      .upcomingEventsFallback
+      .join(
+        templeContent.separator
+      );
+
+}
+
 
 async function loadUpcomingEvents() {
 
@@ -1325,27 +1253,23 @@ async function loadUpcomingEvents() {
 
 
     if (!response.ok) {
-
       throw new Error(
-        "Upcoming Events sheet could not be loaded"
+        "Upcoming events unavailable"
       );
-
     }
 
 
-    const csv =
-      await response.text();
-
-
     const rows =
-      parseCSV(csv);
+      parseCSV(
+        await response.text()
+      );
 
 
     if (
       rows.length < 2
     ) {
 
-      showUpcomingEventsFallback();
+      showUpcomingFallback();
 
       return;
 
@@ -1399,7 +1323,8 @@ async function loadUpcomingEvents() {
     );
 
 
-    const events = [];
+    const events =
+      [];
 
 
     for (
@@ -1428,78 +1353,45 @@ async function loadUpcomingEvents() {
       if (
         active !== "YES"
       ) {
-
         continue;
-
       }
 
 
-      const eventName =
+      const title =
         (
           row[eventIndex] ||
           ""
         ).trim();
 
 
-      if (!eventName) {
-
+      if (!title) {
         continue;
-
       }
-
-
-      const rawDate =
-        (
-          row[dateIndex] ||
-          ""
-        ).trim();
 
 
       const normalized =
         normalizeDate(
-          rawDate
+          row[dateIndex]
         );
 
 
       if (!normalized) {
-
         continue;
-
       }
 
 
       const eventDate =
         new Date(
-          `${normalized}T00:00:00`
+          normalized +
+          "T00:00:00"
         );
 
 
       if (
-        eventDate <
-        today
+        eventDate < today
       ) {
-
         continue;
-
       }
-
-
-      const time =
-        (
-          row[timeIndex] ||
-          ""
-        ).trim();
-
-
-      const order =
-        orderIndex >= 0
-          ?
-          parseInt(
-            row[orderIndex],
-            10
-          ) || 999
-          :
-          999;
 
 
       events.push(
@@ -1507,14 +1399,23 @@ async function loadUpcomingEvents() {
           date:
             eventDate,
 
-          event:
-            eventName,
+          title,
 
           time:
-            time,
+            (
+              row[timeIndex] ||
+              ""
+            ).trim(),
 
           order:
-            order
+            orderIndex >= 0
+              ?
+              parseInt(
+                row[orderIndex],
+                10
+              ) || 999
+              :
+              999
         }
       );
 
@@ -1547,89 +1448,69 @@ async function loadUpcomingEvents() {
 
 
     if (
-      events.length === 0
+      !events.length
     ) {
 
-      showUpcomingEventsFallback();
+      showUpcomingFallback();
 
       return;
 
     }
 
 
-    const formattedEvents =
-      events.map(
-        item => {
+    upcomingEventsText.textContent =
+      events
+        .map(
+          event => {
 
-          const dateText =
-            item.date
-              .toLocaleDateString(
-                "en-US",
-                {
-                  month: "short",
-                  day: "numeric"
-                }
-              );
+            const dateText =
+              event.date
+                .toLocaleDateString(
+                  "en-US",
+                  {
+                    month:
+                      "short",
 
+                    day:
+                      "numeric"
+                  }
+                );
 
-          if (item.time) {
 
             return (
-              `${dateText} - ${item.event} - ${item.time}`
+              event.time
+                ?
+                `${dateText} – ${event.title} (${event.time})`
+                :
+                `${dateText} – ${event.title}`
             );
 
           }
-
-
-          return (
-            `${dateText} - ${item.event}`
-          );
-
-        }
-      );
-
-
-    upcomingEventsText.textContent =
-      formattedEvents.join(
-        templeContent.separator
-      );
+        )
+        .join(
+          templeContent.separator
+        );
 
   }
 
   catch (error) {
 
     console.error(
-      "Upcoming Events error:",
       error
     );
 
-
-    showUpcomingEventsFallback();
+    showUpcomingFallback();
 
   }
 
 }
 
 
-
-function showUpcomingEventsFallback() {
-
-  upcomingEventsText.textContent =
-    templeContent
-      .upcomingEventsFallback
-      .join(
-        templeContent.separator
-      );
-
-}
-
-
-
-// ============================================================
+// ==========================================================
 // MUSIC
-// ============================================================
+// ==========================================================
 
-function startBackgroundMusic() {
+function startMusic() {
 
   const music =
     document.getElementById(
@@ -1638,9 +1519,7 @@ function startBackgroundMusic() {
 
 
   if (!music) {
-
     return;
-
   }
 
 
@@ -1648,23 +1527,16 @@ function startBackgroundMusic() {
     0.25;
 
 
-  const playPromise =
+  const promise =
     music.play();
 
 
   if (
-    playPromise !== undefined
+    promise
   ) {
 
-    playPromise.catch(
-      error => {
-
-        console.log(
-          "Background music autoplay prevented:",
-          error
-        );
-
-      }
+    promise.catch(
+      () => {}
     );
 
   }
@@ -1672,67 +1544,46 @@ function startBackgroundMusic() {
 }
 
 
+// ==========================================================
+// INITIALIZATION
+// ==========================================================
 
-// ============================================================
-// INITIAL LOAD
-// ============================================================
-
-async function initializeTempleTV() {
+async function initialize() {
 
   loadLocalAnnouncements();
 
-  updateTodayCard();
+  showUpcomingFallback();
 
-  showUpcomingEventsFallback();
+  renderTodaySchedule();
 
 
   await Promise.allSettled(
     [
       loadAnnouncements(),
-
       loadRemoteFlyers(),
-
       loadSpecialEvents(),
-
       loadUpcomingEvents()
     ]
   );
 
 
-  startBackgroundMusic();
+  startMusic();
 
 }
 
 
-
-// ============================================================
-// START
-// ============================================================
-
-initializeTempleTV();
+initialize();
 
 
-
-// ============================================================
-// FLYER TIMER
-// ============================================================
+// ==========================================================
+// TIMERS
+// ==========================================================
 
 setInterval(
   rotateFlyer,
   templeContent.flyerDuration *
   1000
 );
-
-
-
-// ============================================================
-// REMOTE DATA REFRESH
-// ============================================================
-
-const refreshMilliseconds =
-  templeContent.remoteRefreshMinutes *
-  60 *
-  1000;
 
 
 setInterval(
@@ -1748,16 +1599,14 @@ setInterval(
 
   },
 
-  refreshMilliseconds
+  templeContent.remoteRefreshMinutes *
+  60 *
+  1000
 );
 
 
-
-// ============================================================
-// MIDNIGHT / TODAY CARD REFRESH
-// ============================================================
-
 setInterval(
-  updateTodayCard,
-  60 * 1000
+  renderTodaySchedule,
+  60 *
+  1000
 );
