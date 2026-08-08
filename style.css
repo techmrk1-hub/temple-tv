@@ -1,79 +1,1026 @@
-/* HEADER REFINEMENT */
+/* ==========================================================
+   CHINMAYA SARASWATI ASHRAM - DEVI TEMPLE
+   TEMPLE TV DIGITAL SIGNAGE
+   FINAL OLD-STYLE DESIGN + UPCOMING EVENTS
+========================================================== */
 
-.temple-logo {
-  width: 74px;
-  height: 74px;
+
+/* ==========================================================
+   RESET
+========================================================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.temple-title {
-  font-size: clamp(24px, 2.1vw, 36px);
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
-.temple-subtitle {
-  font-size: clamp(14px, 1.15vw, 20px);
-}
+body {
+  background: #f7eed0;
+  color: #4a170d;
 
-.temple-address {
-  font-size: clamp(8px, 0.65vw, 11px);
-}
-
-.clock {
-  font-size: clamp(19px, 1.55vw, 27px);
-}
-
-.header-date {
-  font-size: clamp(8px, 0.6vw, 10px);
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
 }
 
 
-/* SLIMMER BOTTOM BARS */
+/* ==========================================================
+   MAIN SCREEN
+========================================================== */
 
 .tv-screen {
+  width: 100vw;
+  height: 100vh;
+
+  display: grid;
+
   grid-template-rows:
     clamp(76px, 9.5vh, 94px)
     minmax(0, 1fr)
     clamp(36px, 4.7vh, 46px)
     clamp(32px, 4.2vh, 40px);
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      180deg,
+      #fffaf0 0%,
+      #f8efcf 100%
+    );
 }
 
 
-/* TICKER LABELS */
+/* ==========================================================
+   HEADER
+========================================================== */
+
+.header {
+  display: grid;
+
+  grid-template-columns:
+    90px
+    minmax(0, 1fr)
+    180px;
+
+  align-items: center;
+
+  min-width: 0;
+
+  padding:
+    6px
+    18px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #6f170d 0%,
+      #8a2013 50%,
+      #6f170d 100%
+    );
+
+  color: #ffffff;
+
+  border-bottom:
+    2px solid #d6a52d;
+
+  box-shadow:
+    0 2px 6px
+    rgba(0, 0, 0, 0.18);
+}
+
+
+/* ==========================================================
+   TEMPLE BRAND
+========================================================== */
+
+.temple-brand {
+  display: contents;
+}
+
+
+/* ==========================================================
+   LOGO
+========================================================== */
+
+.temple-logo {
+  grid-column: 1;
+
+  width: 70px;
+  height: 70px;
+
+  object-fit: contain;
+
+  justify-self: start;
+
+  background: #ffffff;
+
+  padding: 5px;
+
+  border-radius: 5px;
+}
+
+
+/* ==========================================================
+   TITLE AREA
+========================================================== */
+
+.temple-title-area {
+  grid-column: 2;
+
+  min-width: 0;
+
+  text-align: center;
+
+  align-self: center;
+}
+
+
+.temple-title {
+  color: #ffffff;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      25px,
+      2.15vw,
+      37px
+    );
+
+  font-weight: 700;
+
+  line-height: 1;
+
+  letter-spacing:
+    0.01em;
+
+  white-space: nowrap;
+
+  text-shadow:
+    1px 1px 2px
+    rgba(0, 0, 0, 0.25);
+}
+
+
+.temple-subtitle {
+  margin-top: 3px;
+
+  color: #f4cf60;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      14px,
+      1.15vw,
+      20px
+    );
+
+  font-weight: 700;
+
+  line-height: 1;
+}
+
+
+.temple-address {
+  margin-top: 4px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.95
+    );
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size:
+    clamp(
+      8px,
+      0.62vw,
+      11px
+    );
+
+  font-weight: 500;
+}
+
+
+/* ==========================================================
+   CLOCK / DATE
+========================================================== */
+
+.header-time-area {
+  grid-column: 3;
+
+  align-self: center;
+
+  text-align: right;
+
+  padding-left: 10px;
+}
+
+
+.clock {
+  color: #f4cf60;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      20px,
+      1.55vw,
+      28px
+    );
+
+  font-weight: 700;
+
+  line-height: 1;
+
+  white-space: nowrap;
+
+  text-shadow:
+    1px 1px 2px
+    rgba(0, 0, 0, 0.2);
+}
+
+
+.header-date {
+  margin-top: 5px;
+
+  color: #ffffff;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size:
+    clamp(
+      8px,
+      0.6vw,
+      10px
+    );
+
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+
+/* ==========================================================
+   MAIN AREA
+========================================================== */
+
+.main-area {
+  min-width: 0;
+  min-height: 0;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    clamp(
+      245px,
+      21vw,
+      335px
+    );
+
+  gap:
+    clamp(
+      10px,
+      1vw,
+      16px
+    );
+
+  padding:
+    clamp(
+      8px,
+      1vh,
+      13px
+    )
+    clamp(
+      10px,
+      1vw,
+      16px
+    );
+
+  overflow: hidden;
+}
+
+
+/* ==========================================================
+   FLYER SECTION
+========================================================== */
+
+.flyer-section {
+  position: relative;
+
+  min-width: 0;
+  min-height: 0;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border:
+    2px solid
+    rgba(105, 36, 20, 0.18);
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 3px 10px
+    rgba(70, 30, 18, 0.12);
+}
+
+
+/* ==========================================================
+   FLYER IMAGE
+========================================================== */
+
+.flyer-image {
+  width: auto;
+  height: auto;
+
+  max-width: 100%;
+  max-height: 100%;
+
+  object-fit: contain;
+
+  object-position: center;
+
+  opacity: 0;
+
+  transition:
+    opacity 0.55s ease;
+}
+
+
+.flyer-image.flyer-visible {
+  opacity: 1;
+}
+
+
+.flyer-image.flyer-landscape {
+  width: 100%;
+  height: auto;
+
+  max-height: 100%;
+}
+
+
+.flyer-image.flyer-portrait {
+  width: auto;
+  height: 100%;
+
+  max-width: 100%;
+}
+
+
+.flyer-image.flyer-square {
+  width: auto;
+  height: 100%;
+
+  max-width: 100%;
+}
+
+
+/* ==========================================================
+   RIGHT PANEL
+========================================================== */
+
+.right-panel {
+  min-width: 0;
+  min-height: 0;
+
+  display: grid;
+
+  grid-template-rows:
+    minmax(0, 1fr)
+    minmax(0, 1fr);
+
+  gap:
+    clamp(
+      9px,
+      0.9vh,
+      14px
+    );
+}
+
+
+/* ==========================================================
+   INFO CARDS
+========================================================== */
+
+.info-card {
+  min-width: 0;
+  min-height: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  align-items: center;
+
+  overflow: hidden;
+
+  padding:
+    clamp(
+      8px,
+      0.9vh,
+      14px
+    );
+
+  background:
+    linear-gradient(
+      180deg,
+      #fffdf7 0%,
+      #fff7dc 100%
+    );
+
+  border:
+    2px solid #d3a12a;
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 2px 7px
+    rgba(95, 50, 15, 0.12);
+}
+
+
+/* ==========================================================
+   CARD TITLE
+========================================================== */
+
+.card-title {
+  width: 100%;
+
+  margin-bottom:
+    clamp(
+      5px,
+      0.6vh,
+      9px
+    );
+
+  color: #78180d;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      15px,
+      1.15vw,
+      21px
+    );
+
+  font-weight: 700;
+
+  text-align: center;
+
+  line-height: 1.1;
+}
+
+
+/* ==========================================================
+   QR CARD
+========================================================== */
+
+.qr-image {
+  width:
+    min(
+      54%,
+      155px
+    );
+
+  max-height: 58%;
+
+  object-fit: contain;
+}
+
+
+.qr-message {
+  margin-top:
+    clamp(
+      5px,
+      0.5vh,
+      8px
+    );
+
+  color: #3f251d;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      9px,
+      0.8vw,
+      13px
+    );
+
+  font-weight: 500;
+
+  text-align: center;
+
+  line-height: 1.2;
+}
+
+
+/* ==========================================================
+   TODAY CARD
+========================================================== */
+
+.today-card {
+  text-align: center;
+}
+
+
+.today-day {
+  margin-bottom:
+    clamp(
+      4px,
+      0.45vh,
+      8px
+    );
+
+  color: #9b741b;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size:
+    clamp(
+      10px,
+      0.9vw,
+      15px
+    );
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.05em;
+
+  text-transform: uppercase;
+}
+
+
+.today-program {
+  color: #68150c;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      19px,
+      1.6vw,
+      28px
+    );
+
+  font-weight: 700;
+
+  line-height: 1.12;
+}
+
+
+.today-time {
+  margin-top:
+    clamp(
+      7px,
+      0.7vh,
+      11px
+    );
+
+  color: #98721b;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      17px,
+      1.35vw,
+      24px
+    );
+
+  font-weight: 700;
+}
+
+
+.today-message {
+  margin-top:
+    clamp(
+      5px,
+      0.5vh,
+      8px
+    );
+
+  color: #493229;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size:
+    clamp(
+      9px,
+      0.75vw,
+      13px
+    );
+
+  font-weight: 500;
+
+  line-height: 1.2;
+}
+
+
+/* ==========================================================
+   TICKER COMMON
+========================================================== */
 
 .ticker-row {
+  width: 100%;
+
+  min-width: 0;
+
+  display: grid;
+
   grid-template-columns:
-    clamp(170px, 15vw, 255px)
-    minmax(0, 1fr);
+    clamp(
+      170px,
+      15vw,
+      255px
+    )
+    minmax(
+      0,
+      1fr
+    );
+
+  overflow: hidden;
 }
+
 
 .ticker-label {
-  font-size: clamp(13px, 1.05vw, 18px);
+  position: relative;
+
+  z-index: 3;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
   padding: 0 10px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      13px,
+      1.05vw,
+      18px
+    );
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.025em;
+
+  white-space: nowrap;
 }
 
 
-/* TICKER TEXT */
+.ticker-window {
+  position: relative;
+
+  min-width: 0;
+
+  overflow: hidden;
+
+  display: flex;
+
+  align-items: center;
+}
+
 
 .ticker-text {
-  font-size: clamp(13px, 1.05vw, 19px);
+  position: absolute;
+
+  left: 100%;
+
+  white-space: nowrap;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size:
+    clamp(
+      13px,
+      1.05vw,
+      19px
+    );
+
   font-weight: 600;
+
+  will-change: transform;
+
+  animation:
+    ticker-scroll
+    42s
+    linear
+    infinite;
 }
 
-.upcoming-events-text {
-  font-size: clamp(13px, 1vw, 18px);
+
+/* ==========================================================
+   ANNOUNCEMENTS
+========================================================== */
+
+.announcements-row {
+  background:
+    linear-gradient(
+      90deg,
+      #32100a,
+      #44160e
+    );
+
+  border-top:
+    2px solid #c99b27;
 }
 
-
-/* ANNOUNCEMENTS LABEL */
 
 .announcements-label {
-  font-family: Georgia, "Times New Roman", serif;
-  font-weight: 700;
+  color: #351008;
+
+  background:
+    linear-gradient(
+      180deg,
+      #efc650 0%,
+      #d5a331 100%
+    );
+
+  border-right:
+    1px solid
+    rgba(90, 40, 10, 0.35);
 }
 
 
-/* UPCOMING EVENTS LABEL */
+.announcements-text {
+  color: #ffffff;
+}
+
+
+/* ==========================================================
+   UPCOMING EVENTS
+========================================================== */
+
+.upcoming-row {
+  background:
+    linear-gradient(
+      90deg,
+      #73170d 0%,
+      #8c2112 55%,
+      #73170d 100%
+    );
+
+  border-top:
+    1px solid
+    rgba(
+      255,
+      218,
+      116,
+      0.55
+    );
+}
+
 
 .upcoming-label {
-  font-family: Georgia, "Times New Roman", serif;
+  color: #68150c;
+
+  background:
+    linear-gradient(
+      180deg,
+      #f8df8c 0%,
+      #e5bc51 100%
+    );
+
+  border-right:
+    1px solid
+    rgba(100, 45, 10, 0.35);
+}
+
+
+.upcoming-events-text {
+  color: #fff4c8;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      13px,
+      1vw,
+      18px
+    );
+
   font-weight: 700;
+
+  animation-duration: 48s;
+}
+
+
+/* ==========================================================
+   TICKER ANIMATION
+========================================================== */
+
+@keyframes ticker-scroll {
+
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform:
+      translateX(
+        calc(
+          -100% - 100vw
+        )
+      );
+  }
+
+}
+
+
+/* ==========================================================
+   OPTIMIZATION FOR 1680x1050 / TV
+========================================================== */
+
+@media (max-width: 1700px) {
+
+  .header {
+    grid-template-columns:
+      80px
+      minmax(0, 1fr)
+      165px;
+  }
+
+  .temple-logo {
+    width: 64px;
+    height: 64px;
+  }
+
+  .temple-title {
+    font-size:
+      clamp(
+        23px,
+        2vw,
+        34px
+      );
+  }
+
+  .main-area {
+    grid-template-columns:
+      minmax(0, 1fr)
+      clamp(
+        235px,
+        21vw,
+        320px
+      );
+  }
+
+  .ticker-row {
+    grid-template-columns:
+      clamp(
+        165px,
+        15vw,
+        245px
+      )
+      minmax(
+        0,
+        1fr
+      );
+  }
+
+}
+
+
+/* ==========================================================
+   SHORTER DISPLAY
+========================================================== */
+
+@media (max-height: 850px) {
+
+  .tv-screen {
+    grid-template-rows:
+      clamp(
+        68px,
+        9vh,
+        85px
+      )
+      minmax(
+        0,
+        1fr
+      )
+      clamp(
+        34px,
+        4.6vh,
+        42px
+      )
+      clamp(
+        30px,
+        4vh,
+        37px
+      );
+  }
+
+  .header {
+    padding:
+      4px
+      14px;
+  }
+
+  .temple-logo {
+    width: 58px;
+    height: 58px;
+  }
+
+  .main-area {
+    padding:
+      7px
+      9px;
+  }
+
+  .info-card {
+    padding: 6px;
+  }
+
+}
+
+
+/* ==========================================================
+   VERY SHORT DISPLAY
+========================================================== */
+
+@media (max-height: 700px) {
+
+  .temple-address {
+    display: none;
+  }
+
+  .qr-message {
+    display: none;
+  }
+
 }
