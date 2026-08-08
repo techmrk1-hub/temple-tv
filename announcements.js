@@ -21,10 +21,6 @@ const templeContent = {
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=519294883&single=true&output=csv",
 
 
-  // =======================================================
-  // BACKGROUND MUSIC GOOGLE SHEET
-  // =======================================================
-
   bgmSheetURL:
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=397630639&single=true&output=csv",
 
@@ -51,14 +47,20 @@ const templeContent = {
   ],
 
 
-  // Each flyer remains for 10 seconds
-
   flyerDuration: 10,
 
 
 
   // =======================================================
-  // FALLBACK ANNOUNCEMENTS
+  // BACKGROUND MUSIC
+  // =======================================================
+
+  bgmVolume: 0.30,
+
+
+
+  // =======================================================
+  // ANNOUNCEMENTS FALLBACK
   // =======================================================
 
   announcements: [
@@ -93,8 +95,6 @@ const templeContent = {
 
   // =======================================================
   // WEEKLY PROGRAMS
-  //
-  // JavaScript weekday:
   //
   // Sunday    = 0
   // Monday    = 1
@@ -166,10 +166,6 @@ const templeContent = {
 
   // =======================================================
   // SATURDAY PROGRAMS
-  //
-  // 1 = First Saturday
-  // 2 = Second Saturday
-  // 3 = Third Saturday
   // =======================================================
 
   saturdaySchedule: {
