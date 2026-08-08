@@ -1,116 +1,131 @@
 const templeContent = {
 
-    // ==========================================
-    // REMOTE ANNOUNCEMENTS
-    // ==========================================
+  // =========================================================
+  // REMOTE GOOGLE SHEETS
+  // =========================================================
 
-    announcementSheetURL:
-        "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?output=csv",
+  announcementSheetURL:
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?output=csv",
 
+  flyerSheetURL:
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=1481450155&single=true&output=csv",
 
-    // ==========================================
-    // REMOTE FLYERS
-    // ==========================================
+  specialEventsSheetURL:
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=159824805&single=true&output=csv",
 
-    flyerSheetURL:
-        "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=1481450155&single=true&output=csv",
-
-
-    // ==========================================
-    // SPECIAL EVENTS
-    // ==========================================
-
-    specialEventsSheetURL:
-        "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=159824805&single=true&output=csv",
+  // NEW UPCOMING EVENTS SHEET
+  upcomingEventsSheetURL:
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=519294883&single=true&output=csv",
 
 
-    // Refresh remote data every 5 minutes
+  // =========================================================
+  // REMOTE REFRESH
+  // =========================================================
 
-    remoteRefreshMinutes: 5,
-
-
-    // ==========================================
-    // LOCAL FLYER FALLBACK
-    // ==========================================
-
-    localFlyers: [
-        "images/flyer1.jpg",
-        "images/flyer2.jpg"
-    ],
+  remoteRefreshMinutes: 5,
 
 
-    flyerDuration: 10,
+  // =========================================================
+  // LOCAL FALLBACK FLYERS
+  // =========================================================
+
+  localFlyers: [
+    "images/flyer1.jpg",
+    "images/flyer2.jpg"
+  ],
 
 
-    // ==========================================
-    // LOCAL ANNOUNCEMENT FALLBACK
-    // ==========================================
+  // =========================================================
+  // FLYER ROTATION
+  // =========================================================
 
-    announcements: [
-
-        "Welcome to Chinmaya Saraswati Ashram - Devi Temple",
-
-        "Please join us for our upcoming temple programs",
-
-        "Scan the QR code to join our WhatsApp updates group",
-
-        "Hari Om"
-
-    ],
+  flyerDuration: 10,
 
 
-    separator: "   •   ",
+  // =========================================================
+  // LOCAL FALLBACK ANNOUNCEMENTS
+  // =========================================================
+
+  announcements: [
+
+    "Welcome to Chinmaya Saraswati Ashram - Devi Temple",
+
+    "Please join us for our upcoming temple programs",
+
+    "Scan the QR code to receive Temple WhatsApp updates",
+
+    "Hari Om"
+
+  ],
 
 
-    // ==========================================
-    // REGULAR WEEKLY PROGRAMS
-    // ==========================================
+  separator: "     •     ",
 
-    weeklySchedule: {
 
-        1: {
-            title: "Shiva Abhishekam",
-            time: "6:30 PM"
-        },
+  // =========================================================
+  // FALLBACK UPCOMING EVENTS
+  // =========================================================
 
-        2: {
-            title: "Hanuman Abhishekam Followed by Hanuman Chalisa Parayanam",
-            time: "6:30 PM"
-        },
+  upcomingEventsFallback: [
 
-        5: {
-            title: "Saraswati Abhishekam",
-            time: "6:30 PM"
-        }
+    "Please check our temple announcements for upcoming programs"
 
+  ],
+
+
+  // =========================================================
+  // REGULAR WEEKLY TEMPLE PROGRAMS
+  // =========================================================
+
+  weeklySchedule: {
+
+    1: {
+      title: "Shiva Puja",
+      time: "6:30 PM"
     },
 
-
-    // ==========================================
-    // SATURDAY PROGRAMS
-    // ==========================================
-
-    saturdaySchedule: {
-
-        1: {
-            title: "Lakshmi Devi Abhishekam",
-            time: "6:30 PM"
-        },
-
-        2: {
-            title: "Durga Devi Abhishekam",
-            time: "6:30 PM"
-        },
-
-        3: {
-            title: "Hanuman Abhishekam Tulasidas Sundarakanda Parayanam",
-            time: "10:00 AM"
-        }
-
+    2: {
+      title: "Hanuman Puja",
+      time: "6:30 PM"
     },
 
+    5: {
+      title: "Saraswati Abhishekam",
+      time: "9:00 AM"
+    }
 
-    noProgramMessage:
-        "Please check announcements for upcoming temple programs."
+  },
+
+
+  // =========================================================
+  // SATURDAY PROGRAMS
+  // =========================================================
+
+  saturdaySchedule: {
+
+    1: {
+      title: "Lakshmi Abhishekam",
+      time: "9:00 AM"
+    },
+
+    2: {
+      title: "Durga Devi Abhishekam",
+      time: "9:00 AM"
+    },
+
+    3: {
+      title: "Hanuman Abhishekam",
+      time: "9:00 AM"
+    }
+
+  },
+
+
+  // =========================================================
+  // NO PROGRAM MESSAGE
+  // =========================================================
+
+  noProgramMessage:
+    "Please check announcements for upcoming temple programs."
 
 };
