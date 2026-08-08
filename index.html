@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
 
@@ -14,19 +13,16 @@
   <link rel="stylesheet" href="style.css">
 </head>
 
-
 <body>
 
 <div class="tv-screen">
 
-
-  <!-- ==========================================
+  <!-- =====================================================
        HEADER
-  =========================================== -->
-  <header class="header">
+  ====================================================== -->
+  <header class="top-header">
 
-    <!-- LEFT LOGO -->
-    <div class="header-logo-area">
+    <div class="brand-zone">
 
       <img
         src="images/logo.png"
@@ -34,41 +30,30 @@
         class="temple-logo"
       >
 
-    </div>
+      <div class="brand-copy">
 
+        <div class="temple-name">
+          CHINMAYA SARASWATI ASHRAM
+        </div>
 
-    <!-- CENTER TEMPLE NAME -->
-    <div class="header-center">
+        <div class="temple-meta">
+          <span>DEVI TEMPLE</span>
+          <span class="meta-dot">•</span>
+          <span>Orange, Connecticut</span>
+        </div>
 
-      <div class="temple-title">
-        CHINMAYA SARASWATI ASHRAM
-      </div>
-
-      <div class="temple-subtitle">
-        DEVI TEMPLE
-      </div>
-
-      <div class="temple-address">
-        393 Derby Ave, Orange, CT 06477
       </div>
 
     </div>
 
 
-    <!-- RIGHT CLOCK -->
-    <div class="header-time-area">
+    <div class="time-zone">
 
-      <div
-        id="clock"
-        class="clock"
-      >
+      <div id="clock" class="clock">
         --:-- --
       </div>
 
-      <div
-        id="header-date"
-        class="header-date"
-      >
+      <div id="header-date" class="header-date">
         Loading...
       </div>
 
@@ -78,18 +63,20 @@
 
 
 
-  <!-- ==========================================
-       MAIN AREA
-  =========================================== -->
-  <main class="main-area">
+  <!-- =====================================================
+       MAIN CONTENT
+  ====================================================== -->
+  <main class="content-grid">
 
 
-    <!-- FLYER -->
-    <section class="flyer-section">
+    <!-- ===================================================
+         MAIN FEATURE FLYER
+    ==================================================== -->
+    <section class="feature-panel">
 
       <img
         id="flyer"
-        class="flyer-image"
+        class="feature-flyer"
         src=""
         alt="Temple Event Flyer"
       >
@@ -98,61 +85,51 @@
 
 
 
-    <!-- RIGHT PANEL -->
-    <aside class="right-panel">
+    <!-- ===================================================
+         RIGHT INFORMATION RAIL
+    ==================================================== -->
+    <aside class="info-rail">
 
 
-      <!-- TEMPLE UPDATES -->
-      <section class="info-card qr-card">
+      <!-- TODAY -->
+      <section class="rail-section today-section">
 
-        <div class="card-title">
-          TEMPLE UPDATES
+        <div class="section-eyebrow">
+          TODAY'S SCHEDULE
         </div>
 
-        <img
-          src="images/whatsapp-qr.png"
-          alt="Temple WhatsApp QR"
-          class="qr-image"
-        >
+        <div class="section-rule"></div>
 
-        <div class="qr-message">
-          Scan to receive temple updates
+        <div
+          id="today-schedule-list"
+          class="schedule-list"
+        >
+          <div class="empty-schedule">
+            Loading today's programs...
+          </div>
         </div>
 
       </section>
 
 
+      <!-- JOIN COMMUNITY -->
+      <section class="rail-section community-section">
 
-      <!-- TODAY AT TEMPLE -->
-      <section class="info-card today-card">
+        <div class="section-rule"></div>
 
-        <div class="card-title today-title">
-          TODAY AT THE TEMPLE
+        <div class="section-eyebrow community-heading">
+          JOIN OUR COMMUNITY
         </div>
 
-        <div
-          id="today-day"
-          class="today-day"
+        <img
+          src="images/whatsapp-qr.png"
+          alt="Temple WhatsApp Updates"
+          class="community-qr"
         >
-          Loading...
+
+        <div class="community-copy">
+          Scan to receive temple updates
         </div>
-
-        <div
-          id="today-program"
-          class="today-program"
-        >
-          Temple Program
-        </div>
-
-        <div
-          id="today-time"
-          class="today-time"
-        ></div>
-
-        <div
-          id="today-message"
-          class="today-message"
-        ></div>
 
       </section>
 
@@ -162,20 +139,20 @@
 
 
 
-  <!-- ==========================================
+  <!-- =====================================================
        ANNOUNCEMENTS
-  =========================================== -->
-  <section class="ticker-row announcements-row">
+  ====================================================== -->
+  <section class="ticker-row announcement-row">
 
-    <div class="ticker-label announcements-label">
+    <div class="ticker-label">
       ANNOUNCEMENTS
     </div>
 
-    <div class="ticker-window">
+    <div class="ticker-viewport">
 
       <div
         id="ticker-text"
-        class="ticker-text announcements-text"
+        class="ticker-track"
       >
         Welcome to Chinmaya Saraswati Ashram - Devi Temple
       </div>
@@ -186,22 +163,22 @@
 
 
 
-  <!-- ==========================================
+  <!-- =====================================================
        UPCOMING EVENTS
-  =========================================== -->
+  ====================================================== -->
   <section class="ticker-row upcoming-row">
 
     <div class="ticker-label upcoming-label">
       UPCOMING EVENTS
     </div>
 
-    <div class="ticker-window">
+    <div class="ticker-viewport">
 
       <div
         id="upcoming-events-text"
-        class="ticker-text upcoming-events-text"
+        class="ticker-track upcoming-track"
       >
-        Loading upcoming events...
+        Loading upcoming temple events...
       </div>
 
     </div>
@@ -212,7 +189,9 @@
 
 
 
-<!-- BACKGROUND MUSIC -->
+<!-- =======================================================
+     BACKGROUND MUSIC
+======================================================== -->
 <audio
   id="background-music"
   src="music/music1.mp3"
@@ -224,7 +203,6 @@
 
 <script src="announcements.js"></script>
 <script src="script.js"></script>
-
 
 </body>
 </html>
