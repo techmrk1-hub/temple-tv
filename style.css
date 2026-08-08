@@ -1,7 +1,7 @@
 /* ==========================================================
    CHINMAYA SARASWATI ASHRAM - DEVI TEMPLE
    CORPORATE DIGITAL SIGNAGE
-   FINAL CENTERED HEADER VERSION
+   FINAL HEADER + CENTERED LOGO + CLEAN CLOCK
 ========================================================== */
 
 
@@ -98,9 +98,9 @@ body {
   display: grid;
 
   grid-template-columns:
-    90px
+    100px
     minmax(0, 1fr)
-    210px;
+    220px;
 
   align-items: center;
 
@@ -118,7 +118,7 @@ body {
 
 
 /* ==========================================================
-   HEADER BRAND
+   HEADER BRAND WRAPPER
 ========================================================== */
 
 .brand-zone {
@@ -128,6 +128,7 @@ body {
 
 /* ==========================================================
    LOGO
+   Properly centered in left header column
 ========================================================== */
 
 .temple-logo {
@@ -136,13 +137,18 @@ body {
   width: 66px;
   height: 66px;
 
-  justify-self: start;
+  display: block;
+
+  justify-self: center;
+  align-self: center;
+
+  margin: 0 auto;
 
   object-fit: contain;
 
   padding: 4px;
 
-  background: white;
+  background: #ffffff;
 
   border-radius: 8px;
 
@@ -153,20 +159,18 @@ body {
 
 
 /* ==========================================================
-   TRUE CENTER TITLE
+   CENTER TITLE
 ========================================================== */
 
 .brand-copy {
   grid-column: 2;
 
   min-width: 0;
-
   width: 100%;
 
   text-align: center;
 
   justify-self: center;
-
   align-self: center;
 }
 
@@ -204,7 +208,6 @@ body {
   display: flex;
 
   align-items: center;
-
   justify-content: center;
 
   gap: 12px;
@@ -252,7 +255,8 @@ body {
 
 
 /* ==========================================================
-   CLOCK
+   CLOCK / DATE
+   Cleaner corporate-style font
 ========================================================== */
 
 .time-zone {
@@ -261,6 +265,7 @@ body {
   min-width: 0;
 
   justify-self: end;
+  align-self: center;
 
   text-align: right;
 }
@@ -268,29 +273,37 @@ body {
 
 .clock {
   font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
+    "Trebuchet MS",
+    "Segoe UI",
+    Arial,
+    sans-serif;
 
   color: #ffdf74;
 
   font-size:
     clamp(
-      26px,
-      1.75vw,
-      32px
+      28px,
+      1.9vw,
+      36px
     );
 
-  font-weight: 700;
+  font-weight: 800;
 
   line-height: 1;
+
+  letter-spacing: 0.5px;
 
   white-space: nowrap;
 }
 
 
 .header-date {
-  margin-top: 7px;
+  margin-top: 6px;
+
+  font-family:
+    "Segoe UI",
+    Arial,
+    sans-serif;
 
   color:
     rgba(
@@ -302,14 +315,14 @@ body {
 
   font-size:
     clamp(
-      11px,
-      0.75vw,
+      12px,
+      0.8vw,
       14px
     );
 
   font-weight: 700;
 
-  letter-spacing: 0.015em;
+  letter-spacing: 0.02em;
 
   white-space: nowrap;
 }
@@ -354,7 +367,6 @@ body {
   display: flex;
 
   align-items: center;
-
   justify-content: center;
 
   overflow: hidden;
@@ -386,15 +398,12 @@ body {
   max-height: 100%;
 
   object-fit: contain;
-
   object-position: center;
 
   opacity: 0;
 
   transition:
-    opacity
-    0.45s
-    ease;
+    opacity 0.45s ease;
 }
 
 
@@ -429,7 +438,6 @@ body {
   min-height: 0;
 
   display: flex;
-
   flex-direction: column;
 
   overflow: hidden;
@@ -833,7 +841,7 @@ body {
 
   .top-header {
     grid-template-columns:
-      84px
+      90px
       minmax(0, 1fr)
       195px;
 
@@ -872,9 +880,9 @@ body {
   .clock {
     font-size:
       clamp(
-        25px,
-        1.65vw,
-        31px
+        26px,
+        1.7vw,
+        32px
       );
   }
 
@@ -913,6 +921,20 @@ body {
       minmax(0, 1fr)
       40px
       35px;
+  }
+
+
+  .top-header {
+    grid-template-columns:
+      86px
+      minmax(0, 1fr)
+      190px;
+  }
+
+
+  .temple-logo {
+    width: 58px;
+    height: 58px;
   }
 
 
