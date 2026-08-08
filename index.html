@@ -1,233 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+  <meta charset="UTF-8" />
 
-    <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+  <title>Chinmaya Saraswati Ashram - Devi Temple</title>
 
-    <title>
-        Chinmaya Saraswati Ashram - Temple TV
-    </title>
-
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
-
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 
 <body>
 
-<div class="tv-screen">
+  <div class="tv-screen">
 
-
-    <!-- ==========================================
+    <!-- =========================
          HEADER
-    =========================================== -->
-
+    ========================== -->
     <header class="header">
 
+      <div class="temple-brand">
+
         <img
-            src="images/logo.png"
-            class="temple-logo"
-            alt="Temple Logo"
-        >
+          src="images/logo.png"
+          alt="Temple Logo"
+          class="temple-logo"
+        />
 
-        <div class="temple-title">
+        <div class="temple-title-area">
 
-            <h1>
-                CHINMAYA SARASWATI ASHRAM
-            </h1>
+          <div class="temple-title">
+            CHINMAYA SARASWATI ASHRAM
+          </div>
 
-            <h2>
-                DEVI TEMPLE
-            </h2>
+          <div class="temple-subtitle">
+            DEVI TEMPLE
+          </div>
 
-            <p>
-                393 Derby ave, Orange, Connecticut - 06477
-            </p>
+          <div class="temple-address">
+            393 Derby Ave, Orange, CT 06477
+          </div>
 
         </div>
 
-        <div
-            id="clock"
-            class="clock">
+      </div>
+
+
+      <div class="header-time-area">
+
+        <div id="clock" class="clock">
+          --:-- --
         </div>
+
+        <div id="header-date" class="header-date">
+          Loading...
+        </div>
+
+      </div>
 
     </header>
 
 
 
-    <!-- ==========================================
-         MAIN DISPLAY
-    =========================================== -->
-
+    <!-- =========================
+         MAIN DISPLAY AREA
+    ========================== -->
     <main class="main-area">
 
 
-        <!-- FLYER -->
+      <!-- FLYER AREA -->
+      <section class="flyer-section">
 
-        <div class="flyer-section">
+        <img
+          id="flyer"
+          class="flyer-image"
+          src=""
+          alt="Temple Event Flyer"
+        />
 
-            <img
-                id="flyer"
-                src="images/flyer1.jpg"
-                alt="Temple Announcement"
-            >
-
-        </div>
-
-
-
-        <!-- RIGHT SIDE INFO -->
-
-        <div class="right-panel">
-
-
-            <!-- WHATSAPP QR -->
-
-            <div class="qr-card">
-
-                <div class="qr-title">
-                    JOIN OUR
-                    <br>
-                    WHATSAPP UPDATES
-                </div>
-
-                <img
-                    src="images/whatsapp-qr.png"
-                    class="whatsapp-qr"
-                    alt="WhatsApp Updates QR Code"
-                >
-
-                <div class="qr-text">
-                    Scan this QR code
-                    <br>
-                    to receive temple
-                    <br>
-                    announcements & updates
-                </div>
-
-                <div class="qr-footer">
-                    Stay Connected
-                </div>
-
-            </div>
+      </section>
 
 
 
-            <!-- TODAY AT THE TEMPLE -->
-
-            <div class="today-card">
-
-                <div class="today-heading">
-                    TODAY AT THE TEMPLE
-                </div>
-
-                <div
-                    id="today-day"
-                    class="today-day">
-                </div>
-
-                <div
-                    id="today-program"
-                    class="today-program">
-                </div>
-
-                <div
-                    id="today-time"
-                    class="today-time">
-                </div>
-
-                <div
-                    id="today-message"
-                    class="today-message">
-                </div>
-
-            </div>
+      <!-- RIGHT INFORMATION PANEL -->
+      <aside class="right-panel">
 
 
-        </div>
+        <!-- WHATSAPP -->
+        <section class="info-card qr-card">
 
+          <div class="card-title">
+            TEMPLE UPDATES
+          </div>
+
+          <img
+            src="images/whatsapp-qr.png"
+            alt="WhatsApp Updates QR Code"
+            class="qr-image"
+          />
+
+          <div class="qr-message">
+            Scan to receive temple updates
+          </div>
+
+        </section>
+
+
+
+        <!-- TODAY AT THE TEMPLE -->
+        <section class="info-card today-card">
+
+          <div class="card-title today-title">
+            TODAY AT THE TEMPLE
+          </div>
+
+          <div
+            id="today-day"
+            class="today-day"
+          >
+            Loading...
+          </div>
+
+          <div
+            id="today-program"
+            class="today-program"
+          >
+            Temple Program
+          </div>
+
+          <div
+            id="today-time"
+            class="today-time"
+          >
+          </div>
+
+          <div
+            id="today-message"
+            class="today-message"
+          >
+          </div>
+
+        </section>
+
+
+      </aside>
 
     </main>
 
 
 
-    <!-- ==========================================
-         ANNOUNCEMENT BAR
-    =========================================== -->
+    <!-- =========================
+         ANNOUNCEMENTS TICKER
+    ========================== -->
+    <section class="ticker-row announcements-row">
 
-    <div class="announcement-bar">
+      <div class="ticker-label announcements-label">
+        ANNOUNCEMENTS
+      </div>
 
-        <div class="announcement-label">
-            ANNOUNCEMENTS
+      <div class="ticker-window">
+
+        <div
+          id="ticker-text"
+          class="ticker-text announcements-text"
+        >
+          Welcome to Chinmaya Saraswati Ashram - Devi Temple
         </div>
 
-        <div class="ticker">
+      </div>
 
-            <div
-                class="ticker-text"
-                id="ticker-text">
+    </section>
 
-                Loading announcements...
 
-            </div>
 
+    <!-- =========================
+         UPCOMING EVENTS TICKER
+         Replaces previous footer
+    ========================== -->
+    <section class="ticker-row upcoming-row">
+
+      <div class="ticker-label upcoming-label">
+        UPCOMING EVENTS
+      </div>
+
+      <div class="ticker-window">
+
+        <div
+          id="upcoming-events-text"
+          class="ticker-text upcoming-events-text"
+        >
+          Loading upcoming temple events...
         </div>
 
-    </div>
+      </div>
+
+    </section>
+
+
+  </div>
 
 
 
-    <!-- ==========================================
-         FOOTER
-    =========================================== -->
+  <!-- =========================
+       BACKGROUND MUSIC
+  ========================== -->
 
-    <footer>
-
-        <div id="date"></div>
-
-        <div>
-            Chinmaya Saraswati Ashram - Devi Temple
-        </div>
-
-    </footer>
-
-
-</div>
-
-
-
-<!-- ==========================================
-     BACKGROUND MUSIC
-=========================================== -->
-
-<audio
+  <audio
     id="background-music"
     src="music/music1.mp3"
     autoplay
     loop
-    preload="auto">
-</audio>
+    preload="auto"
+  ></audio>
 
 
 
-<!-- IMPORTANT:
-     CONTENT FILE MUST LOAD FIRST
--->
+  <!-- CONFIG FIRST -->
+  <script src="announcements.js"></script>
 
-<script src="announcements.js"></script>
-
-<script src="script.js"></script>
-
+  <!-- MAIN SYSTEM -->
+  <script src="script.js"></script>
 
 </body>
-
 </html>
