@@ -1,15 +1,21 @@
 /* ==========================================================
+   CHINMAYA SARASWATI ASHRAM - DEVI TEMPLE
    TEMPLE TV DIGITAL SIGNAGE
-   Chinmaya Saraswati Ashram - Devi Temple
+
+   OLD-STYLE VISUAL DESIGN
+   + NEW UPCOMING EVENTS TICKER
 ========================================================== */
 
+
+/* ==========================================================
+   GLOBAL RESET
+========================================================== */
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
-
 
 html,
 body {
@@ -18,45 +24,42 @@ body {
   overflow: hidden;
 }
 
-
 body {
+  background: #f7eed0;
+
+  color: #4a170d;
+
   font-family:
-    "Segoe UI",
-    Arial,
-    Helvetica,
-    sans-serif;
-
-  background: #120501;
-
-  color: #3c160d;
+    Georgia,
+    "Times New Roman",
+    serif;
 }
 
 
 /* ==========================================================
-   MAIN SCREEN
+   MAIN TV SCREEN
 ========================================================== */
 
 .tv-screen {
-
   width: 100vw;
   height: 100vh;
 
   display: grid;
 
   grid-template-rows:
-    clamp(78px, 11vh, 128px)
+    clamp(82px, 10.5vh, 112px)
     minmax(0, 1fr)
-    clamp(44px, 6.2vh, 68px)
-    clamp(44px, 6.2vh, 68px);
+    clamp(42px, 5.5vh, 56px)
+    clamp(38px, 5vh, 50px);
+
+  overflow: hidden;
 
   background:
     linear-gradient(
-      135deg,
-      #fff9e9,
-      #f6ecd0
+      180deg,
+      #fffaf0 0%,
+      #f8efcf 100%
     );
-
-  overflow: hidden;
 }
 
 
@@ -65,43 +68,42 @@ body {
 ========================================================== */
 
 .header {
-
-  min-width: 0;
-
   display: flex;
 
   align-items: center;
 
-  justify-content:
-    space-between;
+  justify-content: space-between;
+
+  min-width: 0;
 
   padding:
-    clamp(8px, 1.2vh, 14px)
-    clamp(18px, 2.2vw, 40px);
+    clamp(7px, 0.9vh, 12px)
+    clamp(22px, 2vw, 38px);
 
   background:
     linear-gradient(
       90deg,
-      #671408,
-      #8d2011,
-      #671408
+      #72170d 0%,
+      #8c2012 45%,
+      #76170d 100%
     );
 
   color: white;
 
   border-bottom:
-    clamp(3px, 0.4vh, 6px)
-    solid
-    #d9a72e;
+    3px solid #d9ab35;
+
+  box-shadow:
+    0 2px 7px
+    rgba(0, 0, 0, 0.18);
 }
 
 
 /* ==========================================================
-   TEMPLE BRAND
+   TEMPLE BRANDING
 ========================================================== */
 
 .temple-brand {
-
   display: flex;
 
   align-items: center;
@@ -109,263 +111,210 @@ body {
   min-width: 0;
 
   gap:
-    clamp(12px, 1.4vw, 24px);
-
+    clamp(13px, 1.3vw, 22px);
 }
 
 
 .temple-logo {
-
   width:
-    clamp(58px, 7vh, 92px);
+    clamp(58px, 6.5vh, 78px);
 
   height:
-    clamp(58px, 7vh, 92px);
-
-  object-fit: contain;
+    clamp(58px, 6.5vh, 78px);
 
   flex-shrink: 0;
 
+  object-fit: contain;
 }
 
 
 .temple-title-area {
-
   min-width: 0;
-
 }
 
 
 .temple-title {
+  color: #fffdf8;
 
-  font-weight: 800;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
 
   font-size:
-    clamp(
-      19px,
-      2.25vw,
-      42px
-    );
+    clamp(24px, 2.5vw, 44px);
+
+  font-weight: 700;
 
   line-height: 1;
 
+  letter-spacing:
+    0.01em;
+
   white-space: nowrap;
 
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-
+  text-shadow:
+    1px 1px 2px
+    rgba(0, 0, 0, 0.25);
 }
 
 
 .temple-subtitle {
-
   margin-top:
-    clamp(3px, 0.45vh, 7px);
+    clamp(3px, 0.35vh, 6px);
+
+  color: #f7cf58;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(15px, 1.45vw, 25px);
 
   font-weight: 700;
 
-  color: #ffd86e;
-
-  font-size:
-    clamp(
-      14px,
-      1.5vw,
-      28px
-    );
-
+  letter-spacing:
+    0.01em;
 }
 
 
 .temple-address {
-
   margin-top:
     clamp(2px, 0.3vh, 5px);
 
-  font-size:
-    clamp(
-      9px,
-      0.8vw,
-      15px
-    );
-
   color:
-    rgba(
-      255,
-      255,
-      255,
-      0.9
-    );
+    rgba(255, 255, 255, 0.9);
 
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size:
+    clamp(9px, 0.75vw, 13px);
+
+  font-weight: 400;
 }
 
 
 /* ==========================================================
-   HEADER TIME
+   CLOCK / DATE
 ========================================================== */
 
 .header-time-area {
+  flex-shrink: 0;
 
   text-align: right;
 
   padding-left:
-    clamp(14px, 2vw, 30px);
-
-  flex-shrink: 0;
-
+    clamp(18px, 2vw, 35px);
 }
 
 
 .clock {
+  color: #ffd568;
 
-  font-weight: 800;
-
-  color: #ffd86e;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
 
   font-size:
-    clamp(
-      20px,
-      2.2vw,
-      38px
-    );
+    clamp(22px, 2vw, 34px);
+
+  font-weight: 700;
 
   white-space: nowrap;
 
+  text-shadow:
+    1px 1px 2px
+    rgba(0, 0, 0, 0.2);
 }
 
 
 .header-date {
+  margin-top: 5px;
 
-  margin-top:
-    clamp(2px, 0.3vh, 5px);
+  color: #ffffff;
 
-  font-weight: 500;
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 
   font-size:
-    clamp(
-      9px,
-      0.82vw,
-      15px
-    );
+    clamp(9px, 0.75vw, 13px);
+
+  font-weight: 600;
 
   white-space: nowrap;
-
 }
 
 
-
 /* ==========================================================
-   MAIN AREA
+   MAIN CONTENT
 ========================================================== */
 
 .main-area {
-
-  min-height: 0;
-
   min-width: 0;
+  min-height: 0;
 
   display: grid;
 
   grid-template-columns:
     minmax(0, 1fr)
-    clamp(
-      230px,
-      23vw,
-      390px
-    );
+    clamp(250px, 21.5vw, 360px);
 
   gap:
-    clamp(
-      10px,
-      1.15vw,
-      20px
-    );
+    clamp(12px, 1vw, 18px);
 
   padding:
-    clamp(
-      9px,
-      1.15vh,
-      18px
-    )
-    clamp(
-      12px,
-      1.3vw,
-      24px
-    );
+    clamp(10px, 1vh, 15px)
+    clamp(14px, 1vw, 20px);
 
+  overflow: hidden;
 }
 
 
-
 /* ==========================================================
-   FLYER SECTION
+   FLYER AREA
 ========================================================== */
 
 .flyer-section {
-
   position: relative;
 
   min-width: 0;
-
   min-height: 0;
 
   display: flex;
 
-  justify-content: center;
-
   align-items: center;
+
+  justify-content: center;
 
   overflow: hidden;
 
-  border-radius:
-    clamp(
-      8px,
-      0.8vw,
-      15px
-    );
-
-  background: #fff;
+  background: #ffffff;
 
   border:
-    clamp(
-      2px,
-      0.18vw,
-      4px
-    )
-    solid
-    rgba(
-      122,
-      22,
-      13,
-      0.18
-    );
+    2px solid
+    rgba(110, 38, 20, 0.18);
+
+  border-radius: 12px;
 
   box-shadow:
-    0
-    3px
-    12px
-    rgba(
-      0,
-      0,
-      0,
-      0.13
-    );
-
+    0 3px 11px
+    rgba(76, 31, 17, 0.13);
 }
 
 
-/* ==========================================================
-   FLYER
-========================================================== */
-
 .flyer-image {
-
   width: auto;
-
   height: auto;
 
   max-width: 100%;
-
   max-height: 100%;
 
   object-fit: contain;
@@ -375,56 +324,37 @@ body {
   opacity: 0;
 
   transition:
-    opacity 0.6s ease;
-
+    opacity 0.55s ease;
 }
 
 
 .flyer-image.flyer-visible {
-
   opacity: 1;
-
 }
 
 
-/* Landscape */
-
 .flyer-image.flyer-landscape {
-
   width: 100%;
-
   height: auto;
 
   max-height: 100%;
-
 }
 
-
-/* Portrait */
 
 .flyer-image.flyer-portrait {
-
   width: auto;
-
   height: 100%;
 
   max-width: 100%;
-
 }
 
-
-/* Square */
 
 .flyer-image.flyer-square {
-
   width: auto;
-
   height: 100%;
 
   max-width: 100%;
-
 }
-
 
 
 /* ==========================================================
@@ -432,76 +362,27 @@ body {
 ========================================================== */
 
 .right-panel {
-
   min-width: 0;
-
   min-height: 0;
 
   display: grid;
 
   grid-template-rows:
-    minmax(
-      0,
-      1fr
-    )
-    minmax(
-      0,
-      1fr
-    );
+    minmax(0, 1fr)
+    minmax(0, 1fr);
 
   gap:
-    clamp(
-      10px,
-      1vh,
-      16px
-    );
-
+    clamp(10px, 1vh, 15px);
 }
 
 
 /* ==========================================================
-   INFO CARDS
+   INFORMATION CARDS
 ========================================================== */
 
 .info-card {
-
+  min-width: 0;
   min-height: 0;
-
-  overflow: hidden;
-
-  border-radius:
-    clamp(
-      10px,
-      0.85vw,
-      18px
-    );
-
-  border:
-    clamp(
-      2px,
-      0.18vw,
-      4px
-    )
-    solid
-    #d3a42b;
-
-  background:
-    linear-gradient(
-      180deg,
-      #ffffff,
-      #fff7da
-    );
-
-  box-shadow:
-    0
-    3px
-    12px
-    rgba(
-      0,
-      0,
-      0,
-      0.12
-    );
 
   display: flex;
 
@@ -511,44 +392,55 @@ body {
 
   justify-content: center;
 
+  overflow: hidden;
+
   padding:
-    clamp(
-      10px,
-      1vh,
-      17px
+    clamp(10px, 1vh, 16px);
+
+  background:
+    linear-gradient(
+      180deg,
+      #fffdf7 0%,
+      #fff7db 100%
     );
 
+  border:
+    2px solid #d3a12a;
+
+  border-radius: 13px;
+
+  box-shadow:
+    0 2px 8px
+    rgba(104, 56, 17, 0.12);
 }
 
 
 /* ==========================================================
-   CARD TITLES
+   CARD TITLE
 ========================================================== */
 
 .card-title {
-
   width: 100%;
+
+  margin-bottom:
+    clamp(6px, 0.7vh, 10px);
+
+  color: #78180d;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(16px, 1.25vw, 22px);
+
+  font-weight: 700;
 
   text-align: center;
 
-  font-size:
-    clamp(
-      14px,
-      1.35vw,
-      24px
-    );
-
-  font-weight: 800;
-
-  color: #78160d;
-
-  margin-bottom:
-    clamp(
-      5px,
-      0.65vh,
-      10px
-    );
-
+  letter-spacing:
+    0.01em;
 }
 
 
@@ -557,45 +449,35 @@ body {
 ========================================================== */
 
 .qr-image {
-
   width:
-    min(
-      58%,
-      170px
-    );
+    min(55%, 160px);
 
-  max-height:
-    60%;
+  max-height: 58%;
 
   object-fit: contain;
-
 }
 
 
 .qr-message {
-
   margin-top:
-    clamp(
-      5px,
-      0.55vh,
-      10px
-    );
+    clamp(6px, 0.6vh, 10px);
 
-  text-align: center;
+  color: #3d251d;
 
-  font-weight: 600;
-
-  color: #4a261d;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
 
   font-size:
-    clamp(
-      10px,
-      0.9vw,
-      16px
-    );
+    clamp(10px, 0.85vw, 14px);
 
+  font-weight: 500;
+
+  line-height: 1.2;
+
+  text-align: center;
 }
-
 
 
 /* ==========================================================
@@ -603,110 +485,98 @@ body {
 ========================================================== */
 
 .today-card {
-
   text-align: center;
+}
 
+
+.today-title {
+  color: #77170d;
 }
 
 
 .today-day {
+  margin-bottom:
+    clamp(5px, 0.5vh, 9px);
 
-  color: #9b741a;
+  color: #9b741b;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size:
+    clamp(11px, 0.95vw, 16px);
 
   font-weight: 700;
 
+  letter-spacing:
+    0.06em;
+
   text-transform: uppercase;
-
-  font-size:
-    clamp(
-      12px,
-      1.1vw,
-      20px
-    );
-
-  margin-bottom:
-    clamp(
-      4px,
-      0.45vh,
-      8px
-    );
-
 }
 
 
 .today-program {
+  color: #68150c;
 
-  font-weight: 800;
-
-  color: #65150c;
-
-  line-height: 1.15;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
 
   font-size:
-    clamp(
-      17px,
-      1.8vw,
-      31px
-    );
+    clamp(20px, 1.7vw, 30px);
 
+  font-weight: 700;
+
+  line-height: 1.14;
 }
 
 
 .today-time {
-
   margin-top:
-    clamp(
-      7px,
-      0.7vh,
-      13px
-    );
+    clamp(8px, 0.8vh, 13px);
 
-  font-weight: 800;
+  color: #9b741b;
 
-  color: #9b741a;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
 
   font-size:
-    clamp(
-      17px,
-      1.55vw,
-      27px
-    );
+    clamp(18px, 1.45vw, 25px);
 
+  font-weight: 700;
 }
 
 
 .today-message {
-
   margin-top:
-    clamp(
-      5px,
-      0.55vh,
-      10px
-    );
+    clamp(6px, 0.6vh, 9px);
 
-  font-weight: 600;
+  color: #493229;
 
-  line-height: 1.18;
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 
   font-size:
-    clamp(
-      10px,
-      0.95vw,
-      17px
-    );
+    clamp(9px, 0.8vw, 14px);
 
-  color: #493128;
+  font-weight: 500;
 
+  line-height: 1.2;
 }
 
 
-
 /* ==========================================================
-   COMMON TICKER
+   COMMON TICKER STRUCTURE
 ========================================================== */
 
 .ticker-row {
-
   width: 100%;
 
   min-width: 0;
@@ -714,329 +584,266 @@ body {
   display: grid;
 
   grid-template-columns:
-    clamp(
-      170px,
-      17vw,
-      310px
-    )
-    minmax(
-      0,
-      1fr
-    );
+    clamp(180px, 16vw, 290px)
+    minmax(0, 1fr);
 
   overflow: hidden;
-
 }
 
 
 .ticker-label {
+  position: relative;
+
+  z-index: 3;
 
   display: flex;
 
-  justify-content: center;
-
   align-items: center;
 
-  text-align: center;
+  justify-content: center;
 
-  padding: 0 8px;
+  padding: 0 12px;
 
-  font-weight: 900;
-
-  letter-spacing:
-    0.02em;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
 
   font-size:
-    clamp(
-      15px,
-      1.45vw,
-      26px
-    );
+    clamp(15px, 1.25vw, 22px);
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.025em;
 
   white-space: nowrap;
-
-  z-index: 2;
-
 }
 
 
 .ticker-window {
+  position: relative;
 
   min-width: 0;
 
-  position: relative;
+  overflow: hidden;
 
   display: flex;
 
   align-items: center;
-
-  overflow: hidden;
-
 }
 
 
 .ticker-text {
-
   position: absolute;
 
   left: 100%;
 
   white-space: nowrap;
 
-  font-weight: 700;
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size:
+    clamp(15px, 1.2vw, 22px);
+
+  font-weight: 600;
+
+  letter-spacing:
+    0.005em;
 
   will-change: transform;
 
-  font-size:
-    clamp(
-      15px,
-      1.45vw,
-      27px
-    );
-
   animation:
-    ticker-scroll
-    38s
-    linear
-    infinite;
-
+    ticker-scroll 42s linear infinite;
 }
 
 
 /* ==========================================================
-   ANNOUNCEMENTS TICKER
+   ANNOUNCEMENTS
 ========================================================== */
 
 .announcements-row {
-
-  background: #32120b;
+  background:
+    linear-gradient(
+      90deg,
+      #32100a,
+      #42150d
+    );
 
   border-top:
-    clamp(
-      2px,
-      0.2vh,
-      4px
-    )
-    solid
-    #c89523;
-
+    2px solid #c99b27;
 }
 
 
 .announcements-label {
+  color: #351008;
 
   background:
     linear-gradient(
       180deg,
-      #f2cc5c,
-      #d6a528
+      #efc650 0%,
+      #d5a331 100%
     );
 
-  color: #351009;
-
+  border-right:
+    1px solid
+    rgba(95, 40, 9, 0.4);
 }
 
 
 .announcements-text {
-
   color: #ffffff;
-
 }
 
 
-
 /* ==========================================================
-   UPCOMING EVENTS TICKER
+   UPCOMING EVENTS
+
+   Designed to look like the OLD footer,
+   not like a second oversized banner.
 ========================================================== */
 
 .upcoming-row {
-
   background:
     linear-gradient(
       90deg,
-      #6b160c,
-      #871f10,
-      #6b160c
+      #73170d 0%,
+      #8c2112 55%,
+      #73170d 100%
     );
 
   border-top:
-    2px solid
-    rgba(
-      255,
-      216,
-      110,
-      0.5
-    );
-
+    1px solid
+    rgba(255, 218, 116, 0.55);
 }
 
 
 .upcoming-label {
+  color: #68150c;
 
   background:
     linear-gradient(
       180deg,
-      #fff3c5,
-      #e8bf54
+      #f8df8c 0%,
+      #e5bc51 100%
     );
 
-  color: #6b160c;
+  border-right:
+    1px solid
+    rgba(100, 45, 10, 0.35);
 
+  font-size:
+    clamp(14px, 1.15vw, 20px);
 }
 
 
 .upcoming-events-text {
+  color: #fff4c8;
 
-  color: #fff2b8;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
 
-  animation-duration:
-    46s;
+  font-size:
+    clamp(14px, 1.15vw, 20px);
 
+  font-weight: 700;
+
+  animation-duration: 48s;
 }
 
 
-
 /* ==========================================================
-   SCROLLING ANIMATION
+   TICKER ANIMATION
 ========================================================== */
 
 @keyframes ticker-scroll {
 
   0% {
-
-    transform:
-      translateX(0);
-
+    transform: translateX(0);
   }
 
-
   100% {
-
     transform:
       translateX(
-        calc(
-          -100% - 100vw
-        )
+        calc(-100% - 100vw)
       );
-
   }
 
 }
 
 
-
 /* ==========================================================
-   RESPONSIVE ADJUSTMENTS
+   1680 x 1050 / LOWER RESOLUTION OPTIMIZATION
 ========================================================== */
 
-@media (
-  max-width: 1400px
-) {
+@media (max-width: 1700px) {
 
   .main-area {
-
     grid-template-columns:
-      minmax(
-        0,
-        1fr
-      )
-      clamp(
-        210px,
-        24vw,
-        330px
-      );
-
+      minmax(0, 1fr)
+      clamp(245px, 21vw, 335px);
   }
 
 
   .ticker-row {
-
     grid-template-columns:
-      clamp(
-        150px,
-        18vw,
-        260px
-      )
-      minmax(
-        0,
-        1fr
-      );
-
+      clamp(175px, 16vw, 270px)
+      minmax(0, 1fr);
   }
 
 }
 
 
+/* ==========================================================
+   SHORTER SCREEN
+========================================================== */
 
-@media (
-  max-height: 850px
-) {
+@media (max-height: 850px) {
 
   .tv-screen {
-
     grid-template-rows:
-      clamp(
-        68px,
-        10.5vh,
-        100px
-      )
-      minmax(
-        0,
-        1fr
-      )
-      clamp(
-        38px,
-        6vh,
-        52px
-      )
-      clamp(
-        38px,
-        6vh,
-        52px
-      );
-
+      clamp(70px, 10vh, 92px)
+      minmax(0, 1fr)
+      clamp(38px, 5.5vh, 48px)
+      clamp(34px, 4.8vh, 44px);
   }
 
 
   .main-area {
-
-    padding:
-      7px
-      10px;
-
+    padding: 7px 10px;
   }
 
 
   .info-card {
+    padding: 7px;
+  }
 
-    padding:
-      7px;
 
+  .temple-address {
+    font-size: 9px;
   }
 
 }
 
 
-
 /* ==========================================================
-   VERY SHORT DISPLAY HEIGHT
+   VERY SHORT DISPLAY
 ========================================================== */
 
-@media (
-  max-height: 700px
-) {
+@media (max-height: 700px) {
 
   .temple-address {
-
     display: none;
-
   }
 
 
   .qr-message {
-
     display: none;
-
   }
 
 }
