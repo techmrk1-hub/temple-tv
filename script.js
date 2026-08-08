@@ -2,17 +2,18 @@
    CHINMAYA SARASWATI ASHRAM - DEVI TEMPLE
    TEMPLE TV DIGITAL SIGNAGE
 
-   FEATURES:
-
-   - Google Drive Flyers
-   - Flyer Rotation
-   - Google Sheet Announcements
-   - Google Sheet Special Events
-   - Google Sheet Upcoming Events
-   - Google Sheet Independent BGM Playlist
+   FEATURES
+   ----------------------------------------------------------
+   - Remote Google Sheet Flyers
+   - Remote Announcements
+   - Special Events
+   - Upcoming Events
    - Today's Schedule
-   - Automatic Clock
-   - Automatic Remote Refresh
+   - Independent BGM Google Sheet Playlist
+   - Multiple BGM Tracks
+   - Automatic Track Change
+   - Automatic Failed Track Skip
+   - Automatic 5 Minute Remote Refresh
 ========================================================== */
 
 
@@ -29,13 +30,16 @@ let currentFlyerIndex = 0;
 let specialEvents = [];
 
 
-// BGM playlist
 
 let bgmPlaylist = [];
 
 let currentBGMIndex = 0;
 
 let currentBGMURL = "";
+
+let bgmStarted = false;
+
+let bgmErrorCount = 0;
 
 
 
@@ -130,11 +134,13 @@ function parseCSV(text) {
   let inQuotes = false;
 
 
+
   for (
     let i = 0;
     i < text.length;
     i++
   ) {
+
 
     const char =
       text[i];
@@ -144,7 +150,10 @@ function parseCSV(text) {
       text[i + 1];
 
 
-    if (char === '"') {
+
+    if (
+      char === '"'
+    ) {
 
 
       if (
@@ -169,10 +178,12 @@ function parseCSV(text) {
     }
 
 
+
     else if (
       char === "," &&
       !inQuotes
     ) {
+
 
       row.push(
         field.trim()
@@ -185,13 +196,16 @@ function parseCSV(text) {
     }
 
 
+
     else if (
       (
         char === "\n" ||
         char === "\r"
-      ) &&
+      )
+      &&
       !inQuotes
     ) {
+
 
       if (
         char === "\r" &&
@@ -232,6 +246,7 @@ function parseCSV(text) {
     }
 
 
+
     else {
 
       field +=
@@ -247,6 +262,7 @@ function parseCSV(text) {
     field ||
     row.length
   ) {
+
 
     row.push(
       field.trim()
@@ -285,7 +301,11 @@ function updateClock() {
     new Date();
 
 
-  if (clockElement) {
+
+  if (
+    clockElement
+  ) {
+
 
     clockElement.textContent =
       now.toLocaleTimeString(
@@ -307,7 +327,11 @@ function updateClock() {
   }
 
 
-  if (headerDateElement) {
+
+  if (
+    headerDateElement
+  ) {
+
 
     headerDateElement.textContent =
       now.toLocaleDateString(
@@ -349,6 +373,7 @@ setInterval(
 
 function dateKey(date) {
 
+
   const year =
     date.getFullYear();
 
@@ -383,6 +408,7 @@ function dateKey(date) {
 
 function normalizeDate(value) {
 
+
   if (!value) {
 
     return "";
@@ -398,29 +424,38 @@ function normalizeDate(value) {
 
 
 
-  // MM/DD/YYYY
-
   const usDate =
     text.match(
       /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
     );
 
 
-  if (usDate) {
+  if (
+    usDate
+  ) {
+
 
     return (
 
-      usDate[3] +
+      usDate[3]
 
-      "-" +
+      +
+
+      "-"
+
+      +
 
       usDate[1]
         .padStart(
           2,
           "0"
-        ) +
+        )
 
-      "-" +
+      +
+
+      "-"
+
+      +
 
       usDate[2]
         .padStart(
@@ -434,29 +469,38 @@ function normalizeDate(value) {
 
 
 
-  // YYYY-MM-DD
-
   const isoDate =
     text.match(
       /^(\d{4})-(\d{1,2})-(\d{1,2})$/
     );
 
 
-  if (isoDate) {
+  if (
+    isoDate
+  ) {
+
 
     return (
 
-      isoDate[1] +
+      isoDate[1]
 
-      "-" +
+      +
+
+      "-"
+
+      +
 
       isoDate[2]
         .padStart(
           2,
           "0"
-        ) +
+        )
 
-      "-" +
+      +
+
+      "-"
+
+      +
 
       isoDate[3]
         .padStart(
@@ -491,6 +535,7 @@ function normalizeDate(value) {
   }
 
 
+
   return "";
 
 }
@@ -503,11 +548,13 @@ function normalizeDate(value) {
 
 function getDriveFileId(url) {
 
+
   if (!url) {
 
     return "";
 
   }
+
 
 
   let match =
@@ -516,7 +563,9 @@ function getDriveFileId(url) {
     );
 
 
-  if (match) {
+  if (
+    match
+  ) {
 
     return (
       match[1]
@@ -532,7 +581,9 @@ function getDriveFileId(url) {
     );
 
 
-  if (match) {
+  if (
+    match
+  ) {
 
     return (
       match[1]
@@ -548,13 +599,16 @@ function getDriveFileId(url) {
     );
 
 
-  if (match) {
+  if (
+    match
+  ) {
 
     return (
       match[1]
     );
 
   }
+
 
 
   return "";
@@ -564,10 +618,11 @@ function getDriveFileId(url) {
 
 
 // ==========================================================
-// GOOGLE DRIVE FLYER IMAGE CONVERSION
+// DRIVE IMAGE URL
 // ==========================================================
 
 function convertDriveImageURL(url) {
+
 
   if (!url) {
 
@@ -582,7 +637,9 @@ function convertDriveImageURL(url) {
     );
 
 
-  if (!fileId) {
+  if (
+    !fileId
+  ) {
 
     return (
       url
@@ -591,9 +648,12 @@ function convertDriveImageURL(url) {
   }
 
 
+
   return (
 
-    "https://drive.google.com/thumbnail" +
+    "https://drive.google.com/thumbnail"
+
+    +
 
     `?id=${fileId}&sz=w3000`
 
@@ -604,10 +664,11 @@ function convertDriveImageURL(url) {
 
 
 // ==========================================================
-// GOOGLE DRIVE AUDIO CONVERSION
+// DRIVE AUDIO URL
 // ==========================================================
 
 function convertDriveAudioURL(url) {
+
 
   if (!url) {
 
@@ -616,13 +677,21 @@ function convertDriveAudioURL(url) {
   }
 
 
+
   const fileId =
     getDriveFileId(
       url
     );
 
 
-  if (!fileId) {
+  /*
+     If the Sheet contains an actual direct MP3 URL,
+     use it directly.
+  */
+
+  if (
+    !fileId
+  ) {
 
     return (
       url
@@ -631,9 +700,16 @@ function convertDriveAudioURL(url) {
   }
 
 
+
+  /*
+     Public Google Drive download URL.
+  */
+
   return (
 
-    "https://drive.google.com/uc" +
+    "https://drive.google.com/uc"
+
+    +
 
     `?export=download&id=${fileId}`
 
@@ -649,26 +725,38 @@ function convertDriveAudioURL(url) {
 
 function testImage(url) {
 
+
   return (
+
     new Promise(
       resolve => {
+
 
         const image =
           new Image();
 
 
+
         image.onload =
-          () =>
+          () => {
+
             resolve(
               true
             );
 
+          };
+
+
 
         image.onerror =
-          () =>
+          () => {
+
             resolve(
               false
             );
+
+          };
+
 
 
         image.src =
@@ -678,6 +766,7 @@ function testImage(url) {
 
       }
     )
+
   );
 
 }
@@ -685,16 +774,20 @@ function testImage(url) {
 
 
 // ==========================================================
-// ANNOUNCEMENTS
+// ANNOUNCEMENTS FALLBACK
 // ==========================================================
 
 function loadLocalAnnouncements() {
 
-  if (!tickerText) {
+
+  if (
+    !tickerText
+  ) {
 
     return;
 
   }
+
 
 
   tickerText.textContent =
@@ -708,9 +801,15 @@ function loadLocalAnnouncements() {
 
 
 
+// ==========================================================
+// ANNOUNCEMENTS
+// ==========================================================
+
 async function loadAnnouncements() {
 
+
   try {
+
 
     const response =
       await fetch(
@@ -719,19 +818,25 @@ async function loadAnnouncements() {
             .announcementSheetURL
         ),
         {
+
           cache:
             "no-store"
+
         }
       );
 
 
-    if (!response.ok) {
+
+    if (
+      !response.ok
+    ) {
 
       throw new Error(
-        "Announcement data unavailable"
+        "Announcement Sheet unavailable"
       );
 
     }
+
 
 
     const rows =
@@ -740,8 +845,10 @@ async function loadAnnouncements() {
       );
 
 
+
     const messages =
       [];
+
 
 
     rows.forEach(
@@ -750,22 +857,29 @@ async function loadAnnouncements() {
         index
       ) => {
 
+
         row.forEach(
           cell => {
+
 
             const value =
               cell.trim();
 
 
-            if (!value) {
+
+            if (
+              !value
+            ) {
 
               return;
 
             }
 
 
+
             if (
-              index === 0 &&
+              index === 0
+              &&
               value
                 .toLowerCase()
                 .includes(
@@ -776,6 +890,7 @@ async function loadAnnouncements() {
               return;
 
             }
+
 
 
             messages.push(
@@ -789,9 +904,11 @@ async function loadAnnouncements() {
     );
 
 
+
     if (
       messages.length
     ) {
+
 
       tickerText.textContent =
         messages.join(
@@ -803,6 +920,7 @@ async function loadAnnouncements() {
 
     else {
 
+
       loadLocalAnnouncements();
 
     }
@@ -810,10 +928,13 @@ async function loadAnnouncements() {
   }
 
 
-  catch (error) {
+  catch (
+    error
+  ) {
+
 
     console.error(
-      "Announcement error:",
+      "Announcement Error:",
       error
     );
 
@@ -832,7 +953,9 @@ async function loadAnnouncements() {
 
 async function loadRemoteFlyers() {
 
+
   try {
+
 
     const response =
       await fetch(
@@ -841,13 +964,18 @@ async function loadRemoteFlyers() {
             .flyerSheetURL
         ),
         {
+
           cache:
             "no-store"
+
         }
       );
 
 
-    if (!response.ok) {
+
+    if (
+      !response.ok
+    ) {
 
       throw new Error(
         "Flyer Sheet unavailable"
@@ -856,10 +984,12 @@ async function loadRemoteFlyers() {
     }
 
 
+
     const rows =
       parseCSV(
         await response.text()
       );
+
 
 
     if (
@@ -885,6 +1015,7 @@ async function loadRemoteFlyers() {
         );
 
 
+
     const imageIndex =
       headers.indexOf(
         "imageurl"
@@ -908,6 +1039,7 @@ async function loadRemoteFlyers() {
       [];
 
 
+
     for (
       let i = 1;
       i < rows.length;
@@ -919,15 +1051,22 @@ async function loadRemoteFlyers() {
         rows[i];
 
 
+
       const active =
-        (
-          row[
-            activeIndex
-          ] ||
-          ""
-        )
-        .trim()
-        .toUpperCase();
+        activeIndex >= 0
+          ?
+          (
+            row[
+              activeIndex
+            ]
+            ||
+            ""
+          )
+          .trim()
+          .toUpperCase()
+          :
+          "YES";
+
 
 
       if (
@@ -940,14 +1079,17 @@ async function loadRemoteFlyers() {
       }
 
 
+
       const originalURL =
         (
           row[
             imageIndex
-          ] ||
+          ]
+          ||
           ""
         )
         .trim();
+
 
 
       if (
@@ -959,33 +1101,43 @@ async function loadRemoteFlyers() {
       }
 
 
+
       const imageURL =
         convertDriveImageURL(
           originalURL
         );
 
 
+
       const displayOrder =
-        parseInt(
-          row[
-            orderIndex
-          ],
-          10
-        )
-        ||
-        999;
+        orderIndex >= 0
+          ?
+          (
+            parseInt(
+              row[
+                orderIndex
+              ],
+              10
+            )
+            ||
+            999
+          )
+          :
+          999;
 
 
 
-      const works =
+      const imageWorks =
         await testImage(
           imageURL
         );
 
 
+
       if (
-        works
+        imageWorks
       ) {
+
 
         remoteFlyers.push(
           {
@@ -1020,6 +1172,7 @@ async function loadRemoteFlyers() {
       remoteFlyers.length
     ) {
 
+
       flyers =
         remoteFlyers
           .map(
@@ -1031,6 +1184,7 @@ async function loadRemoteFlyers() {
 
 
     else {
+
 
       flyers =
         templeContent
@@ -1049,10 +1203,13 @@ async function loadRemoteFlyers() {
   }
 
 
-  catch (error) {
+  catch (
+    error
+  ) {
+
 
     console.error(
-      "Flyer error:",
+      "Flyer Error:",
       error
     );
 
@@ -1080,6 +1237,7 @@ async function loadRemoteFlyers() {
 
 function showFlyer() {
 
+
   if (
     !flyerElement ||
     !flyers.length
@@ -1088,6 +1246,7 @@ function showFlyer() {
     return;
 
   }
+
 
 
   flyerElement
@@ -1133,6 +1292,7 @@ function showFlyer() {
           1.15
         ) {
 
+
           flyerElement
             .classList
             .add(
@@ -1147,6 +1307,7 @@ function showFlyer() {
           0.85
         ) {
 
+
           flyerElement
             .classList
             .add(
@@ -1157,6 +1318,7 @@ function showFlyer() {
 
 
         else {
+
 
           flyerElement
             .classList
@@ -1172,6 +1334,7 @@ function showFlyer() {
 
       requestAnimationFrame(
         () => {
+
 
           flyerElement
             .classList
@@ -1198,10 +1361,11 @@ function showFlyer() {
 
 
 // ==========================================================
-// ROTATE FLYER
+// ROTATE FLYERS
 // ==========================================================
 
 function rotateFlyer() {
+
 
   if (
     flyers.length <=
@@ -1213,6 +1377,7 @@ function rotateFlyer() {
   }
 
 
+
   currentFlyerIndex =
     (
       currentFlyerIndex +
@@ -1220,6 +1385,7 @@ function rotateFlyer() {
     )
     %
     flyers.length;
+
 
 
   showFlyer();
@@ -1234,7 +1400,15 @@ function rotateFlyer() {
 
 async function loadBGMPlaylist() {
 
+
   try {
+
+
+    console.log(
+      "Loading BGM Google Sheet..."
+    );
+
+
 
     const response =
       await fetch(
@@ -1243,10 +1417,13 @@ async function loadBGMPlaylist() {
             .bgmSheetURL
         ),
         {
+
           cache:
             "no-store"
+
         }
       );
+
 
 
     if (
@@ -1254,17 +1431,23 @@ async function loadBGMPlaylist() {
     ) {
 
       throw new Error(
-        "BGM Sheet unavailable"
+        `BGM Sheet HTTP ${response.status}`
       );
 
     }
 
 
 
+    const csv =
+      await response.text();
+
+
+
     const rows =
       parseCSV(
-        await response.text()
+        csv
       );
+
 
 
     if (
@@ -1272,11 +1455,9 @@ async function loadBGMPlaylist() {
       2
     ) {
 
-      console.log(
-        "No BGM tracks found."
+      throw new Error(
+        "BGM Sheet has no music rows."
       );
-
-      return;
 
     }
 
@@ -1290,6 +1471,14 @@ async function loadBGMPlaylist() {
               .trim()
               .toLowerCase()
         );
+
+
+
+    console.log(
+      "BGM Headers:",
+      headers
+    );
+
 
 
     const musicIndex =
@@ -1312,14 +1501,13 @@ async function loadBGMPlaylist() {
 
 
     if (
-      musicIndex === -1
+      musicIndex ===
+      -1
     ) {
 
-      console.error(
-        "BGM Sheet requires MusicURL column."
+      throw new Error(
+        "MusicURL column not found."
       );
-
-      return;
 
     }
 
@@ -1327,6 +1515,7 @@ async function loadBGMPlaylist() {
 
     const playlist =
       [];
+
 
 
     for (
@@ -1340,19 +1529,22 @@ async function loadBGMPlaylist() {
         rows[i];
 
 
+
       const active =
         activeIndex >= 0
           ?
           (
             row[
               activeIndex
-            ] ||
+            ]
+            ||
             ""
           )
           .trim()
           .toUpperCase()
           :
           "YES";
+
 
 
       if (
@@ -1370,10 +1562,12 @@ async function loadBGMPlaylist() {
         (
           row[
             musicIndex
-          ] ||
+          ]
+          ||
           ""
         )
         .trim();
+
 
 
       if (
@@ -1386,7 +1580,7 @@ async function loadBGMPlaylist() {
 
 
 
-      const musicURL =
+      const convertedURL =
         convertDriveAudioURL(
           originalMusicURL
         );
@@ -1415,7 +1609,7 @@ async function loadBGMPlaylist() {
         {
 
           url:
-            musicURL,
+            convertedURL,
 
           order:
             order
@@ -1451,24 +1645,21 @@ async function loadBGMPlaylist() {
       !newPlaylist.length
     ) {
 
-      console.log(
-        "No active BGM tracks."
+      throw new Error(
+        "No Active=YES BGM tracks found."
       );
-
-
-      return;
 
     }
 
 
 
-    const oldPlaylistSignature =
+    const previousSignature =
       bgmPlaylist.join(
         "|"
       );
 
 
-    const newPlaylistSignature =
+    const newSignature =
       newPlaylist.join(
         "|"
       );
@@ -1480,22 +1671,28 @@ async function loadBGMPlaylist() {
 
 
 
-    /*
-       IMPORTANT:
+    console.log(
+      "BGM Playlist:",
+      bgmPlaylist
+    );
 
-       If the playlist changed,
-       start from the first track.
 
-       If it did not change,
-       do NOT restart currently playing music.
-    */
 
     if (
-      oldPlaylistSignature !==
-      newPlaylistSignature
+      previousSignature !==
+      newSignature
     ) {
 
+
       currentBGMIndex =
+        0;
+
+
+      currentBGMURL =
+        "";
+
+
+      bgmErrorCount =
         0;
 
 
@@ -1505,10 +1702,9 @@ async function loadBGMPlaylist() {
 
 
     else if (
-      musicElement &&
-      musicElement.paused &&
-      !currentBGMURL
+      !bgmStarted
     ) {
+
 
       startCurrentBGM();
 
@@ -1517,12 +1713,19 @@ async function loadBGMPlaylist() {
   }
 
 
-  catch (error) {
+  catch (
+    error
+  ) {
+
 
     console.error(
-      "BGM loading error:",
+      "BGM Playlist Error:",
       error
     );
+
+
+
+    startLocalBGMFallback();
 
   }
 
@@ -1536,10 +1739,30 @@ async function loadBGMPlaylist() {
 
 function startCurrentBGM() {
 
+
   if (
-    !musicElement ||
+    !musicElement
+  ) {
+
+    console.error(
+      "background-music audio element was not found."
+    );
+
+    return;
+
+  }
+
+
+
+  if (
     !bgmPlaylist.length
   ) {
+
+    console.warn(
+      "No BGM playlist available."
+    );
+
+    startLocalBGMFallback();
 
     return;
 
@@ -1554,6 +1777,13 @@ function startCurrentBGM() {
 
 
 
+  console.log(
+    "Trying BGM:",
+    musicURL
+  );
+
+
+
   currentBGMURL =
     musicURL;
 
@@ -1562,8 +1792,24 @@ function startCurrentBGM() {
   musicElement.pause();
 
 
+
+  musicElement.removeAttribute(
+    "src"
+  );
+
+
+
+  musicElement.load();
+
+
+
   musicElement.src =
     musicURL;
+
+
+
+  musicElement.preload =
+    "auto";
 
 
   musicElement.loop =
@@ -1571,7 +1817,10 @@ function startCurrentBGM() {
 
 
   musicElement.volume =
-    0.25;
+    templeContent.bgmVolume
+    ??
+    0.30;
+
 
 
   musicElement.load();
@@ -1587,16 +1836,50 @@ function startCurrentBGM() {
     playPromise
   ) {
 
-    playPromise.catch(
-      error => {
 
-        console.log(
-          "BGM autoplay blocked or audio unavailable:",
-          error
-        );
+    playPromise
 
-      }
-    );
+      .then(
+        () => {
+
+
+          bgmStarted =
+            true;
+
+
+          bgmErrorCount =
+            0;
+
+
+          console.log(
+            "BGM started successfully."
+          );
+
+        }
+      )
+
+
+      .catch(
+        error => {
+
+
+          console.error(
+            "BGM play() failed:",
+            error
+          );
+
+
+          /*
+             If Chrome blocked autoplay,
+             don't immediately destroy
+             the playlist.
+          */
+
+          bgmStarted =
+            false;
+
+        }
+      );
 
   }
 
@@ -1605,18 +1888,22 @@ function startCurrentBGM() {
 
 
 // ==========================================================
-// PLAY NEXT BGM
+// NEXT BGM
 // ==========================================================
 
 function playNextBGM() {
+
 
   if (
     !bgmPlaylist.length
   ) {
 
+    startLocalBGMFallback();
+
     return;
 
   }
+
 
 
   currentBGMIndex =
@@ -1628,6 +1915,7 @@ function playNextBGM() {
     bgmPlaylist.length;
 
 
+
   startCurrentBGM();
 
 }
@@ -1635,34 +1923,284 @@ function playNextBGM() {
 
 
 // ==========================================================
-// BGM ENDED EVENT
+// LOCAL FALLBACK
+// ==========================================================
+
+function startLocalBGMFallback() {
+
+
+  if (
+    !musicElement
+  ) {
+
+    return;
+
+  }
+
+
+
+  console.log(
+    "Starting local BGM fallback."
+  );
+
+
+
+  musicElement.pause();
+
+
+
+  musicElement.src =
+    "music/music1.mp3";
+
+
+  musicElement.volume =
+    templeContent.bgmVolume
+    ??
+    0.30;
+
+
+  musicElement.loop =
+    true;
+
+
+  musicElement.preload =
+    "auto";
+
+
+  musicElement.load();
+
+
+
+  const playPromise =
+    musicElement.play();
+
+
+
+  if (
+    playPromise
+  ) {
+
+
+    playPromise
+
+      .then(
+        () => {
+
+
+          bgmStarted =
+            true;
+
+
+          console.log(
+            "Local fallback BGM is playing."
+          );
+
+        }
+      )
+
+
+      .catch(
+        error => {
+
+
+          console.error(
+            "Local fallback BGM could not autoplay:",
+            error
+          );
+
+        }
+      );
+
+  }
+
+}
+
+
+
+// ==========================================================
+// AUDIO EVENTS
 // ==========================================================
 
 if (
   musicElement
 ) {
 
+
+  musicElement.addEventListener(
+    "playing",
+    () => {
+
+
+      bgmStarted =
+        true;
+
+
+      bgmErrorCount =
+        0;
+
+
+      console.log(
+        "AUDIO PLAYING"
+      );
+
+    }
+  );
+
+
+
+  musicElement.addEventListener(
+    "canplay",
+    () => {
+
+
+      console.log(
+        "Audio loaded and can play."
+      );
+
+    }
+  );
+
+
+
   musicElement.addEventListener(
     "ended",
-    playNextBGM
+    () => {
+
+
+      console.log(
+        "BGM finished. Playing next track."
+      );
+
+
+      playNextBGM();
+
+    }
   );
+
 
 
   musicElement.addEventListener(
     "error",
     () => {
 
+
+      /*
+         Ignore an error before src exists.
+      */
+
+      if (
+        !musicElement.src
+      ) {
+
+        return;
+
+      }
+
+
+
+      bgmErrorCount++;
+
+
+
       console.error(
-        "Current BGM failed. Moving to next track."
+        "Audio Error:",
+        musicElement.error,
+        "Track:",
+        currentBGMURL
       );
+
+
+
+      /*
+         Try every remote track once.
+      */
+
+      if (
+        bgmPlaylist.length
+        &&
+        bgmErrorCount <
+        bgmPlaylist.length
+      ) {
+
+
+        setTimeout(
+          playNextBGM,
+          1500
+        );
+
+
+        return;
+
+      }
+
+
+
+      /*
+         All remote tracks failed.
+      */
+
+      console.error(
+        "All remote BGM tracks failed. Using local fallback."
+      );
+
+
+      bgmErrorCount =
+        0;
 
 
       setTimeout(
-        playNextBGM,
-        2000
+        startLocalBGMFallback,
+        1500
       );
 
     }
+  );
+
+
+
+  /*
+     Extra browser-autoplay recovery.
+
+     If anyone clicks/touches the screen,
+     try music again.
+  */
+
+  const resumeAudio =
+    () => {
+
+
+      if (
+        musicElement.paused
+      ) {
+
+
+        musicElement
+          .play()
+          .catch(
+            () => {}
+          );
+
+      }
+
+    };
+
+
+
+  document.addEventListener(
+    "click",
+    resumeAudio
+  );
+
+
+  document.addEventListener(
+    "touchstart",
+    resumeAudio
+  );
+
+
+  document.addEventListener(
+    "keydown",
+    resumeAudio
   );
 
 }
@@ -1674,6 +2212,7 @@ if (
 // ==========================================================
 
 function getSaturdayNumber(date) {
+
 
   return (
     Math.ceil(
@@ -1692,6 +2231,7 @@ function getSaturdayNumber(date) {
 
 function getRegularPrograms(date) {
 
+
   const day =
     date.getDay();
 
@@ -1706,6 +2246,7 @@ function getRegularPrograms(date) {
       getSaturdayNumber(
         date
       );
+
 
 
     return (
@@ -1748,7 +2289,9 @@ function getRegularPrograms(date) {
 
 async function loadSpecialEvents() {
 
+
   try {
+
 
     const response =
       await fetch(
@@ -1757,10 +2300,13 @@ async function loadSpecialEvents() {
             .specialEventsSheetURL
         ),
         {
+
           cache:
             "no-store"
+
         }
       );
+
 
 
     if (
@@ -1786,6 +2332,7 @@ async function loadSpecialEvents() {
       rows.length <
       2
     ) {
+
 
       specialEvents =
         [];
@@ -1896,7 +2443,9 @@ async function loadSpecialEvents() {
 
 
 
-      if (!date) {
+      if (
+        !date
+      ) {
 
         continue;
 
@@ -1955,7 +2504,10 @@ async function loadSpecialEvents() {
   }
 
 
-  catch (error) {
+  catch (
+    error
+  ) {
+
 
     console.error(
       "Special Event Error:",
@@ -1981,6 +2533,7 @@ async function loadSpecialEvents() {
 
 function renderTodaySchedule() {
 
+
   if (
     !scheduleList
   ) {
@@ -1988,6 +2541,7 @@ function renderTodaySchedule() {
     return;
 
   }
+
 
 
   const today =
@@ -2005,15 +2559,12 @@ function renderTodaySchedule() {
 
 
 
-  // -----------------------------------------
-  // REGULAR PROGRAMS
-  // -----------------------------------------
-
   getRegularPrograms(
     today
   )
   .forEach(
     program => {
+
 
       programs.push(
         {
@@ -2035,16 +2586,14 @@ function renderTodaySchedule() {
 
 
 
-  // -----------------------------------------
-  // SPECIAL EVENTS
-  // -----------------------------------------
-
   specialEvents
+
     .filter(
       event =>
         event.date ===
         todayKey
     )
+
     .forEach(
       event => {
 
@@ -2075,6 +2624,7 @@ function renderTodaySchedule() {
           !duplicate
         ) {
 
+
           programs.push(
             {
 
@@ -2088,7 +2638,8 @@ function renderTodaySchedule() {
 
               note:
                 (
-                  event.event &&
+                  event.event
+                  &&
                   event.event !==
                   title
                 )
@@ -2112,12 +2663,13 @@ function renderTodaySchedule() {
     0
   ) {
 
+
     scheduleList.innerHTML =
       `
         <div class="empty-schedule">
-
-          ${templeContent.noProgramMessage}
-
+          ${escapeHTML(
+            templeContent.noProgramMessage
+          )}
         </div>
       `;
 
@@ -2136,44 +2688,32 @@ function renderTodaySchedule() {
 
             <article class="schedule-item">
 
-
               <div class="schedule-time">
-
                 ${escapeHTML(
                   program.time ||
                   "Temple Program"
                 )}
-
               </div>
 
-
               <div class="schedule-name">
-
                 ${escapeHTML(
                   program.title
                 )}
-
               </div>
-
 
               ${
                 program.note
                   ?
                   `
-
                     <div class="schedule-note">
-
                       ${escapeHTML(
                         program.note
                       )}
-
                     </div>
-
                   `
                   :
                   ""
               }
-
 
             </article>
 
@@ -2186,10 +2726,11 @@ function renderTodaySchedule() {
 
 
 // ==========================================================
-// HTML ESCAPE
+// ESCAPE HTML
 // ==========================================================
 
 function escapeHTML(value) {
+
 
   return String(
     value ||
@@ -2231,6 +2772,7 @@ function escapeHTML(value) {
 
 function showUpcomingFallback() {
 
+
   if (
     !upcomingEventsText
   ) {
@@ -2238,6 +2780,7 @@ function showUpcomingFallback() {
     return;
 
   }
+
 
 
   upcomingEventsText.textContent =
@@ -2252,12 +2795,14 @@ function showUpcomingFallback() {
 
 
 // ==========================================================
-// LOAD UPCOMING EVENTS
+// UPCOMING EVENTS
 // ==========================================================
 
 async function loadUpcomingEvents() {
 
+
   try {
+
 
     const response =
       await fetch(
@@ -2266,10 +2811,13 @@ async function loadUpcomingEvents() {
             .upcomingEventsSheetURL
         ),
         {
+
           cache:
             "no-store"
+
         }
       );
+
 
 
     if (
@@ -2296,7 +2844,9 @@ async function loadUpcomingEvents() {
       2
     ) {
 
+
       showUpcomingFallback();
+
 
       return;
 
@@ -2548,7 +3098,9 @@ async function loadUpcomingEvents() {
       !events.length
     ) {
 
+
       showUpcomingFallback();
+
 
       return;
 
@@ -2583,11 +3135,13 @@ async function loadUpcomingEvents() {
               event.time
             ) {
 
+
               return (
                 `${eventDate} – ${event.title} (${event.time})`
               );
 
             }
+
 
 
             return (
@@ -2603,7 +3157,10 @@ async function loadUpcomingEvents() {
   }
 
 
-  catch (error) {
+  catch (
+    error
+  ) {
+
 
     console.error(
       "Upcoming Events Error:",
@@ -2620,13 +3177,11 @@ async function loadUpcomingEvents() {
 
 
 // ==========================================================
-// INITIALIZATION
+// INITIALIZE TEMPLE TV
 // ==========================================================
 
 async function initializeTempleTV() {
 
-
-  // Immediate fallbacks
 
   loadLocalAnnouncements();
 
@@ -2638,8 +3193,6 @@ async function initializeTempleTV() {
 
 
 
-  // Load everything remotely
-
   await Promise.allSettled(
     [
 
@@ -2649,12 +3202,18 @@ async function initializeTempleTV() {
 
       loadSpecialEvents(),
 
-      loadUpcomingEvents(),
-
-      loadBGMPlaylist()
+      loadUpcomingEvents()
 
     ]
   );
+
+
+
+  /*
+     Load BGM after main screen has initialized.
+  */
+
+  await loadBGMPlaylist();
 
 }
 
@@ -2665,7 +3224,7 @@ initializeTempleTV();
 
 
 // ==========================================================
-// FLYER ROTATION TIMER
+// FLYER ROTATION
 // ==========================================================
 
 setInterval(
@@ -2673,14 +3232,16 @@ setInterval(
 
   templeContent
     .flyerDuration
+
   *
+
   1000
 );
 
 
 
 // ==========================================================
-// REMOTE REFRESH TIMER
+// REMOTE REFRESH
 // ==========================================================
 
 const remoteRefreshMilliseconds =
@@ -2715,11 +3276,10 @@ setInterval(
 
 
     /*
-       This refreshes the BGM playlist.
+       BGM playlist refreshes too.
 
-       IMPORTANT:
-       Music will NOT restart unless
-       playlist data actually changed.
+       Current music will not restart
+       unless playlist changed.
     */
 
     loadBGMPlaylist();
@@ -2728,7 +3288,6 @@ setInterval(
   },
 
   remoteRefreshMilliseconds
-
 );
 
 
