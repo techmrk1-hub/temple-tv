@@ -1,7 +1,6 @@
 /* ==========================================================
    CHINMAYA SARASWATI ASHRAM - DEVI TEMPLE
-   CORPORATE DIGITAL SIGNAGE
-   FINAL HEADER + CENTERED LOGO + CLEAN CLOCK
+   DIGITAL SIGNAGE
 ========================================================== */
 
 
@@ -117,10 +116,6 @@ body {
 }
 
 
-/* ==========================================================
-   HEADER BRAND WRAPPER
-========================================================== */
-
 .brand-zone {
   display: contents;
 }
@@ -128,7 +123,6 @@ body {
 
 /* ==========================================================
    LOGO
-   Properly centered in left header column
 ========================================================== */
 
 .temple-logo {
@@ -153,13 +147,12 @@ body {
   border-radius: 8px;
 
   box-shadow:
-    0 2px 6px
-    rgba(0, 0, 0, 0.18);
+    0 2px 6px rgba(0, 0, 0, 0.18);
 }
 
 
 /* ==========================================================
-   CENTER TITLE
+   HEADER TITLE
 ========================================================== */
 
 .brand-copy {
@@ -200,10 +193,6 @@ body {
 }
 
 
-/* ==========================================================
-   DEVI TEMPLE + LOCATION
-========================================================== */
-
 .temple-meta {
   display: flex;
 
@@ -238,7 +227,6 @@ body {
 
 .temple-meta span:first-child {
   font-weight: 800;
-
   color: #ffd86b;
 }
 
@@ -255,8 +243,7 @@ body {
 
 
 /* ==========================================================
-   CLOCK / DATE
-   Cleaner corporate-style font
+   CLOCK
 ========================================================== */
 
 .time-zone {
@@ -329,7 +316,7 @@ body {
 
 
 /* ==========================================================
-   MAIN CONTENT GRID
+   MAIN CONTENT
 ========================================================== */
 
 .content-grid {
@@ -341,9 +328,9 @@ body {
   grid-template-columns:
     minmax(0, 1fr)
     clamp(
-      265px,
-      19vw,
-      330px
+      285px,
+      20vw,
+      345px
     );
 
   gap: 14px;
@@ -357,7 +344,7 @@ body {
 
 
 /* ==========================================================
-   MAIN FEATURE PANEL
+   FLYER PANEL
 ========================================================== */
 
 .feature-panel {
@@ -431,7 +418,7 @@ body {
 
 
 /* ==========================================================
-   RIGHT INFORMATION RAIL
+   RIGHT PANEL
 ========================================================== */
 
 .info-rail {
@@ -443,19 +430,17 @@ body {
   overflow: hidden;
 
   padding:
-    22px
-    20px;
+    14px
+    16px;
 
   background:
-    var(--ivory);
+    #fffdf7;
 
   border:
-    1px solid
-    var(--line);
+    1px solid #d8c6a1;
 
   border-top:
-    4px solid
-    var(--gold);
+    4px solid var(--gold);
 
   border-radius:
     var(--radius);
@@ -464,10 +449,6 @@ body {
     var(--shadow);
 }
 
-
-/* ==========================================================
-   RIGHT RAIL SECTIONS
-========================================================== */
 
 .rail-section {
   width: 100%;
@@ -489,8 +470,422 @@ body {
 
 
 /* ==========================================================
-   SECTION HEADING
+   TODAY'S SCHEDULE CARD
 ========================================================== */
+
+.schedule-card {
+  position: relative;
+
+  padding:
+    4px
+    4px
+    12px;
+
+  color: #231f1c;
+}
+
+
+/* ==========================================================
+   SCHEDULE ORNAMENT
+========================================================== */
+
+.schedule-ornament {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  height: 30px;
+
+  margin-bottom: 1px;
+}
+
+
+.schedule-ornament span {
+  position: relative;
+
+  width: 72px;
+  height: 23px;
+
+  display: block;
+}
+
+
+.schedule-ornament span::before {
+  content: "❧";
+
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -50%)
+    rotate(-90deg);
+
+  color: #9b6d36;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 35px;
+
+  line-height: 1;
+}
+
+
+/* ==========================================================
+   SCHEDULE HEADING
+========================================================== */
+
+.schedule-heading {
+  text-align: center;
+
+  color: #57170f;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      20px,
+      1.3vw,
+      25px
+    );
+
+  font-weight: 700;
+
+  line-height: 1.05;
+
+  letter-spacing: 0.015em;
+
+  white-space: nowrap;
+}
+
+
+/* ==========================================================
+   DECORATIVE DIVIDER
+========================================================== */
+
+.schedule-heading-divider {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 88%;
+
+  height: 17px;
+
+  margin:
+    4px auto
+    15px;
+}
+
+
+.schedule-heading-divider::before,
+.schedule-heading-divider::after {
+  content: "";
+
+  flex: 1;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      #b99761
+    );
+}
+
+
+.schedule-heading-divider::after {
+  background:
+    linear-gradient(
+      90deg,
+      #b99761,
+      transparent
+    );
+}
+
+
+.divider-diamond {
+  width: 7px;
+  height: 7px;
+
+  margin:
+    0
+    7px;
+
+  background: #a67a3c;
+
+  transform:
+    rotate(45deg);
+}
+
+
+/* ==========================================================
+   SCHEDULE LIST
+========================================================== */
+
+.schedule-list {
+  width: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 18px;
+
+  padding:
+    0
+    2px;
+}
+
+
+/* ==========================================================
+   SCHEDULE ROW
+========================================================== */
+
+.schedule-item {
+  display: grid;
+
+  grid-template-columns:
+    88px
+    2px
+    minmax(0, 1fr);
+
+  align-items: start;
+
+  column-gap: 10px;
+
+  padding: 0;
+
+  border: none;
+}
+
+
+/* vertical gold line */
+
+.schedule-separator {
+  grid-column: 2;
+
+  width: 2px;
+  height: 100%;
+
+  min-height: 52px;
+
+  align-self: stretch;
+
+  background:
+    linear-gradient(
+      180deg,
+      #d8ad4a,
+      #b9862b
+    );
+
+  border-radius: 2px;
+}
+
+
+/* ==========================================================
+   TIME
+========================================================== */
+
+.schedule-time {
+  grid-column: 1;
+
+  padding-top: 1px;
+
+  color: #161616;
+
+  font-family:
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+  font-size:
+    clamp(
+      17px,
+      1.08vw,
+      21px
+    );
+
+  font-weight: 800;
+
+  line-height: 1.15;
+
+  text-align: right;
+
+  white-space: nowrap;
+}
+
+
+/* ==========================================================
+   PROGRAM CONTENT
+========================================================== */
+
+.schedule-content {
+  grid-column: 3;
+
+  min-width: 0;
+}
+
+
+.schedule-name {
+  color: #24201d;
+
+  font-family:
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+  font-size:
+    clamp(
+      17px,
+      1.08vw,
+      21px
+    );
+
+  font-weight: 600;
+
+  line-height: 1.2;
+
+  overflow-wrap: anywhere;
+}
+
+
+.schedule-note {
+  margin-top: 5px;
+
+  color: #74675f;
+
+  font-size:
+    clamp(
+      11px,
+      0.72vw,
+      14px
+    );
+
+  font-weight: 500;
+
+  line-height: 1.25;
+}
+
+
+/* ==========================================================
+   COMPLETED STATUS
+========================================================== */
+
+.schedule-status {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #70635b;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      14px,
+      0.9vw,
+      17px
+    );
+
+  font-weight: 600;
+
+  line-height: 1.1;
+}
+
+
+.schedule-item.is-completed {
+  opacity: 0.74;
+}
+
+
+.schedule-item.is-completed .schedule-name {
+  color: #5d554f;
+}
+
+
+/* ==========================================================
+   CURRENT PROGRAM
+========================================================== */
+
+.schedule-item.is-current .schedule-time,
+.schedule-item.is-current .schedule-name {
+  color: #6f160e;
+}
+
+
+.schedule-item.is-current .schedule-separator {
+  background:
+    linear-gradient(
+      180deg,
+      #f0c960,
+      #c49329
+    );
+
+  width: 3px;
+}
+
+
+/* ==========================================================
+   EMPTY SCHEDULE
+========================================================== */
+
+.empty-schedule {
+  padding:
+    12px
+    8px;
+
+  color: #73675f;
+
+  font-size:
+    clamp(
+      14px,
+      0.9vw,
+      17px
+    );
+
+  font-weight: 500;
+
+  line-height: 1.4;
+
+  text-align: center;
+}
+
+
+/* ==========================================================
+   COMMUNITY
+========================================================== */
+
+.community-divider {
+  width: 100%;
+  height: 1px;
+
+  margin:
+    12px
+    0
+    16px;
+
+  background:
+    #dfd1b7;
+}
+
 
 .section-eyebrow {
   color:
@@ -510,116 +905,16 @@ body {
 }
 
 
-.section-rule {
-  width: 100%;
-  height: 1px;
-
-  margin:
-    13px
-    0
-    16px;
-
-  background:
-    var(--line);
-}
-
-
-/* ==========================================================
-   TODAY SCHEDULE
-========================================================== */
-
-.schedule-list {
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 19px;
-}
-
-
-.schedule-item {
-  position: relative;
-
-  padding-left: 15px;
-
-  border-left:
-    3px solid
-    var(--gold);
-}
-
-
-.schedule-time {
-  margin-bottom: 4px;
-
-  color:
-    var(--maroon);
-
-  font-size:
-    clamp(
-      17px,
-      1.05vw,
-      20px
-    );
-
-  font-weight: 800;
-}
-
-
-.schedule-name {
-  color:
-    var(--ink);
-
-  font-size:
-    clamp(
-      18px,
-      1.15vw,
-      22px
-    );
-
-  font-weight: 650;
-
-  line-height: 1.18;
-}
-
-
-.schedule-note {
-  margin-top: 4px;
-
-  color:
-    var(--muted);
-
-  font-size:
-    clamp(
-      11px,
-      0.7vw,
-      13px
-    );
-
-  line-height: 1.25;
-}
-
-
-.empty-schedule {
-  color:
-    var(--muted);
-
-  font-size:
-    clamp(
-      14px,
-      0.9vw,
-      17px
-    );
-
-  line-height: 1.4;
-}
-
-
-/* ==========================================================
-   COMMUNITY / QR
-========================================================== */
-
 .community-heading {
   margin-bottom: 12px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  letter-spacing:
+    0.03em;
 }
 
 
@@ -660,7 +955,7 @@ body {
 
 
 /* ==========================================================
-   COMMON TICKERS
+   TICKERS
 ========================================================== */
 
 .ticker-row {
@@ -802,7 +1097,7 @@ body {
 
 
 /* ==========================================================
-   SCROLL ANIMATION
+   TICKER ANIMATION
 ========================================================== */
 
 @keyframes scroll-left {
@@ -825,7 +1120,7 @@ body {
 
 
 /* ==========================================================
-   1680 x 1050 OPTIMIZATION
+   1680 x 1050
 ========================================================== */
 
 @media (max-width: 1700px) {
@@ -890,7 +1185,7 @@ body {
   .content-grid {
     grid-template-columns:
       minmax(0, 1fr)
-      280px;
+      300px;
 
     gap: 12px;
 
@@ -902,8 +1197,23 @@ body {
 
   .info-rail {
     padding:
-      18px
-      16px;
+      10px
+      12px;
+  }
+
+
+  .schedule-item {
+    grid-template-columns:
+      80px
+      2px
+      minmax(0, 1fr);
+
+    column-gap: 8px;
+  }
+
+
+  .schedule-list {
+    gap: 15px;
   }
 
 }
@@ -947,13 +1257,51 @@ body {
 
   .info-rail {
     padding:
-      14px
-      14px;
+      8px
+      10px;
+  }
+
+
+  .schedule-ornament {
+    height: 23px;
+  }
+
+
+  .schedule-ornament span::before {
+    font-size: 28px;
+  }
+
+
+  .schedule-heading-divider {
+    margin-bottom: 9px;
   }
 
 
   .schedule-list {
-    gap: 13px;
+    gap: 11px;
+  }
+
+
+  .schedule-item {
+    grid-template-columns:
+      74px
+      2px
+      minmax(0, 1fr);
+
+    column-gap: 7px;
+  }
+
+
+  .schedule-separator {
+    min-height: 43px;
+  }
+
+
+  .community-divider {
+    margin:
+      8px
+      0
+      10px;
   }
 
 }
