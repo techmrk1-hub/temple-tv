@@ -1,48 +1,62 @@
 /* ==========================================================
-   TEMPLE TV - RESPONSIVE DIGITAL SIGNAGE
-   Designed for TV viewing from approximately 6+ feet
-   Automatically adapts to browser/screen resolution
+   TEMPLE TV DIGITAL SIGNAGE
+   Chinmaya Saraswati Ashram - Devi Temple
 ========================================================== */
 
-
-/* ==========================================================
-   GLOBAL RESET
-========================================================== */
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
+
 
 html,
 body {
-    margin: 0;
-    padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
 
-    width: 100%;
-    height: 100%;
 
-    overflow: hidden;
+body {
+  font-family:
+    "Segoe UI",
+    Arial,
+    Helvetica,
+    sans-serif;
 
-    font-family: Arial, Helvetica, sans-serif;
+  background: #120501;
 
-    background: #111;
+  color: #3c160d;
 }
 
 
 /* ==========================================================
-   FULL TV SCREEN
+   MAIN SCREEN
 ========================================================== */
 
 .tv-screen {
-    width: 100vw;
-    height: 100vh;
 
-    display: flex;
-    flex-direction: column;
+  width: 100vw;
+  height: 100vh;
 
-    overflow: hidden;
+  display: grid;
 
-    background: #f8edcf;
+  grid-template-rows:
+    clamp(78px, 11vh, 128px)
+    minmax(0, 1fr)
+    clamp(44px, 6.2vh, 68px)
+    clamp(44px, 6.2vh, 68px);
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff9e9,
+      #f6ecd0
+    );
+
+  overflow: hidden;
 }
 
 
@@ -51,211 +65,236 @@ body {
 ========================================================== */
 
 .header {
-    height: clamp(105px, 14vh, 150px);
 
-    flex-shrink: 0;
+  min-width: 0;
 
-    display: grid;
+  display: flex;
 
-    grid-template-columns:
-        clamp(100px, 10vw, 170px)
-        minmax(0, 1fr)
-        clamp(180px, 16vw, 280px);
+  align-items: center;
 
-    align-items: center;
+  justify-content:
+    space-between;
 
-    gap: clamp(8px, 1vw, 20px);
+  padding:
+    clamp(8px, 1.2vh, 14px)
+    clamp(18px, 2.2vw, 40px);
 
-    padding:
-        clamp(6px, 0.7vh, 12px)
-        clamp(18px, 2vw, 40px);
+  background:
+    linear-gradient(
+      90deg,
+      #671408,
+      #8d2011,
+      #671408
+    );
 
-    background:
-        linear-gradient(
-            90deg,
-            #7a160d,
-            #b72a18,
-            #7a160d
-        );
+  color: white;
 
-    color: white;
-
-    border-bottom:
-        clamp(3px, 0.3vh, 5px)
-        solid
-        #e9b949;
+  border-bottom:
+    clamp(3px, 0.4vh, 6px)
+    solid
+    #d9a72e;
 }
 
 
 /* ==========================================================
-   TEMPLE LOGO
+   TEMPLE BRAND
 ========================================================== */
+
+.temple-brand {
+
+  display: flex;
+
+  align-items: center;
+
+  min-width: 0;
+
+  gap:
+    clamp(12px, 1.4vw, 24px);
+
+}
+
 
 .temple-logo {
-    width: 100%;
-    height: clamp(80px, 11vh, 120px);
 
-    object-fit: contain;
+  width:
+    clamp(58px, 7vh, 92px);
 
-    background: white;
+  height:
+    clamp(58px, 7vh, 92px);
 
-    border-radius:
-        clamp(6px, 0.7vw, 12px);
+  object-fit: contain;
 
-    padding:
-        clamp(3px, 0.4vw, 6px);
+  flex-shrink: 0;
+
 }
 
 
-/* ==========================================================
-   TEMPLE TITLE
-========================================================== */
+.temple-title-area {
+
+  min-width: 0;
+
+}
+
 
 .temple-title {
-    min-width: 0;
 
-    text-align: center;
+  font-weight: 800;
+
+  font-size:
+    clamp(
+      19px,
+      2.25vw,
+      42px
+    );
+
+  line-height: 1;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
 }
 
-.temple-title h1 {
-    margin: 0;
 
-    font-family: Georgia, serif;
+.temple-subtitle {
 
-    font-size:
-        clamp(
-            30px,
-            3vw,
-            58px
-        );
+  margin-top:
+    clamp(3px, 0.45vh, 7px);
 
-    line-height: 1;
+  font-weight: 700;
 
-    letter-spacing:
-        clamp(
-            0px,
-            0.05vw,
-            1px
-        );
+  color: #ffd86e;
 
-    white-space: nowrap;
+  font-size:
+    clamp(
+      14px,
+      1.5vw,
+      28px
+    );
+
 }
 
-.temple-title h2 {
-    margin:
-        clamp(3px, 0.4vh, 6px)
-        0
-        0;
 
-    font-family: Georgia, serif;
+.temple-address {
 
-    font-size:
-        clamp(
-            23px,
-            2.2vw,
-            42px
-        );
+  margin-top:
+    clamp(2px, 0.3vh, 5px);
 
-    line-height: 1;
+  font-size:
+    clamp(
+      9px,
+      0.8vw,
+      15px
+    );
 
-    color: #ffd86b;
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.9
+    );
 
-    white-space: nowrap;
-}
-
-.temple-title p {
-    margin:
-        clamp(4px, 0.5vh, 8px)
-        0
-        0;
-
-    font-size:
-        clamp(
-            15px,
-            1.25vw,
-            24px
-        );
-
-    line-height: 1.1;
-
-    font-weight: 600;
 }
 
 
 /* ==========================================================
-   CLOCK
+   HEADER TIME
 ========================================================== */
 
-.clock {
-    min-width: 0;
+.header-time-area {
 
-    text-align: right;
+  text-align: right;
 
-    font-size:
-        clamp(
-            23px,
-            2.1vw,
-            40px
-        );
+  padding-left:
+    clamp(14px, 2vw, 30px);
 
-    font-weight: bold;
+  flex-shrink: 0;
 
-    color: #ffd86b;
-
-    white-space: nowrap;
 }
 
 
-/* ==========================================================
-   MAIN DISPLAY AREA
+.clock {
 
-   GRID automatically gives:
-   LEFT  = Flyer
-   RIGHT = QR + Today Card
+  font-weight: 800;
+
+  color: #ffd86e;
+
+  font-size:
+    clamp(
+      20px,
+      2.2vw,
+      38px
+    );
+
+  white-space: nowrap;
+
+}
+
+
+.header-date {
+
+  margin-top:
+    clamp(2px, 0.3vh, 5px);
+
+  font-weight: 500;
+
+  font-size:
+    clamp(
+      9px,
+      0.82vw,
+      15px
+    );
+
+  white-space: nowrap;
+
+}
+
+
+
+/* ==========================================================
+   MAIN AREA
 ========================================================== */
 
 .main-area {
-    flex: 1;
 
-    min-height: 0;
-    min-width: 0;
+  min-height: 0;
 
-    width: 100%;
+  min-width: 0;
 
-    display: grid;
+  display: grid;
 
-    grid-template-columns:
-        minmax(0, 1fr)
-        clamp(210px, 15vw, 300px);
+  grid-template-columns:
+    minmax(0, 1fr)
+    clamp(
+      230px,
+      23vw,
+      390px
+    );
 
-    gap:
-        clamp(
-            12px,
-            1.5vw,
-            30px
-        );
+  gap:
+    clamp(
+      10px,
+      1.15vw,
+      20px
+    );
 
-    padding:
-        clamp(
-            8px,
-            1vh,
-            16px
-        )
-        clamp(
-            12px,
-            1.5vw,
-            28px
-        );
+  padding:
+    clamp(
+      9px,
+      1.15vh,
+      18px
+    )
+    clamp(
+      12px,
+      1.3vw,
+      24px
+    );
 
-    overflow: hidden;
-
-    background:
-        radial-gradient(
-            circle,
-            #fffdf7,
-            #f5e6bd
-        );
 }
+
 
 
 /* ==========================================================
@@ -263,57 +302,129 @@ body {
 ========================================================== */
 
 .flyer-section {
-    min-width: 0;
-    min-height: 0;
 
-    width: 100%;
-    height: 100%;
+  position: relative;
 
-    display: flex;
+  min-width: 0;
 
-    justify-content: center;
-    align-items: center;
+  min-height: 0;
 
-    overflow: hidden;
+  display: flex;
 
-    padding: 0;
+  justify-content: center;
+
+  align-items: center;
+
+  overflow: hidden;
+
+  border-radius:
+    clamp(
+      8px,
+      0.8vw,
+      15px
+    );
+
+  background: #fff;
+
+  border:
+    clamp(
+      2px,
+      0.18vw,
+      4px
+    )
+    solid
+    rgba(
+      122,
+      22,
+      13,
+      0.18
+    );
+
+  box-shadow:
+    0
+    3px
+    12px
+    rgba(
+      0,
+      0,
+      0,
+      0.13
+    );
+
 }
 
 
 /* ==========================================================
-   FLYER IMAGE
-
-   Never stretches.
-   Never crops.
-   Automatically uses maximum available area.
+   FLYER
 ========================================================== */
 
-#flyer {
-    display: block;
+.flyer-image {
 
-    width: auto;
-    height: auto;
+  width: auto;
 
-    max-width: 100%;
-    max-height: 100%;
+  height: auto;
 
-    object-fit: contain;
+  max-width: 100%;
 
-    opacity: 1;
+  max-height: 100%;
 
-    transition:
-        opacity
-        0.7s
-        ease-in-out;
+  object-fit: contain;
 
-    filter:
-        drop-shadow(
-            0
-            5px
-            12px
-            rgba(0, 0, 0, 0.25)
-        );
+  object-position: center;
+
+  opacity: 0;
+
+  transition:
+    opacity 0.6s ease;
+
 }
+
+
+.flyer-image.flyer-visible {
+
+  opacity: 1;
+
+}
+
+
+/* Landscape */
+
+.flyer-image.flyer-landscape {
+
+  width: 100%;
+
+  height: auto;
+
+  max-height: 100%;
+
+}
+
+
+/* Portrait */
+
+.flyer-image.flyer-portrait {
+
+  width: auto;
+
+  height: 100%;
+
+  max-width: 100%;
+
+}
+
+
+/* Square */
+
+.flyer-image.flyer-square {
+
+  width: auto;
+
+  height: 100%;
+
+  max-width: 100%;
+
+}
+
 
 
 /* ==========================================================
@@ -321,25 +432,123 @@ body {
 ========================================================== */
 
 .right-panel {
-    position: static;
 
-    width: 100%;
-    height: 100%;
+  min-width: 0;
 
-    display: flex;
+  min-height: 0;
 
-    flex-direction: column;
+  display: grid;
 
-    justify-content: center;
+  grid-template-rows:
+    minmax(
+      0,
+      1fr
+    )
+    minmax(
+      0,
+      1fr
+    );
 
-    gap:
-        clamp(
-            10px,
-            1.3vh,
-            18px
-        );
+  gap:
+    clamp(
+      10px,
+      1vh,
+      16px
+    );
 
-    transform: none;
+}
+
+
+/* ==========================================================
+   INFO CARDS
+========================================================== */
+
+.info-card {
+
+  min-height: 0;
+
+  overflow: hidden;
+
+  border-radius:
+    clamp(
+      10px,
+      0.85vw,
+      18px
+    );
+
+  border:
+    clamp(
+      2px,
+      0.18vw,
+      4px
+    )
+    solid
+    #d3a42b;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff,
+      #fff7da
+    );
+
+  box-shadow:
+    0
+    3px
+    12px
+    rgba(
+      0,
+      0,
+      0,
+      0.12
+    );
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding:
+    clamp(
+      10px,
+      1vh,
+      17px
+    );
+
+}
+
+
+/* ==========================================================
+   CARD TITLES
+========================================================== */
+
+.card-title {
+
+  width: 100%;
+
+  text-align: center;
+
+  font-size:
+    clamp(
+      14px,
+      1.35vw,
+      24px
+    );
+
+  font-weight: 800;
+
+  color: #78160d;
+
+  margin-bottom:
+    clamp(
+      5px,
+      0.65vh,
+      10px
+    );
+
 }
 
 
@@ -347,810 +556,487 @@ body {
    QR CARD
 ========================================================== */
 
-.qr-card {
-    width: 100%;
+.qr-image {
 
-    flex-shrink: 0;
+  width:
+    min(
+      58%,
+      170px
+    );
 
-    text-align: center;
+  max-height:
+    60%;
 
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            0.97
-        );
+  object-fit: contain;
 
-    padding:
-        clamp(
-            8px,
-            1vh,
-            14px
-        );
-
-    border-radius:
-        clamp(
-            10px,
-            1vw,
-            16px
-        );
-
-    border:
-        clamp(
-            2px,
-            0.2vw,
-            3px
-        )
-        solid
-        #e9b949;
-
-    box-shadow:
-        0
-        5px
-        16px
-        rgba(
-            0,
-            0,
-            0,
-            0.18
-        );
 }
+
+
+.qr-message {
+
+  margin-top:
+    clamp(
+      5px,
+      0.55vh,
+      10px
+    );
+
+  text-align: center;
+
+  font-weight: 600;
+
+  color: #4a261d;
+
+  font-size:
+    clamp(
+      10px,
+      0.9vw,
+      16px
+    );
+
+}
+
 
 
 /* ==========================================================
-   QR TITLE
-========================================================== */
-
-.qr-title {
-    font-family: Georgia, serif;
-
-    font-size:
-        clamp(
-            15px,
-            1.15vw,
-            22px
-        );
-
-    font-weight: bold;
-
-    line-height: 1.1;
-
-    color: #7a160d;
-
-    margin-bottom:
-        clamp(
-            5px,
-            0.6vh,
-            9px
-        );
-}
-
-
-/* ==========================================================
-   QR IMAGE
-========================================================== */
-
-.whatsapp-qr {
-    display: block;
-
-    margin: 0 auto;
-
-    width:
-        clamp(
-            115px,
-            9vw,
-            175px
-        );
-
-    aspect-ratio: 1 / 1;
-
-    height: auto;
-
-    object-fit: contain;
-
-    background: white;
-
-    padding: 3px;
-
-    border-radius: 6px;
-
-    border:
-        1px
-        solid
-        #ddd;
-}
-
-
-/* ==========================================================
-   QR TEXT
-========================================================== */
-
-.qr-text {
-    margin-top:
-        clamp(
-            5px,
-            0.6vh,
-            9px
-        );
-
-    color: #351006;
-
-    font-size:
-        clamp(
-            12px,
-            0.9vw,
-            17px
-        );
-
-    font-weight: 600;
-
-    line-height: 1.2;
-}
-
-.qr-footer {
-    margin-top:
-        clamp(
-            4px,
-            0.5vh,
-            7px
-        );
-
-    color: #7a160d;
-
-    font-family: Georgia, serif;
-
-    font-size:
-        clamp(
-            13px,
-            1vw,
-            18px
-        );
-
-    font-weight: bold;
-}
-
-
-/* ==========================================================
-   TODAY AT THE TEMPLE CARD
+   TODAY CARD
 ========================================================== */
 
 .today-card {
-    width: 100%;
 
-    text-align: center;
+  text-align: center;
 
-    background:
-        rgba(
-            255,
-            250,
-            230,
-            0.98
-        );
-
-    padding:
-        clamp(
-            10px,
-            1.1vh,
-            16px
-        );
-
-    border-radius:
-        clamp(
-            10px,
-            1vw,
-            16px
-        );
-
-    border:
-        clamp(
-            2px,
-            0.2vw,
-            3px
-        )
-        solid
-        #7a160d;
-
-    box-shadow:
-        0
-        5px
-        16px
-        rgba(
-            0,
-            0,
-            0,
-            0.15
-        );
 }
 
-
-/* ==========================================================
-   TODAY HEADING
-========================================================== */
-
-.today-heading {
-    font-family: Georgia, serif;
-
-    font-size:
-        clamp(
-            16px,
-            1.2vw,
-            23px
-        );
-
-    font-weight: bold;
-
-    color: #7a160d;
-
-    border-bottom:
-        2px
-        solid
-        #e9b949;
-
-    padding-bottom:
-        clamp(
-            4px,
-            0.5vh,
-            7px
-        );
-
-    margin-bottom:
-        clamp(
-            5px,
-            0.6vh,
-            8px
-        );
-}
-
-
-/* ==========================================================
-   DAY
-========================================================== */
 
 .today-day {
-    font-size:
-        clamp(
-            14px,
-            1vw,
-            19px
-        );
 
-    font-weight: bold;
+  color: #9b741a;
 
-    color: #555;
+  font-weight: 700;
 
-    margin-bottom:
-        clamp(
-            4px,
-            0.5vh,
-            7px
-        );
+  text-transform: uppercase;
+
+  font-size:
+    clamp(
+      12px,
+      1.1vw,
+      20px
+    );
+
+  margin-bottom:
+    clamp(
+      4px,
+      0.45vh,
+      8px
+    );
+
 }
 
-
-/* ==========================================================
-   PROGRAM
-========================================================== */
 
 .today-program {
-    font-family: Georgia, serif;
 
-    font-size:
-        clamp(
-            19px,
-            1.45vw,
-            28px
-        );
+  font-weight: 800;
 
-    font-weight: bold;
+  color: #65150c;
 
-    color: #351006;
+  line-height: 1.15;
 
-    line-height: 1.15;
+  font-size:
+    clamp(
+      17px,
+      1.8vw,
+      31px
+    );
+
 }
 
-
-/* ==========================================================
-   PROGRAM TIME
-========================================================== */
 
 .today-time {
-    margin-top:
-        clamp(
-            5px,
-            0.6vh,
-            8px
-        );
 
-    font-size:
-        clamp(
-            20px,
-            1.55vw,
-            30px
-        );
+  margin-top:
+    clamp(
+      7px,
+      0.7vh,
+      13px
+    );
 
-    font-weight: bold;
+  font-weight: 800;
 
-    color: #b72a18;
+  color: #9b741a;
+
+  font-size:
+    clamp(
+      17px,
+      1.55vw,
+      27px
+    );
+
 }
 
-
-/* ==========================================================
-   TODAY MESSAGE
-========================================================== */
 
 .today-message {
-    margin-top:
-        clamp(
-            5px,
-            0.6vh,
-            8px
-        );
 
-    font-size:
-        clamp(
-            12px,
-            0.9vw,
-            17px
-        );
+  margin-top:
+    clamp(
+      5px,
+      0.55vh,
+      10px
+    );
 
-    line-height: 1.25;
+  font-weight: 600;
 
-    color: #555;
+  line-height: 1.18;
+
+  font-size:
+    clamp(
+      10px,
+      0.95vw,
+      17px
+    );
+
+  color: #493128;
+
 }
+
 
 
 /* ==========================================================
-   ANNOUNCEMENT BAR
+   COMMON TICKER
 ========================================================== */
 
-.announcement-bar {
-    height:
-        clamp(
-            50px,
-            6vh,
-            70px
-        );
+.ticker-row {
 
-    flex-shrink: 0;
+  width: 100%;
 
-    display: flex;
+  min-width: 0;
 
-    align-items: center;
+  display: grid;
 
-    background: #351006;
+  grid-template-columns:
+    clamp(
+      170px,
+      17vw,
+      310px
+    )
+    minmax(
+      0,
+      1fr
+    );
 
-    color: white;
+  overflow: hidden;
 
-    border-top:
-        3px
-        solid
-        #e9b949;
 }
 
 
-/* ==========================================================
-   ANNOUNCEMENT LABEL
-========================================================== */
+.ticker-label {
 
-.announcement-label {
-    height: 100%;
+  display: flex;
 
-    display: flex;
+  justify-content: center;
 
-    align-items: center;
+  align-items: center;
 
-    padding:
-        0
-        clamp(
-            16px,
-            1.5vw,
-            28px
-        );
+  text-align: center;
 
-    background: #e9b949;
+  padding: 0 8px;
 
-    color: #351006;
+  font-weight: 900;
 
-    font-weight: bold;
+  letter-spacing:
+    0.02em;
 
-    font-size:
-        clamp(
-            17px,
-            1.25vw,
-            24px
-        );
+  font-size:
+    clamp(
+      15px,
+      1.45vw,
+      26px
+    );
 
-    white-space: nowrap;
+  white-space: nowrap;
+
+  z-index: 2;
+
 }
 
 
-/* ==========================================================
-   TICKER
-========================================================== */
+.ticker-window {
 
-.ticker {
-    flex: 1;
+  min-width: 0;
 
-    min-width: 0;
+  position: relative;
 
-    height: 100%;
+  display: flex;
 
-    display: flex;
+  align-items: center;
 
-    align-items: center;
+  overflow: hidden;
 
-    overflow: hidden;
-
-    white-space: nowrap;
 }
+
 
 .ticker-text {
-    display: inline-block;
 
-    white-space: nowrap;
+  position: absolute;
 
-    padding-left: 100%;
+  left: 100%;
 
-    font-size:
-        clamp(
-            19px,
-            1.4vw,
-            27px
-        );
+  white-space: nowrap;
 
-    font-weight: 500;
+  font-weight: 700;
 
-    animation:
-        ticker
-        30s
-        linear
-        infinite;
-}
+  will-change: transform;
 
+  font-size:
+    clamp(
+      15px,
+      1.45vw,
+      27px
+    );
 
-/* ==========================================================
-   TICKER ANIMATION
-========================================================== */
-
-@keyframes ticker {
-
-    from {
-        transform:
-            translateX(0);
-    }
-
-    to {
-        transform:
-            translateX(-100%);
-    }
+  animation:
+    ticker-scroll
+    38s
+    linear
+    infinite;
 
 }
 
 
 /* ==========================================================
-   FOOTER
+   ANNOUNCEMENTS TICKER
 ========================================================== */
 
-footer {
-    height:
-        clamp(
-            34px,
-            4vh,
-            48px
-        );
+.announcements-row {
 
-    flex-shrink: 0;
+  background: #32120b;
 
-    display: flex;
+  border-top:
+    clamp(
+      2px,
+      0.2vh,
+      4px
+    )
+    solid
+    #c89523;
 
-    align-items: center;
+}
 
-    justify-content: space-between;
 
-    gap: 20px;
+.announcements-label {
+
+  background:
+    linear-gradient(
+      180deg,
+      #f2cc5c,
+      #d6a528
+    );
+
+  color: #351009;
+
+}
+
+
+.announcements-text {
+
+  color: #ffffff;
+
+}
+
+
+
+/* ==========================================================
+   UPCOMING EVENTS TICKER
+========================================================== */
+
+.upcoming-row {
+
+  background:
+    linear-gradient(
+      90deg,
+      #6b160c,
+      #871f10,
+      #6b160c
+    );
+
+  border-top:
+    2px solid
+    rgba(
+      255,
+      216,
+      110,
+      0.5
+    );
+
+}
+
+
+.upcoming-label {
+
+  background:
+    linear-gradient(
+      180deg,
+      #fff3c5,
+      #e8bf54
+    );
+
+  color: #6b160c;
+
+}
+
+
+.upcoming-events-text {
+
+  color: #fff2b8;
+
+  animation-duration:
+    46s;
+
+}
+
+
+
+/* ==========================================================
+   SCROLLING ANIMATION
+========================================================== */
+
+@keyframes ticker-scroll {
+
+  0% {
+
+    transform:
+      translateX(0);
+
+  }
+
+
+  100% {
+
+    transform:
+      translateX(
+        calc(
+          -100% - 100vw
+        )
+      );
+
+  }
+
+}
+
+
+
+/* ==========================================================
+   RESPONSIVE ADJUSTMENTS
+========================================================== */
+
+@media (
+  max-width: 1400px
+) {
+
+  .main-area {
+
+    grid-template-columns:
+      minmax(
+        0,
+        1fr
+      )
+      clamp(
+        210px,
+        24vw,
+        330px
+      );
+
+  }
+
+
+  .ticker-row {
+
+    grid-template-columns:
+      clamp(
+        150px,
+        18vw,
+        260px
+      )
+      minmax(
+        0,
+        1fr
+      );
+
+  }
+
+}
+
+
+
+@media (
+  max-height: 850px
+) {
+
+  .tv-screen {
+
+    grid-template-rows:
+      clamp(
+        68px,
+        10.5vh,
+        100px
+      )
+      minmax(
+        0,
+        1fr
+      )
+      clamp(
+        38px,
+        6vh,
+        52px
+      )
+      clamp(
+        38px,
+        6vh,
+        52px
+      );
+
+  }
+
+
+  .main-area {
 
     padding:
-        0
-        clamp(
-            18px,
-            2vw,
-            32px
-        );
+      7px
+      10px;
 
-    background: #7a160d;
-
-    color: white;
-
-    font-size:
-        clamp(
-            14px,
-            1vw,
-            20px
-        );
-
-    font-weight: 500;
-}
+  }
 
 
-/* ==========================================================
-   LOWER-HEIGHT DISPLAYS
-
-   Useful when Windows scaling reduces Chrome's effective
-   viewport height.
-========================================================== */
-
-@media screen and (max-height: 800px) {
-
-    .header {
-        height: 13vh;
-        min-height: 90px;
-    }
-
-    .temple-logo {
-        height: 10vh;
-    }
-
-    .main-area {
-        padding-top: 7px;
-        padding-bottom: 7px;
-    }
-
-    .right-panel {
-        gap: 8px;
-    }
-
-    .qr-card,
-    .today-card {
-        padding: 8px;
-    }
-
-    .whatsapp-qr {
-        width:
-            clamp(
-                100px,
-                8vw,
-                140px
-            );
-    }
-
-    .announcement-bar {
-        min-height: 44px;
-    }
-
-    footer {
-        min-height: 30px;
-    }
-}
-
-
-/* ==========================================================
-   SMALLER / LOWER RESOLUTION DISPLAYS
-========================================================== */
-
-@media screen and (max-width: 1400px) {
-
-    .header {
-        grid-template-columns:
-            95px
-            minmax(0, 1fr)
-            170px;
-
-        padding-left: 16px;
-        padding-right: 16px;
-    }
-
-    .main-area {
-        grid-template-columns:
-            minmax(0, 1fr)
-            clamp(190px, 17vw, 230px);
-    }
-
-    .temple-title h1 {
-        font-size:
-            clamp(
-                27px,
-                2.8vw,
-                40px
-            );
-    }
-
-    .temple-title h2 {
-        font-size:
-            clamp(
-                21px,
-                2vw,
-                31px
-            );
-    }
-}
-
-
-/* ==========================================================
-   VERY WIDE FULL-HD / LARGE DISPLAYS
-========================================================== */
-
-@media screen and (min-width: 1800px) {
-
-    .main-area {
-        grid-template-columns:
-            minmax(0, 1fr)
-            clamp(240px, 14vw, 310px);
-    }
-
-    .today-program {
-        font-size:
-            clamp(
-                22px,
-                1.45vw,
-                30px
-            );
-    }
-
-    .today-time {
-        font-size:
-            clamp(
-                24px,
-                1.55vw,
-                32px
-            );
-    }
-
-    .ticker-text {
-        font-size:
-            clamp(
-                22px,
-                1.4vw,
-                29px
-            );
-    }
-}
-/* ==========================================================
-   AUTOMATIC FLYER ORIENTATION
-========================================================== */
-
-/* Default */
-#flyer {
-    transition:
-        opacity 0.7s ease-in-out,
-        width 0.3s ease,
-        height 0.3s ease;
-}
-
-
-/* LANDSCAPE FLYER */
-#flyer.flyer-landscape {
-    width: 100%;
-    height: auto;
-
-    max-width: 100%;
-    max-height: 100%;
-
-    object-fit: contain;
-}
-
-
-/* PORTRAIT FLYER */
-#flyer.flyer-portrait {
-    width: auto;
-    height: 100%;
-
-    max-width: 100%;
-    max-height: 100%;
-
-    object-fit: contain;
-}
-
-
-/* SQUARE / NEAR-SQUARE FLYER */
-#flyer.flyer-square {
-    width: auto;
-    height: 100%;
-
-    max-width: 100%;
-    max-height: 100%;
-
-    object-fit: contain;
-}
-/* ==========================================================
-   FINAL TV HEADER FIX
-========================================================== */
-
-.header {
-    height: clamp(115px, 15vh, 155px);
-    min-height: 115px;
-
-    padding-top: 8px;
-    padding-bottom: 8px;
-
-    overflow: hidden;
-}
-
-.temple-logo {
-    height: clamp(75px, 9vh, 105px);
-}
-
-.temple-title h1 {
-    font-size: clamp(27px, 2.5vw, 46px);
-    line-height: 1.05;
-}
-
-.temple-title h2 {
-    font-size: clamp(22px, 2vw, 36px);
-    line-height: 1.05;
-}
-
-.temple-title p {
-    font-size: clamp(14px, 1vw, 20px);
-    margin-top: 4px;
-}
-
-.clock {
-    font-size: clamp(22px, 1.8vw, 34px);
-}
-
-
-/* Current BMAX / scaled-display optimization */
-@media screen and (max-height: 850px) {
-
-    .header {
-        height: 120px;
-        min-height: 120px;
-    }
-
-    .temple-logo {
-        height: 82px;
-    }
-
-    .temple-title h1 {
-        font-size: 34px;
-    }
-
-    .temple-title h2 {
-        font-size: 27px;
-    }
-
-    .temple-title p {
-        font-size: 15px;
-    }
-}
-/* ==========================================================
-   FINAL TV FOOTER FIX
-========================================================== */
-
-footer {
-    height: clamp(38px, 4.5vh, 52px);
-    min-height: 38px;
+  .info-card {
 
     padding:
-        0
-        clamp(18px, 2vw, 32px);
+      7px;
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  }
 
-    overflow: hidden;
-
-    font-size: clamp(14px, 1vw, 19px);
-    line-height: 1;
-
-    flex-shrink: 0;
 }
 
 
-/* BMAX / Windows scaled-display optimization */
 
-@media screen and (max-height: 850px) {
+/* ==========================================================
+   VERY SHORT DISPLAY HEIGHT
+========================================================== */
 
-    footer {
-        height: 40px;
-        min-height: 40px;
+@media (
+  max-height: 700px
+) {
 
-        font-size: 14px;
+  .temple-address {
 
-        padding-left: 18px;
-        padding-right: 18px;
-    }
+    display: none;
+
+  }
+
+
+  .qr-message {
+
+    display: none;
+
+  }
 
 }
