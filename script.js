@@ -1,40 +1,89 @@
 /* ==========================================================
+   CHINMAYA SARASWATI ASHRAM - DEVI TEMPLE
    TEMPLE TV DIGITAL SIGNAGE
-   Chinmaya Saraswati Ashram - Devi Temple
+
+   FEATURES:
+
+   - Google Drive Flyers
+   - Flyer Rotation
+   - Google Sheet Announcements
+   - Google Sheet Special Events
+   - Google Sheet Upcoming Events
+   - Google Sheet Independent BGM Playlist
+   - Today's Schedule
+   - Automatic Clock
+   - Automatic Remote Refresh
 ========================================================== */
 
 
+
 // ==========================================================
-// STATE
+// GLOBAL STATE
 // ==========================================================
 
 let flyers = [];
+
 let currentFlyerIndex = 0;
+
 
 let specialEvents = [];
 
 
+// BGM playlist
+
+let bgmPlaylist = [];
+
+let currentBGMIndex = 0;
+
+let currentBGMURL = "";
+
+
+
 // ==========================================================
-// ELEMENTS
+// HTML ELEMENTS
 // ==========================================================
 
 const flyerElement =
-  document.getElementById("flyer");
+  document.getElementById(
+    "flyer"
+  );
+
 
 const tickerText =
-  document.getElementById("ticker-text");
+  document.getElementById(
+    "ticker-text"
+  );
+
 
 const upcomingEventsText =
-  document.getElementById("upcoming-events-text");
+  document.getElementById(
+    "upcoming-events-text"
+  );
+
 
 const scheduleList =
-  document.getElementById("today-schedule-list");
+  document.getElementById(
+    "today-schedule-list"
+  );
+
 
 const clockElement =
-  document.getElementById("clock");
+  document.getElementById(
+    "clock"
+  );
+
 
 const headerDateElement =
-  document.getElementById("header-date");
+  document.getElementById(
+    "header-date"
+  );
+
+
+const musicElement =
+  document.getElementById(
+    "background-music"
+  );
+
 
 
 // ==========================================================
@@ -43,12 +92,27 @@ const headerDateElement =
 
 function addCacheBuster(url) {
 
-  const separator =
-    url.includes("?") ? "&" : "?";
+  if (!url) {
 
-  return `${url}${separator}_=${Date.now()}`;
+    return "";
+
+  }
+
+
+  const separator =
+    url.includes("?")
+      ?
+      "&"
+      :
+      "?";
+
+
+  return (
+    `${url}${separator}_=${Date.now()}`
+  );
 
 }
+
 
 
 // ==========================================================
@@ -60,7 +124,9 @@ function parseCSV(text) {
   const rows = [];
 
   let row = [];
+
   let field = "";
+
   let inQuotes = false;
 
 
@@ -73,11 +139,13 @@ function parseCSV(text) {
     const char =
       text[i];
 
+
     const next =
       text[i + 1];
 
 
     if (char === '"') {
+
 
       if (
         inQuotes &&
@@ -85,9 +153,11 @@ function parseCSV(text) {
       ) {
 
         field += '"';
+
         i++;
 
       }
+
 
       else {
 
@@ -98,6 +168,7 @@ function parseCSV(text) {
 
     }
 
+
     else if (
       char === "," &&
       !inQuotes
@@ -107,13 +178,18 @@ function parseCSV(text) {
         field.trim()
       );
 
-      field = "";
+
+      field =
+        "";
 
     }
 
+
     else if (
-      (char === "\n" ||
-       char === "\r") &&
+      (
+        char === "\n" ||
+        char === "\r"
+      ) &&
       !inQuotes
     ) {
 
@@ -121,7 +197,9 @@ function parseCSV(text) {
         char === "\r" &&
         next === "\n"
       ) {
+
         i++;
+
       }
 
 
@@ -129,7 +207,9 @@ function parseCSV(text) {
         field.trim()
       );
 
-      field = "";
+
+      field =
+        "";
 
 
       if (
@@ -139,22 +219,28 @@ function parseCSV(text) {
         )
       ) {
 
-        rows.push(row);
+        rows.push(
+          row
+        );
 
       }
 
 
-      row = [];
+      row =
+        [];
 
     }
 
+
     else {
 
-      field += char;
+      field +=
+        char;
 
     }
 
   }
+
 
 
   if (
@@ -174,7 +260,9 @@ function parseCSV(text) {
       )
     ) {
 
-      rows.push(row);
+      rows.push(
+        row
+      );
 
     }
 
@@ -184,6 +272,7 @@ function parseCSV(text) {
   return rows;
 
 }
+
 
 
 // ==========================================================
@@ -196,36 +285,62 @@ function updateClock() {
     new Date();
 
 
-  clockElement.textContent =
-    now.toLocaleTimeString(
-      "en-US",
-      {
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true
-      }
-    );
+  if (clockElement) {
+
+    clockElement.textContent =
+      now.toLocaleTimeString(
+        "en-US",
+        {
+
+          hour:
+            "numeric",
+
+          minute:
+            "2-digit",
+
+          hour12:
+            true
+
+        }
+      );
+
+  }
 
 
-  headerDateElement.textContent =
-    now.toLocaleDateString(
-      "en-US",
-      {
-        weekday: "short",
-        month: "short",
-        day: "numeric"
-      }
-    ).toUpperCase();
+  if (headerDateElement) {
+
+    headerDateElement.textContent =
+      now.toLocaleDateString(
+        "en-US",
+        {
+
+          weekday:
+            "short",
+
+          month:
+            "short",
+
+          day:
+            "numeric"
+
+        }
+      )
+      .toUpperCase();
+
+  }
 
 }
 
 
+
 updateClock();
+
 
 setInterval(
   updateClock,
   1000
 );
+
 
 
 // ==========================================================
@@ -237,79 +352,128 @@ function dateKey(date) {
   const year =
     date.getFullYear();
 
+
   const month =
     String(
       date.getMonth() + 1
-    ).padStart(
+    )
+    .padStart(
       2,
       "0"
     );
+
 
   const day =
     String(
       date.getDate()
-    ).padStart(
+    )
+    .padStart(
       2,
       "0"
     );
 
 
-  return `${year}-${month}-${day}`;
+  return (
+    `${year}-${month}-${day}`
+  );
 
 }
+
 
 
 function normalizeDate(value) {
 
   if (!value) {
+
     return "";
+
   }
 
 
   const text =
-    String(value).trim();
+    String(
+      value
+    )
+    .trim();
 
 
-  const us =
+
+  // MM/DD/YYYY
+
+  const usDate =
     text.match(
       /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
     );
 
 
-  if (us) {
+  if (usDate) {
 
     return (
-      us[3] +
+
+      usDate[3] +
+
       "-" +
-      us[1].padStart(2, "0") +
+
+      usDate[1]
+        .padStart(
+          2,
+          "0"
+        ) +
+
       "-" +
-      us[2].padStart(2, "0")
+
+      usDate[2]
+        .padStart(
+          2,
+          "0"
+        )
+
     );
 
   }
 
 
-  const iso =
+
+  // YYYY-MM-DD
+
+  const isoDate =
     text.match(
       /^(\d{4})-(\d{1,2})-(\d{1,2})$/
     );
 
 
-  if (iso) {
+  if (isoDate) {
 
     return (
-      iso[1] +
+
+      isoDate[1] +
+
       "-" +
-      iso[2].padStart(2, "0") +
+
+      isoDate[2]
+        .padStart(
+          2,
+          "0"
+        ) +
+
       "-" +
-      iso[3].padStart(2, "0")
+
+      isoDate[3]
+        .padStart(
+          2,
+          "0"
+        )
+
     );
 
   }
 
 
+
   const parsed =
-    new Date(text);
+    new Date(
+      text
+    );
 
 
   if (
@@ -318,7 +482,11 @@ function normalizeDate(value) {
     )
   ) {
 
-    return dateKey(parsed);
+    return (
+      dateKey(
+        parsed
+      )
+    );
 
   }
 
@@ -328,18 +496,216 @@ function normalizeDate(value) {
 }
 
 
+
+// ==========================================================
+// GOOGLE DRIVE FILE ID
+// ==========================================================
+
+function getDriveFileId(url) {
+
+  if (!url) {
+
+    return "";
+
+  }
+
+
+  let match =
+    url.match(
+      /\/file\/d\/([^/]+)/
+    );
+
+
+  if (match) {
+
+    return (
+      match[1]
+    );
+
+  }
+
+
+
+  match =
+    url.match(
+      /[?&]id=([^&]+)/
+    );
+
+
+  if (match) {
+
+    return (
+      match[1]
+    );
+
+  }
+
+
+
+  match =
+    url.match(
+      /\/d\/([^/]+)/
+    );
+
+
+  if (match) {
+
+    return (
+      match[1]
+    );
+
+  }
+
+
+  return "";
+
+}
+
+
+
+// ==========================================================
+// GOOGLE DRIVE FLYER IMAGE CONVERSION
+// ==========================================================
+
+function convertDriveImageURL(url) {
+
+  if (!url) {
+
+    return "";
+
+  }
+
+
+  const fileId =
+    getDriveFileId(
+      url
+    );
+
+
+  if (!fileId) {
+
+    return (
+      url
+    );
+
+  }
+
+
+  return (
+
+    "https://drive.google.com/thumbnail" +
+
+    `?id=${fileId}&sz=w3000`
+
+  );
+
+}
+
+
+
+// ==========================================================
+// GOOGLE DRIVE AUDIO CONVERSION
+// ==========================================================
+
+function convertDriveAudioURL(url) {
+
+  if (!url) {
+
+    return "";
+
+  }
+
+
+  const fileId =
+    getDriveFileId(
+      url
+    );
+
+
+  if (!fileId) {
+
+    return (
+      url
+    );
+
+  }
+
+
+  return (
+
+    "https://drive.google.com/uc" +
+
+    `?export=download&id=${fileId}`
+
+  );
+
+}
+
+
+
+// ==========================================================
+// IMAGE TEST
+// ==========================================================
+
+function testImage(url) {
+
+  return (
+    new Promise(
+      resolve => {
+
+        const image =
+          new Image();
+
+
+        image.onload =
+          () =>
+            resolve(
+              true
+            );
+
+
+        image.onerror =
+          () =>
+            resolve(
+              false
+            );
+
+
+        image.src =
+          addCacheBuster(
+            url
+          );
+
+      }
+    )
+  );
+
+}
+
+
+
 // ==========================================================
 // ANNOUNCEMENTS
 // ==========================================================
 
 function loadLocalAnnouncements() {
 
+  if (!tickerText) {
+
+    return;
+
+  }
+
+
   tickerText.textContent =
-    templeContent.announcements.join(
-      templeContent.separator
-    );
+    templeContent
+      .announcements
+      .join(
+        templeContent.separator
+      );
 
 }
+
 
 
 async function loadAnnouncements() {
@@ -349,34 +715,40 @@ async function loadAnnouncements() {
     const response =
       await fetch(
         addCacheBuster(
-          templeContent.announcementSheetURL
+          templeContent
+            .announcementSheetURL
         ),
         {
-          cache: "no-store"
+          cache:
+            "no-store"
         }
       );
 
 
     if (!response.ok) {
+
       throw new Error(
         "Announcement data unavailable"
       );
+
     }
 
 
-    const csv =
-      await response.text();
-
-
     const rows =
-      parseCSV(csv);
+      parseCSV(
+        await response.text()
+      );
 
 
-    const messages = [];
+    const messages =
+      [];
 
 
     rows.forEach(
-      (row, index) => {
+      (
+        row,
+        index
+      ) => {
 
         row.forEach(
           cell => {
@@ -386,7 +758,9 @@ async function loadAnnouncements() {
 
 
             if (!value) {
+
               return;
+
             }
 
 
@@ -398,11 +772,15 @@ async function loadAnnouncements() {
                   "announcement"
                 )
             ) {
+
               return;
+
             }
 
 
-            messages.push(value);
+            messages.push(
+              value
+            );
 
           }
         );
@@ -422,6 +800,7 @@ async function loadAnnouncements() {
 
     }
 
+
     else {
 
       loadLocalAnnouncements();
@@ -430,11 +809,14 @@ async function loadAnnouncements() {
 
   }
 
+
   catch (error) {
 
     console.error(
+      "Announcement error:",
       error
     );
+
 
     loadLocalAnnouncements();
 
@@ -443,96 +825,9 @@ async function loadAnnouncements() {
 }
 
 
-// ==========================================================
-// DRIVE URL
-// ==========================================================
-
-function convertDriveURL(url) {
-
-  if (!url) {
-    return "";
-  }
-
-
-  let fileId = "";
-
-
-  const slashMatch =
-    url.match(
-      /\/file\/d\/([^/]+)/
-    );
-
-
-  if (slashMatch) {
-
-    fileId =
-      slashMatch[1];
-
-  }
-
-
-  const idMatch =
-    url.match(
-      /[?&]id=([^&]+)/
-    );
-
-
-  if (
-    !fileId &&
-    idMatch
-  ) {
-
-    fileId =
-      idMatch[1];
-
-  }
-
-
-  if (!fileId) {
-    return url;
-  }
-
-
-  return (
-    "https://drive.google.com/thumbnail" +
-    `?id=${fileId}&sz=w3000`
-  );
-
-}
-
 
 // ==========================================================
-// IMAGE VALIDATION
-// ==========================================================
-
-function testImage(url) {
-
-  return new Promise(
-    resolve => {
-
-      const image =
-        new Image();
-
-
-      image.onload =
-        () => resolve(true);
-
-
-      image.onerror =
-        () => resolve(false);
-
-
-      image.src =
-        addCacheBuster(url);
-
-    }
-  );
-
-}
-
-
-// ==========================================================
-// FLYERS
+// LOAD REMOTE FLYERS
 // ==========================================================
 
 async function loadRemoteFlyers() {
@@ -542,18 +837,22 @@ async function loadRemoteFlyers() {
     const response =
       await fetch(
         addCacheBuster(
-          templeContent.flyerSheetURL
+          templeContent
+            .flyerSheetURL
         ),
         {
-          cache: "no-store"
+          cache:
+            "no-store"
         }
       );
 
 
     if (!response.ok) {
+
       throw new Error(
-        "Flyer sheet unavailable"
+        "Flyer Sheet unavailable"
       );
+
     }
 
 
@@ -564,7 +863,8 @@ async function loadRemoteFlyers() {
 
 
     if (
-      rows.length < 2
+      rows.length <
+      2
     ) {
 
       throw new Error(
@@ -574,13 +874,15 @@ async function loadRemoteFlyers() {
     }
 
 
+
     const headers =
-      rows[0].map(
-        value =>
-          value
-            .trim()
-            .toLowerCase()
-      );
+      rows[0]
+        .map(
+          value =>
+            value
+              .trim()
+              .toLowerCase()
+        );
 
 
     const imageIndex =
@@ -588,10 +890,12 @@ async function loadRemoteFlyers() {
         "imageurl"
       );
 
+
     const activeIndex =
       headers.indexOf(
         "active"
       );
+
 
     const orderIndex =
       headers.indexOf(
@@ -599,7 +903,8 @@ async function loadRemoteFlyers() {
       );
 
 
-    const remote =
+
+    const remoteFlyers =
       [];
 
 
@@ -609,59 +914,88 @@ async function loadRemoteFlyers() {
       i++
     ) {
 
+
       const row =
         rows[i];
 
 
       const active =
         (
-          row[activeIndex] ||
+          row[
+            activeIndex
+          ] ||
           ""
         )
-          .trim()
-          .toUpperCase();
+        .trim()
+        .toUpperCase();
 
 
       if (
-        active !== "YES"
+        active !==
+        "YES"
       ) {
+
         continue;
+
       }
 
 
-      const original =
+      const originalURL =
         (
-          row[imageIndex] ||
+          row[
+            imageIndex
+          ] ||
           ""
-        ).trim();
+        )
+        .trim();
 
 
-      if (!original) {
+      if (
+        !originalURL
+      ) {
+
         continue;
+
       }
 
 
-      const url =
-        convertDriveURL(
-          original
+      const imageURL =
+        convertDriveImageURL(
+          originalURL
         );
 
 
-      const order =
+      const displayOrder =
         parseInt(
-          row[orderIndex],
+          row[
+            orderIndex
+          ],
           10
-        ) || 999;
+        )
+        ||
+        999;
+
+
+
+      const works =
+        await testImage(
+          imageURL
+        );
 
 
       if (
-        await testImage(url)
+        works
       ) {
 
-        remote.push(
+        remoteFlyers.push(
           {
-            url,
-            order
+
+            url:
+              imageURL,
+
+            order:
+              displayOrder
+
           }
         );
 
@@ -670,41 +1004,67 @@ async function loadRemoteFlyers() {
     }
 
 
-    remote.sort(
-      (a, b) =>
-        a.order - b.order
+
+    remoteFlyers.sort(
+      (
+        a,
+        b
+      ) =>
+        a.order -
+        b.order
     );
 
 
-    flyers =
-      remote.length
-        ?
-        remote.map(
-          item =>
-            item.url
-        )
-        :
-        templeContent.localFlyers;
+
+    if (
+      remoteFlyers.length
+    ) {
+
+      flyers =
+        remoteFlyers
+          .map(
+            item =>
+              item.url
+          );
+
+    }
 
 
-    currentFlyerIndex = 0;
+    else {
+
+      flyers =
+        templeContent
+          .localFlyers;
+
+    }
+
+
+
+    currentFlyerIndex =
+      0;
+
 
     showFlyer();
 
   }
 
+
   catch (error) {
 
     console.error(
+      "Flyer error:",
       error
     );
 
 
     flyers =
-      templeContent.localFlyers;
+      templeContent
+        .localFlyers;
 
 
-    currentFlyerIndex = 0;
+    currentFlyerIndex =
+      0;
+
 
     showFlyer();
 
@@ -713,8 +1073,9 @@ async function loadRemoteFlyers() {
 }
 
 
+
 // ==========================================================
-// DISPLAY FLYER
+// SHOW FLYER
 // ==========================================================
 
 function showFlyer() {
@@ -723,71 +1084,106 @@ function showFlyer() {
     !flyerElement ||
     !flyers.length
   ) {
+
     return;
+
   }
 
 
-  flyerElement.classList.remove(
-    "flyer-landscape",
-    "flyer-portrait",
-    "flyer-square",
-    "flyer-visible"
-  );
+  flyerElement
+    .classList
+    .remove(
+      "flyer-landscape",
+      "flyer-portrait",
+      "flyer-square",
+      "flyer-visible"
+    );
+
 
 
   flyerElement.onload =
     () => {
 
-      const ratio =
-        flyerElement.naturalWidth /
-        flyerElement.naturalHeight;
+
+      const width =
+        flyerElement
+          .naturalWidth;
+
+
+      const height =
+        flyerElement
+          .naturalHeight;
+
 
 
       if (
-        ratio > 1.15
+        width &&
+        height
       ) {
 
-        flyerElement
-          .classList
-          .add(
-            "flyer-landscape"
-          );
+
+        const ratio =
+          width /
+          height;
+
+
+
+        if (
+          ratio >
+          1.15
+        ) {
+
+          flyerElement
+            .classList
+            .add(
+              "flyer-landscape"
+            );
+
+        }
+
+
+        else if (
+          ratio <
+          0.85
+        ) {
+
+          flyerElement
+            .classList
+            .add(
+              "flyer-portrait"
+            );
+
+        }
+
+
+        else {
+
+          flyerElement
+            .classList
+            .add(
+              "flyer-square"
+            );
+
+        }
 
       }
 
-      else if (
-        ratio < 0.85
-      ) {
-
-        flyerElement
-          .classList
-          .add(
-            "flyer-portrait"
-          );
-
-      }
-
-      else {
-
-        flyerElement
-          .classList
-          .add(
-            "flyer-square"
-          );
-
-      }
 
 
       requestAnimationFrame(
-        () =>
+        () => {
+
           flyerElement
             .classList
             .add(
               "flyer-visible"
-            )
+            );
+
+        }
       );
 
     };
+
 
 
   flyerElement.src =
@@ -800,19 +1196,29 @@ function showFlyer() {
 }
 
 
+
+// ==========================================================
+// ROTATE FLYER
+// ==========================================================
+
 function rotateFlyer() {
 
   if (
-    flyers.length <= 1
+    flyers.length <=
+    1
   ) {
+
     return;
+
   }
 
 
   currentFlyerIndex =
     (
-      currentFlyerIndex + 1
-    ) %
+      currentFlyerIndex +
+      1
+    )
+    %
     flyers.length;
 
 
@@ -821,18 +1227,468 @@ function rotateFlyer() {
 }
 
 
+
 // ==========================================================
-// REGULAR SCHEDULE
+// BGM PLAYLIST
 // ==========================================================
 
-function getSaturdayNumber(date) {
+async function loadBGMPlaylist() {
 
-  return Math.ceil(
-    date.getDate() / 7
+  try {
+
+    const response =
+      await fetch(
+        addCacheBuster(
+          templeContent
+            .bgmSheetURL
+        ),
+        {
+          cache:
+            "no-store"
+        }
+      );
+
+
+    if (
+      !response.ok
+    ) {
+
+      throw new Error(
+        "BGM Sheet unavailable"
+      );
+
+    }
+
+
+
+    const rows =
+      parseCSV(
+        await response.text()
+      );
+
+
+    if (
+      rows.length <
+      2
+    ) {
+
+      console.log(
+        "No BGM tracks found."
+      );
+
+      return;
+
+    }
+
+
+
+    const headers =
+      rows[0]
+        .map(
+          value =>
+            value
+              .trim()
+              .toLowerCase()
+        );
+
+
+    const musicIndex =
+      headers.indexOf(
+        "musicurl"
+      );
+
+
+    const activeIndex =
+      headers.indexOf(
+        "active"
+      );
+
+
+    const orderIndex =
+      headers.indexOf(
+        "displayorder"
+      );
+
+
+
+    if (
+      musicIndex === -1
+    ) {
+
+      console.error(
+        "BGM Sheet requires MusicURL column."
+      );
+
+      return;
+
+    }
+
+
+
+    const playlist =
+      [];
+
+
+    for (
+      let i = 1;
+      i < rows.length;
+      i++
+    ) {
+
+
+      const row =
+        rows[i];
+
+
+      const active =
+        activeIndex >= 0
+          ?
+          (
+            row[
+              activeIndex
+            ] ||
+            ""
+          )
+          .trim()
+          .toUpperCase()
+          :
+          "YES";
+
+
+      if (
+        active !==
+        "YES"
+      ) {
+
+        continue;
+
+      }
+
+
+
+      const originalMusicURL =
+        (
+          row[
+            musicIndex
+          ] ||
+          ""
+        )
+        .trim();
+
+
+      if (
+        !originalMusicURL
+      ) {
+
+        continue;
+
+      }
+
+
+
+      const musicURL =
+        convertDriveAudioURL(
+          originalMusicURL
+        );
+
+
+
+      const order =
+        orderIndex >= 0
+          ?
+          (
+            parseInt(
+              row[
+                orderIndex
+              ],
+              10
+            )
+            ||
+            999
+          )
+          :
+          999;
+
+
+
+      playlist.push(
+        {
+
+          url:
+            musicURL,
+
+          order:
+            order
+
+        }
+      );
+
+    }
+
+
+
+    playlist.sort(
+      (
+        a,
+        b
+      ) =>
+        a.order -
+        b.order
+    );
+
+
+
+    const newPlaylist =
+      playlist
+        .map(
+          item =>
+            item.url
+        );
+
+
+
+    if (
+      !newPlaylist.length
+    ) {
+
+      console.log(
+        "No active BGM tracks."
+      );
+
+
+      return;
+
+    }
+
+
+
+    const oldPlaylistSignature =
+      bgmPlaylist.join(
+        "|"
+      );
+
+
+    const newPlaylistSignature =
+      newPlaylist.join(
+        "|"
+      );
+
+
+
+    bgmPlaylist =
+      newPlaylist;
+
+
+
+    /*
+       IMPORTANT:
+
+       If the playlist changed,
+       start from the first track.
+
+       If it did not change,
+       do NOT restart currently playing music.
+    */
+
+    if (
+      oldPlaylistSignature !==
+      newPlaylistSignature
+    ) {
+
+      currentBGMIndex =
+        0;
+
+
+      startCurrentBGM();
+
+    }
+
+
+    else if (
+      musicElement &&
+      musicElement.paused &&
+      !currentBGMURL
+    ) {
+
+      startCurrentBGM();
+
+    }
+
+  }
+
+
+  catch (error) {
+
+    console.error(
+      "BGM loading error:",
+      error
+    );
+
+  }
+
+}
+
+
+
+// ==========================================================
+// START CURRENT BGM TRACK
+// ==========================================================
+
+function startCurrentBGM() {
+
+  if (
+    !musicElement ||
+    !bgmPlaylist.length
+  ) {
+
+    return;
+
+  }
+
+
+
+  const musicURL =
+    bgmPlaylist[
+      currentBGMIndex
+    ];
+
+
+
+  currentBGMURL =
+    musicURL;
+
+
+
+  musicElement.pause();
+
+
+  musicElement.src =
+    musicURL;
+
+
+  musicElement.loop =
+    false;
+
+
+  musicElement.volume =
+    0.25;
+
+
+  musicElement.load();
+
+
+
+  const playPromise =
+    musicElement.play();
+
+
+
+  if (
+    playPromise
+  ) {
+
+    playPromise.catch(
+      error => {
+
+        console.log(
+          "BGM autoplay blocked or audio unavailable:",
+          error
+        );
+
+      }
+    );
+
+  }
+
+}
+
+
+
+// ==========================================================
+// PLAY NEXT BGM
+// ==========================================================
+
+function playNextBGM() {
+
+  if (
+    !bgmPlaylist.length
+  ) {
+
+    return;
+
+  }
+
+
+  currentBGMIndex =
+    (
+      currentBGMIndex +
+      1
+    )
+    %
+    bgmPlaylist.length;
+
+
+  startCurrentBGM();
+
+}
+
+
+
+// ==========================================================
+// BGM ENDED EVENT
+// ==========================================================
+
+if (
+  musicElement
+) {
+
+  musicElement.addEventListener(
+    "ended",
+    playNextBGM
+  );
+
+
+  musicElement.addEventListener(
+    "error",
+    () => {
+
+      console.error(
+        "Current BGM failed. Moving to next track."
+      );
+
+
+      setTimeout(
+        playNextBGM,
+        2000
+      );
+
+    }
   );
 
 }
 
+
+
+// ==========================================================
+// SATURDAY NUMBER
+// ==========================================================
+
+function getSaturdayNumber(date) {
+
+  return (
+    Math.ceil(
+      date.getDate() /
+      7
+    )
+  );
+
+}
+
+
+
+// ==========================================================
+// REGULAR PROGRAMS
+// ==========================================================
 
 function getRegularPrograms(date) {
 
@@ -840,36 +1696,50 @@ function getRegularPrograms(date) {
     date.getDay();
 
 
+
   if (
     day === 6
   ) {
 
-    const number =
+
+    const saturdayNumber =
       getSaturdayNumber(
         date
       );
 
 
     return (
+
       templeContent
         .saturdaySchedule[
-          number
-        ] ||
+          saturdayNumber
+        ]
+
+      ||
+
       []
+
     );
 
   }
 
 
+
   return (
+
     templeContent
       .weeklySchedule[
         day
-      ] ||
+      ]
+
+    ||
+
     []
+
   );
 
 }
+
 
 
 // ==========================================================
@@ -883,19 +1753,26 @@ async function loadSpecialEvents() {
     const response =
       await fetch(
         addCacheBuster(
-          templeContent.specialEventsSheetURL
+          templeContent
+            .specialEventsSheetURL
         ),
         {
-          cache: "no-store"
+          cache:
+            "no-store"
         }
       );
 
 
-    if (!response.ok) {
+    if (
+      !response.ok
+    ) {
+
       throw new Error(
-        "Special events unavailable"
+        "Special Events unavailable"
       );
+
     }
+
 
 
     const rows =
@@ -904,26 +1781,34 @@ async function loadSpecialEvents() {
       );
 
 
+
     if (
-      rows.length < 2
+      rows.length <
+      2
     ) {
 
-      specialEvents = [];
+      specialEvents =
+        [];
+
 
       renderTodaySchedule();
+
 
       return;
 
     }
 
 
+
     const headers =
-      rows[0].map(
-        value =>
-          value
-            .trim()
-            .toLowerCase()
-      );
+      rows[0]
+        .map(
+          value =>
+            value
+              .trim()
+              .toLowerCase()
+        );
+
 
 
     const dateIndex =
@@ -931,20 +1816,24 @@ async function loadSpecialEvents() {
         "date"
       );
 
+
     const eventIndex =
       headers.indexOf(
         "event"
       );
+
 
     const programIndex =
       headers.indexOf(
         "program"
       );
 
+
     const timeIndex =
       headers.indexOf(
         "time"
       );
+
 
     const activeIndex =
       headers.indexOf(
@@ -952,7 +1841,10 @@ async function loadSpecialEvents() {
       );
 
 
-    specialEvents = [];
+
+    specialEvents =
+      [];
+
 
 
     for (
@@ -961,80 +1853,119 @@ async function loadSpecialEvents() {
       i++
     ) {
 
+
       const row =
         rows[i];
+
 
 
       const active =
         activeIndex >= 0
           ?
           (
-            row[activeIndex] ||
+            row[
+              activeIndex
+            ]
+            ||
             ""
           )
-            .trim()
-            .toUpperCase()
+          .trim()
+          .toUpperCase()
           :
           "YES";
 
 
+
       if (
-        active !== "YES"
+        active !==
+        "YES"
       ) {
+
         continue;
+
       }
+
 
 
       const date =
         normalizeDate(
-          row[dateIndex]
+          row[
+            dateIndex
+          ]
         );
 
 
+
       if (!date) {
+
         continue;
+
       }
+
 
 
       specialEvents.push(
         {
-          date,
+
+          date:
+            date,
+
 
           event:
             (
-              row[eventIndex] ||
+              row[
+                eventIndex
+              ]
+              ||
               ""
-            ).trim(),
+            )
+            .trim(),
+
 
           program:
             (
-              row[programIndex] ||
+              row[
+                programIndex
+              ]
+              ||
               ""
-            ).trim(),
+            )
+            .trim(),
+
 
           time:
             (
-              row[timeIndex] ||
+              row[
+                timeIndex
+              ]
+              ||
               ""
-            ).trim()
+            )
+            .trim()
+
         }
       );
 
     }
 
 
+
     renderTodaySchedule();
 
   }
 
+
   catch (error) {
 
     console.error(
+      "Special Event Error:",
       error
     );
 
 
-    specialEvents = [];
+    specialEvents =
+      [];
+
 
     renderTodaySchedule();
 
@@ -1043,41 +1974,59 @@ async function loadSpecialEvents() {
 }
 
 
+
 // ==========================================================
-// TODAY SCHEDULE
-// Supports multiple programs
+// TODAY'S SCHEDULE
 // ==========================================================
 
 function renderTodaySchedule() {
 
-  const now =
+  if (
+    !scheduleList
+  ) {
+
+    return;
+
+  }
+
+
+  const today =
     new Date();
 
 
-  const key =
-    dateKey(now);
+  const todayKey =
+    dateKey(
+      today
+    );
 
 
   const programs =
     [];
 
 
-  // Regular programs
+
+  // -----------------------------------------
+  // REGULAR PROGRAMS
+  // -----------------------------------------
+
   getRegularPrograms(
-    now
-  ).forEach(
-    item => {
+    today
+  )
+  .forEach(
+    program => {
 
       programs.push(
         {
+
           title:
-            item.title,
+            program.title,
 
           time:
-            item.time,
+            program.time,
 
           note:
             ""
+
         }
       );
 
@@ -1085,29 +2034,41 @@ function renderTodaySchedule() {
   );
 
 
-  // Special events for today
+
+  // -----------------------------------------
+  // SPECIAL EVENTS
+  // -----------------------------------------
+
   specialEvents
     .filter(
       event =>
-        event.date === key
+        event.date ===
+        todayKey
     )
     .forEach(
       event => {
 
+
         const title =
-          event.program ||
-          event.event ||
+          event.program
+          ||
+          event.event
+          ||
           "Special Temple Program";
+
 
 
         const duplicate =
           programs.some(
-            item =>
-              item.title
-                .toLowerCase() ===
+            program =>
+              program
+                .title
+                .toLowerCase()
+              ===
               title
                 .toLowerCase()
           );
+
 
 
         if (
@@ -1116,18 +2077,26 @@ function renderTodaySchedule() {
 
           programs.push(
             {
-              title,
+
+              title:
+                title,
+
 
               time:
                 event.time,
 
+
               note:
-                event.event &&
-                event.event !== title
-                  ?
-                  event.event
-                  :
-                  ""
+                (
+                  event.event &&
+                  event.event !==
+                  title
+                )
+                ?
+                event.event
+                :
+                ""
+
             }
           );
 
@@ -1137,20 +2106,26 @@ function renderTodaySchedule() {
     );
 
 
+
   if (
-    programs.length === 0
+    programs.length ===
+    0
   ) {
 
     scheduleList.innerHTML =
       `
         <div class="empty-schedule">
+
           ${templeContent.noProgramMessage}
+
         </div>
       `;
+
 
     return;
 
   }
+
 
 
   scheduleList.innerHTML =
@@ -1158,29 +2133,50 @@ function renderTodaySchedule() {
       .map(
         program =>
           `
+
             <article class="schedule-item">
 
+
               <div class="schedule-time">
-                ${escapeHTML(program.time || "Temple Program")}
+
+                ${escapeHTML(
+                  program.time ||
+                  "Temple Program"
+                )}
+
               </div>
 
+
               <div class="schedule-name">
-                ${escapeHTML(program.title)}
+
+                ${escapeHTML(
+                  program.title
+                )}
+
               </div>
+
 
               ${
                 program.note
                   ?
                   `
+
                     <div class="schedule-note">
-                      ${escapeHTML(program.note)}
+
+                      ${escapeHTML(
+                        program.note
+                      )}
+
                     </div>
+
                   `
                   :
                   ""
               }
 
+
             </article>
+
           `
       )
       .join("");
@@ -1188,44 +2184,61 @@ function renderTodaySchedule() {
 }
 
 
+
 // ==========================================================
-// HTML SAFETY
+// HTML ESCAPE
 // ==========================================================
 
 function escapeHTML(value) {
 
   return String(
-    value || ""
+    value ||
+    ""
   )
-    .replaceAll(
-      "&",
-      "&amp;"
-    )
-    .replaceAll(
-      "<",
-      "&lt;"
-    )
-    .replaceAll(
-      ">",
-      "&gt;"
-    )
-    .replaceAll(
-      '"',
-      "&quot;"
-    )
-    .replaceAll(
-      "'",
-      "&#039;"
-    );
+
+  .replaceAll(
+    "&",
+    "&amp;"
+  )
+
+  .replaceAll(
+    "<",
+    "&lt;"
+  )
+
+  .replaceAll(
+    ">",
+    "&gt;"
+  )
+
+  .replaceAll(
+    '"',
+    "&quot;"
+  )
+
+  .replaceAll(
+    "'",
+    "&#039;"
+  );
 
 }
 
 
+
 // ==========================================================
-// UPCOMING EVENTS
+// UPCOMING EVENTS FALLBACK
 // ==========================================================
 
 function showUpcomingFallback() {
+
+  if (
+    !upcomingEventsText
+  ) {
+
+    return;
+
+  }
+
 
   upcomingEventsText.textContent =
     templeContent
@@ -1237,6 +2250,11 @@ function showUpcomingFallback() {
 }
 
 
+
+// ==========================================================
+// LOAD UPCOMING EVENTS
+// ==========================================================
+
 async function loadUpcomingEvents() {
 
   try {
@@ -1244,19 +2262,26 @@ async function loadUpcomingEvents() {
     const response =
       await fetch(
         addCacheBuster(
-          templeContent.upcomingEventsSheetURL
+          templeContent
+            .upcomingEventsSheetURL
         ),
         {
-          cache: "no-store"
+          cache:
+            "no-store"
         }
       );
 
 
-    if (!response.ok) {
+    if (
+      !response.ok
+    ) {
+
       throw new Error(
-        "Upcoming events unavailable"
+        "Upcoming Events unavailable"
       );
+
     }
+
 
 
     const rows =
@@ -1265,8 +2290,10 @@ async function loadUpcomingEvents() {
       );
 
 
+
     if (
-      rows.length < 2
+      rows.length <
+      2
     ) {
 
       showUpcomingFallback();
@@ -1276,13 +2303,16 @@ async function loadUpcomingEvents() {
     }
 
 
+
     const headers =
-      rows[0].map(
-        value =>
-          value
-            .trim()
-            .toLowerCase()
-      );
+      rows[0]
+        .map(
+          value =>
+            value
+              .trim()
+              .toLowerCase()
+        );
+
 
 
     const dateIndex =
@@ -1290,25 +2320,30 @@ async function loadUpcomingEvents() {
         "date"
       );
 
+
     const eventIndex =
       headers.indexOf(
         "event"
       );
+
 
     const timeIndex =
       headers.indexOf(
         "time"
       );
 
+
     const activeIndex =
       headers.indexOf(
         "active"
       );
 
+
     const orderIndex =
       headers.indexOf(
         "displayorder"
       );
+
 
 
     const today =
@@ -1323,8 +2358,10 @@ async function loadUpcomingEvents() {
     );
 
 
+
     const events =
       [];
+
 
 
     for (
@@ -1333,97 +2370,156 @@ async function loadUpcomingEvents() {
       i++
     ) {
 
+
       const row =
         rows[i];
+
 
 
       const active =
         activeIndex >= 0
           ?
           (
-            row[activeIndex] ||
+            row[
+              activeIndex
+            ]
+            ||
             ""
           )
-            .trim()
-            .toUpperCase()
+          .trim()
+          .toUpperCase()
           :
           "YES";
 
 
+
       if (
-        active !== "YES"
+        active !==
+        "YES"
       ) {
+
         continue;
+
       }
+
 
 
       const title =
         (
-          row[eventIndex] ||
+          row[
+            eventIndex
+          ]
+          ||
           ""
-        ).trim();
+        )
+        .trim();
 
 
-      if (!title) {
+
+      if (
+        !title
+      ) {
+
         continue;
+
       }
 
 
-      const normalized =
+
+      const normalizedDate =
         normalizeDate(
-          row[dateIndex]
+          row[
+            dateIndex
+          ]
         );
 
 
-      if (!normalized) {
+
+      if (
+        !normalizedDate
+      ) {
+
         continue;
+
       }
+
 
 
       const eventDate =
         new Date(
-          normalized +
+          normalizedDate +
           "T00:00:00"
         );
 
 
+
       if (
-        eventDate < today
+        eventDate <
+        today
       ) {
+
         continue;
+
       }
+
+
+
+      const order =
+        orderIndex >= 0
+          ?
+          (
+            parseInt(
+              row[
+                orderIndex
+              ],
+              10
+            )
+            ||
+            999
+          )
+          :
+          999;
+
 
 
       events.push(
         {
+
           date:
             eventDate,
 
-          title,
+
+          title:
+            title,
+
 
           time:
             (
-              row[timeIndex] ||
+              row[
+                timeIndex
+              ]
+              ||
               ""
-            ).trim(),
+            )
+            .trim(),
+
 
           order:
-            orderIndex >= 0
-              ?
-              parseInt(
-                row[orderIndex],
-                10
-              ) || 999
-              :
-              999
+            order
+
         }
       );
 
     }
 
 
+
     events.sort(
-      (a, b) => {
+      (
+        a,
+        b
+      ) => {
+
 
         if (
           a.order !==
@@ -1447,6 +2543,7 @@ async function loadUpcomingEvents() {
     );
 
 
+
     if (
       !events.length
     ) {
@@ -1458,31 +2555,43 @@ async function loadUpcomingEvents() {
     }
 
 
+
     upcomingEventsText.textContent =
       events
         .map(
           event => {
 
-            const dateText =
+
+            const eventDate =
               event.date
                 .toLocaleDateString(
                   "en-US",
                   {
+
                     month:
                       "short",
 
                     day:
                       "numeric"
+
                   }
                 );
 
 
-            return (
+
+            if (
               event.time
-                ?
-                `${dateText} – ${event.title} (${event.time})`
-                :
-                `${dateText} – ${event.title}`
+            ) {
+
+              return (
+                `${eventDate} – ${event.title} (${event.time})`
+              );
+
+            }
+
+
+            return (
+              `${eventDate} – ${event.title}`
             );
 
           }
@@ -1493,11 +2602,14 @@ async function loadUpcomingEvents() {
 
   }
 
+
   catch (error) {
 
     console.error(
+      "Upcoming Events Error:",
       error
     );
+
 
     showUpcomingFallback();
 
@@ -1506,107 +2618,128 @@ async function loadUpcomingEvents() {
 }
 
 
-// ==========================================================
-// MUSIC
-// ==========================================================
-
-function startMusic() {
-
-  const music =
-    document.getElementById(
-      "background-music"
-    );
-
-
-  if (!music) {
-    return;
-  }
-
-
-  music.volume =
-    0.25;
-
-
-  const promise =
-    music.play();
-
-
-  if (
-    promise
-  ) {
-
-    promise.catch(
-      () => {}
-    );
-
-  }
-
-}
-
 
 // ==========================================================
 // INITIALIZATION
 // ==========================================================
 
-async function initialize() {
+async function initializeTempleTV() {
+
+
+  // Immediate fallbacks
 
   loadLocalAnnouncements();
 
+
   showUpcomingFallback();
+
 
   renderTodaySchedule();
 
 
+
+  // Load everything remotely
+
   await Promise.allSettled(
     [
+
       loadAnnouncements(),
+
       loadRemoteFlyers(),
+
       loadSpecialEvents(),
-      loadUpcomingEvents()
+
+      loadUpcomingEvents(),
+
+      loadBGMPlaylist()
+
     ]
   );
-
-
-  startMusic();
 
 }
 
 
-initialize();
+
+initializeTempleTV();
+
 
 
 // ==========================================================
-// TIMERS
+// FLYER ROTATION TIMER
 // ==========================================================
 
 setInterval(
   rotateFlyer,
-  templeContent.flyerDuration *
+
+  templeContent
+    .flyerDuration
+  *
   1000
 );
+
+
+
+// ==========================================================
+// REMOTE REFRESH TIMER
+// ==========================================================
+
+const remoteRefreshMilliseconds =
+
+  templeContent
+    .remoteRefreshMinutes
+
+  *
+
+  60
+
+  *
+
+  1000;
+
 
 
 setInterval(
   () => {
 
+
     loadAnnouncements();
+
 
     loadRemoteFlyers();
 
+
     loadSpecialEvents();
+
 
     loadUpcomingEvents();
 
+
+    /*
+       This refreshes the BGM playlist.
+
+       IMPORTANT:
+       Music will NOT restart unless
+       playlist data actually changed.
+    */
+
+    loadBGMPlaylist();
+
+
   },
 
-  templeContent.remoteRefreshMinutes *
-  60 *
-  1000
+  remoteRefreshMilliseconds
+
 );
 
 
+
+// ==========================================================
+// TODAY SCHEDULE REFRESH
+// ==========================================================
+
 setInterval(
   renderTodaySchedule,
+
   60 *
   1000
 );
