@@ -1,19 +1,6 @@
 /* ==========================================================
    CHINMAYA SARASWATI ASHRAM - DEVI TEMPLE
    TEMPLE TV DIGITAL SIGNAGE
-
-   FEATURES
-   ----------------------------------------------------------
-   - Remote Google Sheet Flyers
-   - Remote Announcements
-   - Special Events
-   - Upcoming Events
-   - Today's Schedule
-   - Independent BGM Google Sheet Playlist
-   - Multiple BGM Tracks
-   - Automatic Track Change
-   - Automatic Failed Track Skip
-   - Automatic 5 Minute Remote Refresh
 ========================================================== */
 
 
@@ -30,7 +17,6 @@ let currentFlyerIndex = 0;
 let specialEvents = [];
 
 
-
 let bgmPlaylist = [];
 
 let currentBGMIndex = 0;
@@ -44,7 +30,7 @@ let bgmErrorCount = 0;
 
 
 // ==========================================================
-// HTML ELEMENTS
+// ELEMENTS
 // ==========================================================
 
 const flyerElement =
@@ -97,23 +83,17 @@ const musicElement =
 function addCacheBuster(url) {
 
   if (!url) {
-
     return "";
-
   }
 
 
   const separator =
     url.includes("?")
-      ?
-      "&"
-      :
-      "?";
+      ? "&"
+      : "?";
 
 
-  return (
-    `${url}${separator}_=${Date.now()}`
-  );
+  return `${url}${separator}_=${Date.now()}`;
 
 }
 
@@ -134,27 +114,20 @@ function parseCSV(text) {
   let inQuotes = false;
 
 
-
   for (
     let i = 0;
     i < text.length;
     i++
   ) {
 
-
     const char =
       text[i];
-
 
     const next =
       text[i + 1];
 
 
-
-    if (
-      char === '"'
-    ) {
-
+    if (char === '"') {
 
       if (
         inQuotes &&
@@ -167,7 +140,6 @@ function parseCSV(text) {
 
       }
 
-
       else {
 
         inQuotes =
@@ -178,17 +150,14 @@ function parseCSV(text) {
     }
 
 
-
     else if (
       char === "," &&
       !inQuotes
     ) {
 
-
       row.push(
         field.trim()
       );
-
 
       field =
         "";
@@ -196,16 +165,13 @@ function parseCSV(text) {
     }
 
 
-
     else if (
       (
         char === "\n" ||
         char === "\r"
-      )
-      &&
+      ) &&
       !inQuotes
     ) {
-
 
       if (
         char === "\r" &&
@@ -246,7 +212,6 @@ function parseCSV(text) {
     }
 
 
-
     else {
 
       field +=
@@ -257,12 +222,10 @@ function parseCSV(text) {
   }
 
 
-
   if (
     field ||
     row.length
   ) {
-
 
     row.push(
       field.trim()
@@ -301,17 +264,12 @@ function updateClock() {
     new Date();
 
 
-
-  if (
-    clockElement
-  ) {
-
+  if (clockElement) {
 
     clockElement.textContent =
       now.toLocaleTimeString(
         "en-US",
         {
-
           hour:
             "numeric",
 
@@ -320,24 +278,18 @@ function updateClock() {
 
           hour12:
             true
-
         }
       );
 
   }
 
 
-
-  if (
-    headerDateElement
-  ) {
-
+  if (headerDateElement) {
 
     headerDateElement.textContent =
       now.toLocaleDateString(
         "en-US",
         {
-
           weekday:
             "short",
 
@@ -346,7 +298,6 @@ function updateClock() {
 
           day:
             "numeric"
-
         }
       )
       .toUpperCase();
@@ -354,7 +305,6 @@ function updateClock() {
   }
 
 }
-
 
 
 updateClock();
@@ -372,7 +322,6 @@ setInterval(
 // ==========================================================
 
 function dateKey(date) {
-
 
   const year =
     date.getFullYear();
@@ -398,9 +347,7 @@ function dateKey(date) {
     );
 
 
-  return (
-    `${year}-${month}-${day}`
-  );
+  return `${year}-${month}-${day}`;
 
 }
 
@@ -408,20 +355,14 @@ function dateKey(date) {
 
 function normalizeDate(value) {
 
-
   if (!value) {
-
     return "";
-
   }
 
 
   const text =
-    String(
-      value
-    )
-    .trim();
-
+    String(value)
+      .trim();
 
 
   const usDate =
@@ -430,43 +371,21 @@ function normalizeDate(value) {
     );
 
 
-  if (
-    usDate
-  ) {
-
+  if (usDate) {
 
     return (
-
       usDate[3]
-
       +
-
       "-"
-
       +
-
-      usDate[1]
-        .padStart(
-          2,
-          "0"
-        )
-
+      usDate[1].padStart(2, "0")
       +
-
       "-"
-
       +
-
-      usDate[2]
-        .padStart(
-          2,
-          "0"
-        )
-
+      usDate[2].padStart(2, "0")
     );
 
   }
-
 
 
   const isoDate =
@@ -475,49 +394,25 @@ function normalizeDate(value) {
     );
 
 
-  if (
-    isoDate
-  ) {
-
+  if (isoDate) {
 
     return (
-
       isoDate[1]
-
       +
-
       "-"
-
       +
-
-      isoDate[2]
-        .padStart(
-          2,
-          "0"
-        )
-
+      isoDate[2].padStart(2, "0")
       +
-
       "-"
-
       +
-
-      isoDate[3]
-        .padStart(
-          2,
-          "0"
-        )
-
+      isoDate[3].padStart(2, "0")
     );
 
   }
 
 
-
   const parsed =
-    new Date(
-      text
-    );
+    new Date(text);
 
 
   if (
@@ -526,14 +421,11 @@ function normalizeDate(value) {
     )
   ) {
 
-    return (
-      dateKey(
-        parsed
-      )
+    return dateKey(
+      parsed
     );
 
   }
-
 
 
   return "";
@@ -543,18 +435,14 @@ function normalizeDate(value) {
 
 
 // ==========================================================
-// GOOGLE DRIVE FILE ID
+// DRIVE FILE ID
 // ==========================================================
 
 function getDriveFileId(url) {
 
-
   if (!url) {
-
     return "";
-
   }
-
 
 
   let match =
@@ -563,16 +451,9 @@ function getDriveFileId(url) {
     );
 
 
-  if (
-    match
-  ) {
-
-    return (
-      match[1]
-    );
-
+  if (match) {
+    return match[1];
   }
-
 
 
   match =
@@ -581,16 +462,9 @@ function getDriveFileId(url) {
     );
 
 
-  if (
-    match
-  ) {
-
-    return (
-      match[1]
-    );
-
+  if (match) {
+    return match[1];
   }
-
 
 
   match =
@@ -599,16 +473,9 @@ function getDriveFileId(url) {
     );
 
 
-  if (
-    match
-  ) {
-
-    return (
-      match[1]
-    );
-
+  if (match) {
+    return match[1];
   }
-
 
 
   return "";
@@ -618,16 +485,13 @@ function getDriveFileId(url) {
 
 
 // ==========================================================
-// DRIVE IMAGE URL
+// DRIVE IMAGE
 // ==========================================================
 
 function convertDriveImageURL(url) {
 
-
   if (!url) {
-
     return "";
-
   }
 
 
@@ -637,26 +501,15 @@ function convertDriveImageURL(url) {
     );
 
 
-  if (
-    !fileId
-  ) {
-
-    return (
-      url
-    );
-
+  if (!fileId) {
+    return url;
   }
 
 
-
   return (
-
     "https://drive.google.com/thumbnail"
-
     +
-
     `?id=${fileId}&sz=w3000`
-
   );
 
 }
@@ -664,18 +517,14 @@ function convertDriveImageURL(url) {
 
 
 // ==========================================================
-// DRIVE AUDIO URL
+// DRIVE AUDIO
 // ==========================================================
 
 function convertDriveAudioURL(url) {
 
-
   if (!url) {
-
     return "";
-
   }
-
 
 
   const fileId =
@@ -684,35 +533,15 @@ function convertDriveAudioURL(url) {
     );
 
 
-  /*
-     If the Sheet contains an actual direct MP3 URL,
-     use it directly.
-  */
-
-  if (
-    !fileId
-  ) {
-
-    return (
-      url
-    );
-
+  if (!fileId) {
+    return url;
   }
 
 
-
-  /*
-     Public Google Drive download URL.
-  */
-
   return (
-
     "https://drive.google.com/uc"
-
     +
-
     `?export=download&id=${fileId}`
-
   );
 
 }
@@ -720,53 +549,30 @@ function convertDriveAudioURL(url) {
 
 
 // ==========================================================
-// IMAGE TEST
+// TEST IMAGE
 // ==========================================================
 
 function testImage(url) {
 
+  return new Promise(
+    resolve => {
 
-  return (
-
-    new Promise(
-      resolve => {
-
-
-        const image =
-          new Image();
+      const image =
+        new Image();
 
 
-
-        image.onload =
-          () => {
-
-            resolve(
-              true
-            );
-
-          };
+      image.onload =
+        () => resolve(true);
 
 
-
-        image.onerror =
-          () => {
-
-            resolve(
-              false
-            );
-
-          };
+      image.onerror =
+        () => resolve(false);
 
 
+      image.src =
+        addCacheBuster(url);
 
-        image.src =
-          addCacheBuster(
-            url
-          );
-
-      }
-    )
-
+    }
   );
 
 }
@@ -779,15 +585,9 @@ function testImage(url) {
 
 function loadLocalAnnouncements() {
 
-
-  if (
-    !tickerText
-  ) {
-
+  if (!tickerText) {
     return;
-
   }
-
 
 
   tickerText.textContent =
@@ -807,9 +607,7 @@ function loadLocalAnnouncements() {
 
 async function loadAnnouncements() {
 
-
   try {
-
 
     const response =
       await fetch(
@@ -818,18 +616,13 @@ async function loadAnnouncements() {
             .announcementSheetURL
         ),
         {
-
           cache:
             "no-store"
-
         }
       );
 
 
-
-    if (
-      !response.ok
-    ) {
+    if (!response.ok) {
 
       throw new Error(
         "Announcement Sheet unavailable"
@@ -838,17 +631,14 @@ async function loadAnnouncements() {
     }
 
 
-
     const rows =
       parseCSV(
         await response.text()
       );
 
 
-
     const messages =
       [];
-
 
 
     rows.forEach(
@@ -857,29 +647,20 @@ async function loadAnnouncements() {
         index
       ) => {
 
-
         row.forEach(
           cell => {
-
 
             const value =
               cell.trim();
 
 
-
-            if (
-              !value
-            ) {
-
+            if (!value) {
               return;
-
             }
 
 
-
             if (
-              index === 0
-              &&
+              index === 0 &&
               value
                 .toLowerCase()
                 .includes(
@@ -890,7 +671,6 @@ async function loadAnnouncements() {
               return;
 
             }
-
 
 
             messages.push(
@@ -904,11 +684,9 @@ async function loadAnnouncements() {
     );
 
 
-
     if (
       messages.length
     ) {
-
 
       tickerText.textContent =
         messages.join(
@@ -917,9 +695,7 @@ async function loadAnnouncements() {
 
     }
 
-
     else {
-
 
       loadLocalAnnouncements();
 
@@ -927,11 +703,7 @@ async function loadAnnouncements() {
 
   }
 
-
-  catch (
-    error
-  ) {
-
+  catch (error) {
 
     console.error(
       "Announcement Error:",
@@ -948,14 +720,12 @@ async function loadAnnouncements() {
 
 
 // ==========================================================
-// LOAD REMOTE FLYERS
+// LOAD FLYERS
 // ==========================================================
 
 async function loadRemoteFlyers() {
 
-
   try {
-
 
     const response =
       await fetch(
@@ -964,18 +734,13 @@ async function loadRemoteFlyers() {
             .flyerSheetURL
         ),
         {
-
           cache:
             "no-store"
-
         }
       );
 
 
-
-    if (
-      !response.ok
-    ) {
+    if (!response.ok) {
 
       throw new Error(
         "Flyer Sheet unavailable"
@@ -984,17 +749,14 @@ async function loadRemoteFlyers() {
     }
 
 
-
     const rows =
       parseCSV(
         await response.text()
       );
 
 
-
     if (
-      rows.length <
-      2
+      rows.length < 2
     ) {
 
       throw new Error(
@@ -1002,7 +764,6 @@ async function loadRemoteFlyers() {
       );
 
     }
-
 
 
     const headers =
@@ -1013,7 +774,6 @@ async function loadRemoteFlyers() {
               .trim()
               .toLowerCase()
         );
-
 
 
     const imageIndex =
@@ -1034,10 +794,8 @@ async function loadRemoteFlyers() {
       );
 
 
-
     const remoteFlyers =
       [];
-
 
 
     for (
@@ -1046,10 +804,8 @@ async function loadRemoteFlyers() {
       i++
     ) {
 
-
       const row =
         rows[i];
-
 
 
       const active =
@@ -1058,15 +814,13 @@ async function loadRemoteFlyers() {
           (
             row[
               activeIndex
-            ]
-            ||
+            ] ||
             ""
           )
           .trim()
           .toUpperCase()
           :
           "YES";
-
 
 
       if (
@@ -1079,34 +833,25 @@ async function loadRemoteFlyers() {
       }
 
 
-
       const originalURL =
         (
           row[
             imageIndex
-          ]
-          ||
+          ] ||
           ""
         )
         .trim();
 
 
-
-      if (
-        !originalURL
-      ) {
-
+      if (!originalURL) {
         continue;
-
       }
-
 
 
       const imageURL =
         convertDriveImageURL(
           originalURL
         );
-
 
 
       const displayOrder =
@@ -1126,35 +871,27 @@ async function loadRemoteFlyers() {
           999;
 
 
-
       const imageWorks =
         await testImage(
           imageURL
         );
 
 
-
-      if (
-        imageWorks
-      ) {
-
+      if (imageWorks) {
 
         remoteFlyers.push(
           {
-
             url:
               imageURL,
 
             order:
               displayOrder
-
           }
         );
 
       }
 
     }
-
 
 
     remoteFlyers.sort(
@@ -1167,31 +904,25 @@ async function loadRemoteFlyers() {
     );
 
 
-
     if (
       remoteFlyers.length
     ) {
 
-
       flyers =
-        remoteFlyers
-          .map(
-            item =>
-              item.url
-          );
+        remoteFlyers.map(
+          item =>
+            item.url
+        );
 
     }
 
-
     else {
-
 
       flyers =
         templeContent
           .localFlyers;
 
     }
-
 
 
     currentFlyerIndex =
@@ -1202,11 +933,7 @@ async function loadRemoteFlyers() {
 
   }
 
-
-  catch (
-    error
-  ) {
-
+  catch (error) {
 
     console.error(
       "Flyer Error:",
@@ -1237,7 +964,6 @@ async function loadRemoteFlyers() {
 
 function showFlyer() {
 
-
   if (
     !flyerElement ||
     !flyers.length
@@ -1246,7 +972,6 @@ function showFlyer() {
     return;
 
   }
-
 
 
   flyerElement
@@ -1259,10 +984,8 @@ function showFlyer() {
     );
 
 
-
   flyerElement.onload =
     () => {
-
 
       const width =
         flyerElement
@@ -1274,24 +997,19 @@ function showFlyer() {
           .naturalHeight;
 
 
-
       if (
         width &&
         height
       ) {
-
 
         const ratio =
           width /
           height;
 
 
-
         if (
-          ratio >
-          1.15
+          ratio > 1.15
         ) {
-
 
           flyerElement
             .classList
@@ -1301,12 +1019,9 @@ function showFlyer() {
 
         }
 
-
         else if (
-          ratio <
-          0.85
+          ratio < 0.85
         ) {
-
 
           flyerElement
             .classList
@@ -1316,9 +1031,7 @@ function showFlyer() {
 
         }
 
-
         else {
-
 
           flyerElement
             .classList
@@ -1331,10 +1044,8 @@ function showFlyer() {
       }
 
 
-
       requestAnimationFrame(
         () => {
-
 
           flyerElement
             .classList
@@ -1346,7 +1057,6 @@ function showFlyer() {
       );
 
     };
-
 
 
   flyerElement.src =
@@ -1361,31 +1071,24 @@ function showFlyer() {
 
 
 // ==========================================================
-// ROTATE FLYERS
+// ROTATE FLYER
 // ==========================================================
 
 function rotateFlyer() {
 
-
   if (
-    flyers.length <=
-    1
+    flyers.length <= 1
   ) {
-
     return;
-
   }
-
 
 
   currentFlyerIndex =
     (
-      currentFlyerIndex +
-      1
+      currentFlyerIndex + 1
     )
     %
     flyers.length;
-
 
 
   showFlyer();
@@ -1400,15 +1103,7 @@ function rotateFlyer() {
 
 async function loadBGMPlaylist() {
 
-
   try {
-
-
-    console.log(
-      "Loading BGM Google Sheet..."
-    );
-
-
 
     const response =
       await fetch(
@@ -1417,50 +1112,32 @@ async function loadBGMPlaylist() {
             .bgmSheetURL
         ),
         {
-
           cache:
             "no-store"
-
         }
       );
 
 
-
-    if (
-      !response.ok
-    ) {
+    if (!response.ok) {
 
       throw new Error(
-        `BGM Sheet HTTP ${response.status}`
+        "BGM Sheet unavailable"
       );
 
     }
-
-
-
-    const csv =
-      await response.text();
-
 
 
     const rows =
       parseCSV(
-        csv
+        await response.text()
       );
-
 
 
     if (
-      rows.length <
-      2
+      rows.length < 2
     ) {
-
-      throw new Error(
-        "BGM Sheet has no music rows."
-      );
-
+      return;
     }
-
 
 
     const headers =
@@ -1471,14 +1148,6 @@ async function loadBGMPlaylist() {
               .trim()
               .toLowerCase()
         );
-
-
-
-    console.log(
-      "BGM Headers:",
-      headers
-    );
-
 
 
     const musicIndex =
@@ -1499,23 +1168,19 @@ async function loadBGMPlaylist() {
       );
 
 
-
     if (
-      musicIndex ===
-      -1
+      musicIndex === -1
     ) {
 
       throw new Error(
-        "MusicURL column not found."
+        "MusicURL column not found"
       );
 
     }
 
 
-
     const playlist =
       [];
-
 
 
     for (
@@ -1524,10 +1189,8 @@ async function loadBGMPlaylist() {
       i++
     ) {
 
-
       const row =
         rows[i];
-
 
 
       const active =
@@ -1536,15 +1199,13 @@ async function loadBGMPlaylist() {
           (
             row[
               activeIndex
-            ]
-            ||
+            ] ||
             ""
           )
           .trim()
           .toUpperCase()
           :
           "YES";
-
 
 
       if (
@@ -1557,34 +1218,19 @@ async function loadBGMPlaylist() {
       }
 
 
-
-      const originalMusicURL =
+      const originalURL =
         (
           row[
             musicIndex
-          ]
-          ||
+          ] ||
           ""
         )
         .trim();
 
 
-
-      if (
-        !originalMusicURL
-      ) {
-
+      if (!originalURL) {
         continue;
-
       }
-
-
-
-      const convertedURL =
-        convertDriveAudioURL(
-          originalMusicURL
-        );
-
 
 
       const order =
@@ -1604,21 +1250,19 @@ async function loadBGMPlaylist() {
           999;
 
 
-
       playlist.push(
         {
-
           url:
-            convertedURL,
+            convertDriveAudioURL(
+              originalURL
+            ),
 
           order:
             order
-
         }
       );
 
     }
-
 
 
     playlist.sort(
@@ -1631,58 +1275,36 @@ async function loadBGMPlaylist() {
     );
 
 
-
     const newPlaylist =
-      playlist
-        .map(
-          item =>
-            item.url
-        );
-
+      playlist.map(
+        item =>
+          item.url
+      );
 
 
     if (
       !newPlaylist.length
     ) {
-
-      throw new Error(
-        "No Active=YES BGM tracks found."
-      );
-
+      return;
     }
 
 
-
-    const previousSignature =
-      bgmPlaylist.join(
-        "|"
-      );
+    const oldSignature =
+      bgmPlaylist.join("|");
 
 
     const newSignature =
-      newPlaylist.join(
-        "|"
-      );
-
+      newPlaylist.join("|");
 
 
     bgmPlaylist =
       newPlaylist;
 
 
-
-    console.log(
-      "BGM Playlist:",
-      bgmPlaylist
-    );
-
-
-
     if (
-      previousSignature !==
+      oldSignature !==
       newSignature
     ) {
-
 
       currentBGMIndex =
         0;
@@ -1700,11 +1322,9 @@ async function loadBGMPlaylist() {
 
     }
 
-
     else if (
       !bgmStarted
     ) {
-
 
       startCurrentBGM();
 
@@ -1712,20 +1332,12 @@ async function loadBGMPlaylist() {
 
   }
 
-
-  catch (
-    error
-  ) {
-
+  catch (error) {
 
     console.error(
-      "BGM Playlist Error:",
+      "BGM Error:",
       error
     );
-
-
-
-    startLocalBGMFallback();
 
   }
 
@@ -1734,86 +1346,42 @@ async function loadBGMPlaylist() {
 
 
 // ==========================================================
-// START CURRENT BGM TRACK
+// START BGM
 // ==========================================================
 
 function startCurrentBGM() {
 
-
   if (
-    !musicElement
-  ) {
-
-    console.error(
-      "background-music audio element was not found."
-    );
-
-    return;
-
-  }
-
-
-
-  if (
+    !musicElement ||
     !bgmPlaylist.length
   ) {
-
-    console.warn(
-      "No BGM playlist available."
-    );
-
-    startLocalBGMFallback();
-
     return;
-
   }
 
 
-
-  const musicURL =
+  const url =
     bgmPlaylist[
       currentBGMIndex
     ];
 
 
-
-  console.log(
-    "Trying BGM:",
-    musicURL
-  );
-
-
-
   currentBGMURL =
-    musicURL;
-
+    url;
 
 
   musicElement.pause();
 
 
-
-  musicElement.removeAttribute(
-    "src"
-  );
-
-
-
-  musicElement.load();
-
-
-
   musicElement.src =
-    musicURL;
-
-
-
-  musicElement.preload =
-    "auto";
+    url;
 
 
   musicElement.loop =
     false;
+
+
+  musicElement.preload =
+    "auto";
 
 
   musicElement.volume =
@@ -1822,26 +1390,19 @@ function startCurrentBGM() {
     0.30;
 
 
-
   musicElement.load();
-
 
 
   const playPromise =
     musicElement.play();
 
 
-
-  if (
-    playPromise
-  ) {
-
+  if (playPromise) {
 
     playPromise
 
       .then(
         () => {
-
 
           bgmStarted =
             true;
@@ -1850,30 +1411,17 @@ function startCurrentBGM() {
           bgmErrorCount =
             0;
 
-
-          console.log(
-            "BGM started successfully."
-          );
-
         }
       )
-
 
       .catch(
         error => {
 
-
           console.error(
-            "BGM play() failed:",
+            "BGM play error:",
             error
           );
 
-
-          /*
-             If Chrome blocked autoplay,
-             don't immediately destroy
-             the playlist.
-          */
 
           bgmStarted =
             false;
@@ -1893,27 +1441,19 @@ function startCurrentBGM() {
 
 function playNextBGM() {
 
-
   if (
     !bgmPlaylist.length
   ) {
-
-    startLocalBGMFallback();
-
     return;
-
   }
-
 
 
   currentBGMIndex =
     (
-      currentBGMIndex +
-      1
+      currentBGMIndex + 1
     )
     %
     bgmPlaylist.length;
-
 
 
   startCurrentBGM();
@@ -1923,113 +1463,14 @@ function playNextBGM() {
 
 
 // ==========================================================
-// LOCAL FALLBACK
-// ==========================================================
-
-function startLocalBGMFallback() {
-
-
-  if (
-    !musicElement
-  ) {
-
-    return;
-
-  }
-
-
-
-  console.log(
-    "Starting local BGM fallback."
-  );
-
-
-
-  musicElement.pause();
-
-
-
-  musicElement.src =
-    "music/music1.mp3";
-
-
-  musicElement.volume =
-    templeContent.bgmVolume
-    ??
-    0.30;
-
-
-  musicElement.loop =
-    true;
-
-
-  musicElement.preload =
-    "auto";
-
-
-  musicElement.load();
-
-
-
-  const playPromise =
-    musicElement.play();
-
-
-
-  if (
-    playPromise
-  ) {
-
-
-    playPromise
-
-      .then(
-        () => {
-
-
-          bgmStarted =
-            true;
-
-
-          console.log(
-            "Local fallback BGM is playing."
-          );
-
-        }
-      )
-
-
-      .catch(
-        error => {
-
-
-          console.error(
-            "Local fallback BGM could not autoplay:",
-            error
-          );
-
-        }
-      );
-
-  }
-
-}
-
-
-
-// ==========================================================
 // AUDIO EVENTS
 // ==========================================================
 
-if (
-  musicElement
-) {
-
+if (musicElement) {
 
   musicElement.addEventListener(
     "playing",
     () => {
-
 
       bgmStarted =
         true;
@@ -2038,141 +1479,46 @@ if (
       bgmErrorCount =
         0;
 
-
-      console.log(
-        "AUDIO PLAYING"
-      );
-
     }
   );
-
-
-
-  musicElement.addEventListener(
-    "canplay",
-    () => {
-
-
-      console.log(
-        "Audio loaded and can play."
-      );
-
-    }
-  );
-
 
 
   musicElement.addEventListener(
     "ended",
-    () => {
-
-
-      console.log(
-        "BGM finished. Playing next track."
-      );
-
-
-      playNextBGM();
-
-    }
+    playNextBGM
   );
-
 
 
   musicElement.addEventListener(
     "error",
     () => {
 
-
-      /*
-         Ignore an error before src exists.
-      */
-
-      if (
-        !musicElement.src
-      ) {
-
-        return;
-
-      }
-
-
-
       bgmErrorCount++;
 
 
-
-      console.error(
-        "Audio Error:",
-        musicElement.error,
-        "Track:",
-        currentBGMURL
-      );
-
-
-
-      /*
-         Try every remote track once.
-      */
-
       if (
-        bgmPlaylist.length
-        &&
+        bgmPlaylist.length > 1 &&
         bgmErrorCount <
         bgmPlaylist.length
       ) {
-
 
         setTimeout(
           playNextBGM,
           1500
         );
 
-
-        return;
-
       }
-
-
-
-      /*
-         All remote tracks failed.
-      */
-
-      console.error(
-        "All remote BGM tracks failed. Using local fallback."
-      );
-
-
-      bgmErrorCount =
-        0;
-
-
-      setTimeout(
-        startLocalBGMFallback,
-        1500
-      );
 
     }
   );
 
 
-
-  /*
-     Extra browser-autoplay recovery.
-
-     If anyone clicks/touches the screen,
-     try music again.
-  */
-
   const resumeAudio =
     () => {
-
 
       if (
         musicElement.paused
       ) {
-
 
         musicElement
           .play()
@@ -2183,7 +1529,6 @@ if (
       }
 
     };
-
 
 
   document.addEventListener(
@@ -2213,12 +1558,9 @@ if (
 
 function getSaturdayNumber(date) {
 
-
-  return (
-    Math.ceil(
-      date.getDate() /
-      7
-    )
+  return Math.ceil(
+    date.getDate() /
+    7
   );
 
 }
@@ -2231,16 +1573,13 @@ function getSaturdayNumber(date) {
 
 function getRegularPrograms(date) {
 
-
   const day =
     date.getDay();
-
 
 
   if (
     day === 6
   ) {
-
 
     const saturdayNumber =
       getSaturdayNumber(
@@ -2248,35 +1587,25 @@ function getRegularPrograms(date) {
       );
 
 
-
     return (
-
       templeContent
         .saturdaySchedule[
           saturdayNumber
         ]
-
       ||
-
       []
-
     );
 
   }
 
 
-
   return (
-
     templeContent
       .weeklySchedule[
         day
       ]
-
     ||
-
     []
-
   );
 
 }
@@ -2289,9 +1618,7 @@ function getRegularPrograms(date) {
 
 async function loadSpecialEvents() {
 
-
   try {
-
 
     const response =
       await fetch(
@@ -2300,18 +1627,13 @@ async function loadSpecialEvents() {
             .specialEventsSheetURL
         ),
         {
-
           cache:
             "no-store"
-
         }
       );
 
 
-
-    if (
-      !response.ok
-    ) {
+    if (!response.ok) {
 
       throw new Error(
         "Special Events unavailable"
@@ -2320,19 +1642,15 @@ async function loadSpecialEvents() {
     }
 
 
-
     const rows =
       parseCSV(
         await response.text()
       );
 
 
-
     if (
-      rows.length <
-      2
+      rows.length < 2
     ) {
-
 
       specialEvents =
         [];
@@ -2346,7 +1664,6 @@ async function loadSpecialEvents() {
     }
 
 
-
     const headers =
       rows[0]
         .map(
@@ -2355,7 +1672,6 @@ async function loadSpecialEvents() {
               .trim()
               .toLowerCase()
         );
-
 
 
     const dateIndex =
@@ -2388,10 +1704,8 @@ async function loadSpecialEvents() {
       );
 
 
-
     specialEvents =
       [];
-
 
 
     for (
@@ -2400,10 +1714,8 @@ async function loadSpecialEvents() {
       i++
     ) {
 
-
       const row =
         rows[i];
-
 
 
       const active =
@@ -2412,15 +1724,13 @@ async function loadSpecialEvents() {
           (
             row[
               activeIndex
-            ]
-            ||
+            ] ||
             ""
           )
           .trim()
           .toUpperCase()
           :
           "YES";
-
 
 
       if (
@@ -2433,7 +1743,6 @@ async function loadSpecialEvents() {
       }
 
 
-
       const date =
         normalizeDate(
           row[
@@ -2442,72 +1751,53 @@ async function loadSpecialEvents() {
         );
 
 
-
-      if (
-        !date
-      ) {
-
+      if (!date) {
         continue;
-
       }
-
 
 
       specialEvents.push(
         {
-
           date:
             date,
-
 
           event:
             (
               row[
                 eventIndex
-              ]
-              ||
+              ] ||
               ""
             )
             .trim(),
-
 
           program:
             (
               row[
                 programIndex
-              ]
-              ||
+              ] ||
               ""
             )
             .trim(),
-
 
           time:
             (
               row[
                 timeIndex
-              ]
-              ||
+              ] ||
               ""
             )
             .trim()
-
         }
       );
 
     }
 
 
-
     renderTodaySchedule();
 
   }
 
-
-  catch (
-    error
-  ) {
-
+  catch (error) {
 
     console.error(
       "Special Event Error:",
@@ -2528,20 +1818,137 @@ async function loadSpecialEvents() {
 
 
 // ==========================================================
+// PROGRAM TIME STATUS
+// 90 MINUTES AFTER START = COMPLETED
+// ==========================================================
+
+function getProgramTimeStatus(timeText) {
+
+  if (!timeText) {
+
+    return {
+      completed:
+        false,
+
+      current:
+        false
+    };
+
+  }
+
+
+  const match =
+    String(timeText)
+      .trim()
+      .match(
+        /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i
+      );
+
+
+  if (!match) {
+
+    return {
+      completed:
+        false,
+
+      current:
+        false
+    };
+
+  }
+
+
+  let hour =
+    Number(
+      match[1]
+    );
+
+
+  const minute =
+    Number(
+      match[2]
+    );
+
+
+  const period =
+    match[3]
+      .toUpperCase();
+
+
+  if (
+    period === "PM" &&
+    hour !== 12
+  ) {
+
+    hour += 12;
+
+  }
+
+
+  if (
+    period === "AM" &&
+    hour === 12
+  ) {
+
+    hour = 0;
+
+  }
+
+
+  const now =
+    new Date();
+
+
+  const programTime =
+    new Date();
+
+
+  programTime.setHours(
+    hour,
+    minute,
+    0,
+    0
+  );
+
+
+  const currentProgramEnd =
+    new Date(
+      programTime.getTime()
+      +
+      90 *
+      60 *
+      1000
+    );
+
+
+  return {
+
+    completed:
+      now >
+      currentProgramEnd,
+
+    current:
+      now >=
+      programTime
+      &&
+      now <=
+      currentProgramEnd
+
+  };
+
+}
+
+
+
+// ==========================================================
 // TODAY'S SCHEDULE
 // ==========================================================
 
 function renderTodaySchedule() {
 
-
-  if (
-    !scheduleList
-  ) {
-
+  if (!scheduleList) {
     return;
-
   }
-
 
 
   const today =
@@ -2558,6 +1965,7 @@ function renderTodaySchedule() {
     [];
 
 
+  // REGULAR PROGRAMS
 
   getRegularPrograms(
     today
@@ -2565,10 +1973,8 @@ function renderTodaySchedule() {
   .forEach(
     program => {
 
-
       programs.push(
         {
-
           title:
             program.title,
 
@@ -2577,7 +1983,6 @@ function renderTodaySchedule() {
 
           note:
             ""
-
         }
       );
 
@@ -2585,6 +1990,7 @@ function renderTodaySchedule() {
   );
 
 
+  // SPECIAL EVENTS
 
   specialEvents
 
@@ -2597,7 +2003,6 @@ function renderTodaySchedule() {
     .forEach(
       event => {
 
-
         const title =
           event.program
           ||
@@ -2606,12 +2011,10 @@ function renderTodaySchedule() {
           "Special Temple Program";
 
 
-
         const duplicate =
           programs.some(
             program =>
-              program
-                .title
+              program.title
                 .toLowerCase()
               ===
               title
@@ -2619,35 +2022,25 @@ function renderTodaySchedule() {
           );
 
 
-
-        if (
-          !duplicate
-        ) {
-
+        if (!duplicate) {
 
           programs.push(
             {
-
               title:
                 title,
-
 
               time:
                 event.time,
 
-
               note:
                 (
-                  event.event
-                  &&
-                  event.event !==
-                  title
+                  event.event &&
+                  event.event !== title
                 )
                 ?
                 event.event
                 :
                 ""
-
             }
           );
 
@@ -2657,18 +2050,16 @@ function renderTodaySchedule() {
     );
 
 
-
   if (
-    programs.length ===
-    0
+    programs.length === 0
   ) {
-
 
     scheduleList.innerHTML =
       `
         <div class="empty-schedule">
           ${escapeHTML(
-            templeContent.noProgramMessage
+            templeContent
+              .noProgramMessage
           )}
         </div>
       `;
@@ -2679,30 +2070,74 @@ function renderTodaySchedule() {
   }
 
 
-
   scheduleList.innerHTML =
     programs
       .map(
-        program =>
-          `
+        program => {
 
-            <article class="schedule-item">
+          const status =
+            getProgramTimeStatus(
+              program.time
+            );
+
+
+          let itemClass =
+            "schedule-item";
+
+
+          if (
+            status.completed
+          ) {
+
+            itemClass +=
+              " is-completed";
+
+          }
+
+          else if (
+            status.current
+          ) {
+
+            itemClass +=
+              " is-current";
+
+          }
+
+
+          return `
+            <article class="${itemClass}">
 
               <div class="schedule-time">
                 ${escapeHTML(
                   program.time ||
-                  "Temple Program"
+                  "Program"
                 )}
               </div>
 
-              <div class="schedule-name">
-                ${escapeHTML(
-                  program.title
-                )}
-              </div>
+              <div class="schedule-separator"></div>
 
-              ${
-                program.note
+              <div class="schedule-content">
+
+                <div class="schedule-name">
+                  ${escapeHTML(
+                    program.title
+                  )}
+                </div>
+
+                ${
+                  status.completed
+                  ?
+                  `
+                    <span class="schedule-status">
+                      (Completed)
+                    </span>
+                  `
+                  :
+                  ""
+                }
+
+                ${
+                  program.note
                   ?
                   `
                     <div class="schedule-note">
@@ -2713,11 +2148,14 @@ function renderTodaySchedule() {
                   `
                   :
                   ""
-              }
+                }
+
+              </div>
 
             </article>
+          `;
 
-          `
+        }
       )
       .join("");
 
@@ -2730,7 +2168,6 @@ function renderTodaySchedule() {
 // ==========================================================
 
 function escapeHTML(value) {
-
 
   return String(
     value ||
@@ -2767,20 +2204,14 @@ function escapeHTML(value) {
 
 
 // ==========================================================
-// UPCOMING EVENTS FALLBACK
+// UPCOMING FALLBACK
 // ==========================================================
 
 function showUpcomingFallback() {
 
-
-  if (
-    !upcomingEventsText
-  ) {
-
+  if (!upcomingEventsText) {
     return;
-
   }
-
 
 
   upcomingEventsText.textContent =
@@ -2800,9 +2231,7 @@ function showUpcomingFallback() {
 
 async function loadUpcomingEvents() {
 
-
   try {
-
 
     const response =
       await fetch(
@@ -2811,18 +2240,13 @@ async function loadUpcomingEvents() {
             .upcomingEventsSheetURL
         ),
         {
-
           cache:
             "no-store"
-
         }
       );
 
 
-
-    if (
-      !response.ok
-    ) {
+    if (!response.ok) {
 
       throw new Error(
         "Upcoming Events unavailable"
@@ -2831,27 +2255,21 @@ async function loadUpcomingEvents() {
     }
 
 
-
     const rows =
       parseCSV(
         await response.text()
       );
 
 
-
     if (
-      rows.length <
-      2
+      rows.length < 2
     ) {
 
-
       showUpcomingFallback();
-
 
       return;
 
     }
-
 
 
     const headers =
@@ -2862,7 +2280,6 @@ async function loadUpcomingEvents() {
               .trim()
               .toLowerCase()
         );
-
 
 
     const dateIndex =
@@ -2895,7 +2312,6 @@ async function loadUpcomingEvents() {
       );
 
 
-
     const today =
       new Date();
 
@@ -2908,10 +2324,8 @@ async function loadUpcomingEvents() {
     );
 
 
-
     const events =
       [];
-
 
 
     for (
@@ -2920,10 +2334,8 @@ async function loadUpcomingEvents() {
       i++
     ) {
 
-
       const row =
         rows[i];
-
 
 
       const active =
@@ -2932,15 +2344,13 @@ async function loadUpcomingEvents() {
           (
             row[
               activeIndex
-            ]
-            ||
+            ] ||
             ""
           )
           .trim()
           .toUpperCase()
           :
           "YES";
-
 
 
       if (
@@ -2953,27 +2363,19 @@ async function loadUpcomingEvents() {
       }
 
 
-
       const title =
         (
           row[
             eventIndex
-          ]
-          ||
+          ] ||
           ""
         )
         .trim();
 
 
-
-      if (
-        !title
-      ) {
-
+      if (!title) {
         continue;
-
       }
-
 
 
       const normalizedDate =
@@ -2984,15 +2386,9 @@ async function loadUpcomingEvents() {
         );
 
 
-
-      if (
-        !normalizedDate
-      ) {
-
+      if (!normalizedDate) {
         continue;
-
       }
-
 
 
       const eventDate =
@@ -3002,16 +2398,13 @@ async function loadUpcomingEvents() {
         );
 
 
-
       if (
-        eventDate <
-        today
+        eventDate < today
       ) {
 
         continue;
 
       }
-
 
 
       const order =
@@ -3031,37 +2424,29 @@ async function loadUpcomingEvents() {
           999;
 
 
-
       events.push(
         {
-
           date:
             eventDate,
 
-
           title:
             title,
-
 
           time:
             (
               row[
                 timeIndex
-              ]
-              ||
+              ] ||
               ""
             )
             .trim(),
 
-
           order:
             order
-
         }
       );
 
     }
-
 
 
     events.sort(
@@ -3069,7 +2454,6 @@ async function loadUpcomingEvents() {
         a,
         b
       ) => {
-
 
         if (
           a.order !==
@@ -3093,19 +2477,15 @@ async function loadUpcomingEvents() {
     );
 
 
-
     if (
       !events.length
     ) {
 
-
       showUpcomingFallback();
-
 
       return;
 
     }
-
 
 
     upcomingEventsText.textContent =
@@ -3113,35 +2493,29 @@ async function loadUpcomingEvents() {
         .map(
           event => {
 
-
             const eventDate =
               event.date
                 .toLocaleDateString(
                   "en-US",
                   {
-
                     month:
                       "short",
 
                     day:
                       "numeric"
-
                   }
                 );
-
 
 
             if (
               event.time
             ) {
 
-
               return (
                 `${eventDate} – ${event.title} (${event.time})`
               );
 
             }
-
 
 
             return (
@@ -3156,11 +2530,7 @@ async function loadUpcomingEvents() {
 
   }
 
-
-  catch (
-    error
-  ) {
-
+  catch (error) {
 
     console.error(
       "Upcoming Events Error:",
@@ -3177,11 +2547,10 @@ async function loadUpcomingEvents() {
 
 
 // ==========================================================
-// INITIALIZE TEMPLE TV
+// INITIALIZATION
 // ==========================================================
 
 async function initializeTempleTV() {
-
 
   loadLocalAnnouncements();
 
@@ -3192,10 +2561,8 @@ async function initializeTempleTV() {
   renderTodaySchedule();
 
 
-
   await Promise.allSettled(
     [
-
       loadAnnouncements(),
 
       loadRemoteFlyers(),
@@ -3203,15 +2570,9 @@ async function initializeTempleTV() {
       loadSpecialEvents(),
 
       loadUpcomingEvents()
-
     ]
   );
 
-
-
-  /*
-     Load BGM after main screen has initialized.
-  */
 
   await loadBGMPlaylist();
 
@@ -3224,7 +2585,7 @@ initializeTempleTV();
 
 
 // ==========================================================
-// FLYER ROTATION
+// FLYER TIMER
 // ==========================================================
 
 setInterval(
@@ -3232,9 +2593,7 @@ setInterval(
 
   templeContent
     .flyerDuration
-
   *
-
   1000
 );
 
@@ -3258,32 +2617,18 @@ const remoteRefreshMilliseconds =
   1000;
 
 
-
 setInterval(
   () => {
 
-
     loadAnnouncements();
-
 
     loadRemoteFlyers();
 
-
     loadSpecialEvents();
-
 
     loadUpcomingEvents();
 
-
-    /*
-       BGM playlist refreshes too.
-
-       Current music will not restart
-       unless playlist changed.
-    */
-
     loadBGMPlaylist();
-
 
   },
 
@@ -3293,7 +2638,7 @@ setInterval(
 
 
 // ==========================================================
-// TODAY SCHEDULE REFRESH
+// SCHEDULE REFRESH
 // ==========================================================
 
 setInterval(
