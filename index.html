@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
 
@@ -13,9 +14,11 @@
   <link rel="stylesheet" href="style.css">
 </head>
 
+
 <body>
 
 <div class="tv-screen">
+
 
   <!-- =====================================================
        HEADER
@@ -37,9 +40,17 @@
         </div>
 
         <div class="temple-meta">
+
           <span>DEVI TEMPLE</span>
-          <span class="meta-dot">•</span>
-          <span>Orange, Connecticut</span>
+
+          <span class="meta-dot">
+            •
+          </span>
+
+          <span>
+            Orange, Connecticut
+          </span>
+
         </div>
 
       </div>
@@ -49,11 +60,17 @@
 
     <div class="time-zone">
 
-      <div id="clock" class="clock">
+      <div
+        id="clock"
+        class="clock"
+      >
         --:-- --
       </div>
 
-      <div id="header-date" class="header-date">
+      <div
+        id="header-date"
+        class="header-date"
+      >
         Loading...
       </div>
 
@@ -69,9 +86,7 @@
   <main class="content-grid">
 
 
-    <!-- ===================================================
-         MAIN FEATURE FLYER
-    ==================================================== -->
+    <!-- MAIN FLYER -->
     <section class="feature-panel">
 
       <img
@@ -85,13 +100,11 @@
 
 
 
-    <!-- ===================================================
-         RIGHT INFORMATION RAIL
-    ==================================================== -->
+    <!-- RIGHT INFORMATION PANEL -->
     <aside class="info-rail">
 
 
-      <!-- TODAY -->
+      <!-- TODAY'S SCHEDULE -->
       <section class="rail-section today-section">
 
         <div class="section-eyebrow">
@@ -104,15 +117,18 @@
           id="today-schedule-list"
           class="schedule-list"
         >
+
           <div class="empty-schedule">
             Loading today's programs...
           </div>
+
         </div>
 
       </section>
 
 
-      <!-- JOIN COMMUNITY -->
+
+      <!-- COMMUNITY -->
       <section class="rail-section community-section">
 
         <div class="section-rule"></div>
@@ -190,19 +206,20 @@
 
 
 <!-- =======================================================
-     BACKGROUND MUSIC
+     REMOTE BGM PLAYER
+     No fixed local song.
+     Google Sheet controls playlist.
 ======================================================== -->
 <audio
   id="background-music"
-  src="music/music1.mp3"
-  autoplay
-  loop
   preload="auto"
 ></audio>
 
 
 <script src="announcements.js"></script>
+
 <script src="script.js"></script>
 
 </body>
+
 </html>
