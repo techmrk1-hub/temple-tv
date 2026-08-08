@@ -1819,7 +1819,7 @@ async function loadSpecialEvents() {
 
 // ==========================================================
 // PROGRAM TIME STATUS
-// 90 MINUTES AFTER START = COMPLETED
+// 75 MINUTES AFTER START = COMPLETED
 // ==========================================================
 
 function getProgramTimeStatus(timeText) {
@@ -1915,7 +1915,7 @@ function getProgramTimeStatus(timeText) {
     new Date(
       programTime.getTime()
       +
-      90 *
+      75 *
       60 *
       1000
     );
