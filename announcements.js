@@ -21,16 +21,31 @@ const templeContent = {
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=519294883&single=true&output=csv",
 
 
+  // =======================================================
+  // BGM SHEET
+  // =======================================================
+
   bgmSheetURL:
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=397630639&single=true&output=csv",
 
 
 
   // =======================================================
-  // REMOTE REFRESH
+  // REFRESH SETTINGS
   // =======================================================
 
   remoteRefreshMinutes: 5,
+
+
+  // How often to check whether a SPECIAL BGM
+  // should start or stop.
+  bgmScheduleCheckSeconds: 15,
+
+
+  // BGM Volume
+  // 0.00 = mute
+  // 1.00 = full volume
+  bgmVolume: 0.30,
 
 
 
@@ -52,15 +67,7 @@ const templeContent = {
 
 
   // =======================================================
-  // BACKGROUND MUSIC
-  // =======================================================
-
-  bgmVolume: 0.30,
-
-
-
-  // =======================================================
-  // ANNOUNCEMENTS FALLBACK
+  // ANNOUNCEMENT FALLBACK
   // =======================================================
 
   announcements: [
