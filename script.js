@@ -9,6 +9,7 @@
    ✓ Upcoming Events
    ✓ Special Events
    ✓ Weekly Schedule from Google Sheets
+   ✓ Start Time + End Time
    ✓ Temporary Date Overrides
    ✓ 1st / 2nd / 3rd Saturday Support
    ✓ Today's Schedule
@@ -93,7 +94,6 @@ function addCacheBuster(url) {
       : "?";
 
   return `${url}${separator}_=${Date.now()}`;
-
 }
 
 
@@ -216,7 +216,6 @@ function parseCSV(text) {
   }
 
   return rows;
-
 }
 
 
@@ -295,7 +294,6 @@ function dateKey(date) {
     );
 
   return `${year}-${month}-${day}`;
-
 }
 
 
@@ -371,7 +369,6 @@ function normalizeDate(value) {
   }
 
   return "";
-
 }
 
 
@@ -384,7 +381,6 @@ function getSaturdayNumber(date) {
   return Math.ceil(
     date.getDate() / 7
   );
-
 }
 
 
@@ -403,7 +399,6 @@ function getWeekdayName(date) {
     "FRIDAY",
     "SATURDAY"
   ][date.getDay()];
-
 }
 
 
@@ -447,7 +442,6 @@ function getDriveFileId(url) {
   }
 
   return "";
-
 }
 
 
@@ -473,7 +467,6 @@ function convertDriveImageURL(url) {
     +
     `?id=${fileId}&sz=w3000`
   );
-
 }
 
 
@@ -491,7 +484,7 @@ function convertDriveAudioURL(url) {
     getDriveFileId(url);
 
   /*
-     Local GitHub music paths such as:
+     Local GitHub MP3 paths such as:
 
      music/default1.mp3
 
@@ -507,7 +500,6 @@ function convertDriveAudioURL(url) {
     +
     `?export=download&id=${fileId}`
   );
-
 }
 
 
@@ -534,7 +526,6 @@ function testImage(url) {
 
     }
   );
-
 }
 
 
@@ -981,6 +972,17 @@ function rotateFlyer() {
 
 // ==========================================================
 // WEEKLY SCHEDULE GOOGLE SHEET
+//
+// Expected Columns:
+//
+// Weekday
+// WeekNumber
+// Program
+// Time
+// EndTime
+// Active
+// StartDate
+// EndDate
 // ==========================================================
 
 async function loadWeeklySchedule() {
@@ -1052,6 +1054,11 @@ async function loadWeeklySchedule() {
     const timeIndex =
       headers.indexOf(
         "time"
+      );
+
+    const endTimeIndex =
+      headers.indexOf(
+        "endtime"
       );
 
     const activeIndex =
@@ -1141,6 +1148,18 @@ async function loadWeeklySchedule() {
         .trim();
 
 
+      const endTime =
+        endTimeIndex >= 0
+          ?
+          (
+            row[endTimeIndex] ||
+            ""
+          )
+          .trim()
+          :
+          "";
+
+
       if (
         !weekday ||
         !program
@@ -1169,6 +1188,8 @@ async function loadWeeklySchedule() {
           program,
 
           time,
+
+          endTime,
 
           startDate:
             startDateIndex >= 0
@@ -1224,9 +1245,8 @@ async function loadWeeklySchedule() {
 
 
     /*
-      IMPORTANT:
-      Existing Google Sheet schedule remains
-      untouched if a later refresh temporarily fails.
+      If there was already a successfully loaded
+      WeeklySchedule, keep using it.
     */
 
     if (
@@ -1302,14 +1322,7 @@ function weeklyRowMatchesDay(
 
 
   /*
-    Monday-Friday:
-    WeekNumber normally ALL.
-
-    Saturday:
-    ALL = every Saturday
-    1 = first Saturday
-    2 = second Saturday
-    etc.
+     Sunday-Friday usually use ALL.
   */
 
   if (
@@ -1324,6 +1337,14 @@ function weeklyRowMatchesDay(
 
   }
 
+
+  /*
+     SATURDAY:
+     ALL = every Saturday
+     1 = First Saturday
+     2 = Second Saturday
+     etc.
+  */
 
   if (
     row.weekNumber === "ALL" ||
@@ -1381,23 +1402,19 @@ function getSheetProgramsForDate(date) {
 
 
   /*
-    Group rows by program name.
+     Group rows by Program.
 
-    Example:
+     Permanent Example:
+     Saraswati Devi Abhishekam
+     5:00 PM - 6:00 PM
 
-    Permanent:
-    Saraswati Devi Abhishekam | 6:30 PM
+     Temporary Example:
+     Saraswati Devi Abhishekam
+     6:30 PM - 8:00 PM
+     StartDate / EndDate
 
-    Temporary:
-    Saraswati Devi Abhishekam | 7:00 PM
-    StartDate 08/21/2026
-    EndDate   09/04/2026
-
-    During the temporary range:
-    7:00 PM wins.
-
-    Afterwards:
-    6:30 PM returns.
+     During temporary date range,
+     temporary row wins.
   */
 
   const programGroups =
@@ -1452,14 +1469,6 @@ function getSheetProgramsForDate(date) {
         temporaryRows.length
       ) {
 
-        /*
-          If more than one temporary row matches,
-          use the one with latest StartDate.
-
-          If StartDate is blank,
-          later Sheet row wins.
-        */
-
         temporaryRows.sort(
           (
             a,
@@ -1507,11 +1516,6 @@ function getSheetProgramsForDate(date) {
       }
 
 
-      /*
-        Permanent row.
-        First valid permanent row wins.
-      */
-
       rows.sort(
         (
           a,
@@ -1546,7 +1550,10 @@ function getSheetProgramsForDate(date) {
         row.program,
 
       time:
-        row.time
+        row.time,
+
+      endTime:
+        row.endTime
     })
   );
 
@@ -1604,10 +1611,10 @@ function getRegularPrograms(date) {
 
 
   /*
-    null means Sheet unavailable.
+     null = WeeklySchedule unavailable
 
-    [] means Sheet loaded correctly
-    but there is simply no program today.
+     [] = WeeklySchedule loaded successfully,
+          but there is no program today.
   */
 
   if (
@@ -1774,7 +1781,15 @@ async function loadSpecialEvents() {
             (
               row[timeIndex] ||
               ""
-            ).trim()
+            ).trim(),
+
+          /*
+             SpecialEvents currently has no EndTime column,
+             so it uses the 90-minute fallback.
+          */
+
+          endTime:
+            ""
 
         }
       );
@@ -1799,68 +1814,133 @@ async function loadSpecialEvents() {
 
 
 // ==========================================================
-// PROGRAM STATUS
+// TIME → MINUTES
+//
+// Supports:
+//
+// 6:30 PM
+// 06:30 PM
+// 18:30
 // ==========================================================
 
-function getProgramTimeStatus(
-  timeText
-) {
+function parseTimeToMinutes(value) {
 
-  if (!timeText) {
-
-    return {
-      completed: false,
-      current: false
-    };
-
+  if (!value) {
+    return null;
   }
 
 
-  const match =
-    String(timeText)
+  const text =
+    String(value)
       .trim()
-      .match(
-        /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i
-      );
-
-
-  if (!match) {
-
-    return {
-      completed: false,
-      current: false
-    };
-
-  }
-
-
-  let hour =
-    Number(match[1]);
-
-  const minute =
-    Number(match[2]);
-
-  const period =
-    match[3]
       .toUpperCase();
 
 
-  if (
-    period === "PM" &&
-    hour !== 12
-  ) {
+  let match =
+    text.match(
+      /^(\d{1,2}):(\d{2})\s*(AM|PM)$/
+    );
 
-    hour += 12;
+
+  if (match) {
+
+    let hour =
+      Number(
+        match[1]
+      );
+
+
+    const minute =
+      Number(
+        match[2]
+      );
+
+
+    const period =
+      match[3];
+
+
+    if (
+      period === "PM" &&
+      hour !== 12
+    ) {
+
+      hour += 12;
+
+    }
+
+
+    if (
+      period === "AM" &&
+      hour === 12
+    ) {
+
+      hour = 0;
+
+    }
+
+
+    return (
+      hour * 60 +
+      minute
+    );
 
   }
 
 
+  match =
+    text.match(
+      /^(\d{1,2}):(\d{2})$/
+    );
+
+
+  if (match) {
+
+    return (
+      Number(match[1]) *
+      60
+      +
+      Number(match[2])
+    );
+
+  }
+
+
+  return null;
+
+}
+
+
+// ==========================================================
+// PROGRAM STATUS
+//
+// If EndTime exists:
+//   Time → EndTime = current
+//   after EndTime = completed
+//
+// If EndTime blank:
+//   fallback = 90 minutes
+// ==========================================================
+
+function getProgramTimeStatus(
+  startTimeText,
+  endTimeText
+) {
+
+  const startMinutes =
+    parseTimeToMinutes(
+      startTimeText
+    );
+
+
   if (
-    period === "AM" &&
-    hour === 12
+    startMinutes === null
   ) {
 
-    hour = 0;
+    return {
+      completed: false,
+      current: false
+    };
 
   }
 
@@ -1869,36 +1949,81 @@ function getProgramTimeStatus(
     new Date();
 
 
-  const programTime =
-    new Date();
+  const nowMinutes =
+    now.getHours() *
+    60
+    +
+    now.getMinutes();
 
 
-  programTime.setHours(
-    hour,
-    minute,
-    0,
-    0
-  );
-
-
-  const programEnd =
-    new Date(
-      programTime.getTime()
-      +
-      90 *
-      60 *
-      1000
+  let endMinutes =
+    parseTimeToMinutes(
+      endTimeText
     );
 
 
+  /*
+     If EndTime is blank,
+     use 90-minute fallback.
+  */
+
+  if (
+    endMinutes === null
+  ) {
+
+    endMinutes =
+      startMinutes +
+      90;
+
+  }
+
+
+  /*
+     Normal same-day program:
+
+     6:30 PM → 8:00 PM
+  */
+
+  if (
+    endMinutes >=
+    startMinutes
+  ) {
+
+    return {
+
+      current:
+        nowMinutes >=
+        startMinutes
+        &&
+        nowMinutes <
+        endMinutes,
+
+      completed:
+        nowMinutes >=
+        endMinutes
+
+    };
+
+  }
+
+
+  /*
+     Program crosses midnight:
+
+     10:00 PM → 1:00 AM
+  */
+
   return {
 
-    completed:
-      now > programEnd,
-
     current:
-      now >= programTime &&
-      now <= programEnd
+      nowMinutes >=
+      startMinutes
+      ||
+      nowMinutes <
+      endMinutes,
+
+    completed:
+      false
 
   };
 
@@ -1945,6 +2070,10 @@ function renderTodaySchedule() {
 
           time:
             program.time,
+
+          endTime:
+            program.endTime ||
+            "",
 
           note:
             ""
@@ -2000,6 +2129,10 @@ function renderTodaySchedule() {
               time:
                 event.time,
 
+              endTime:
+                event.endTime ||
+                "",
+
               note:
                 (
                   event.event &&
@@ -2044,7 +2177,8 @@ function renderTodaySchedule() {
 
           const status =
             getProgramTimeStatus(
-              program.time
+              program.time,
+              program.endTime
             );
 
 
@@ -2474,92 +2608,6 @@ async function loadUpcomingEvents() {
 
 
 // ==========================================================
-// BGM TIME
-// ==========================================================
-
-function parseTimeToMinutes(value) {
-
-  if (!value) {
-    return null;
-  }
-
-
-  const text =
-    String(value)
-      .trim()
-      .toUpperCase();
-
-
-  let match =
-    text.match(
-      /^(\d{1,2}):(\d{2})\s*(AM|PM)$/
-    );
-
-
-  if (match) {
-
-    let hour =
-      Number(match[1]);
-
-    const minute =
-      Number(match[2]);
-
-    const period =
-      match[3];
-
-
-    if (
-      period === "PM" &&
-      hour !== 12
-    ) {
-
-      hour += 12;
-
-    }
-
-
-    if (
-      period === "AM" &&
-      hour === 12
-    ) {
-
-      hour = 0;
-
-    }
-
-
-    return (
-      hour * 60 +
-      minute
-    );
-
-  }
-
-
-  match =
-    text.match(
-      /^(\d{1,2}):(\d{2})$/
-    );
-
-
-  if (match) {
-
-    return (
-      Number(match[1]) *
-      60
-      +
-      Number(match[2])
-    );
-
-  }
-
-
-  return null;
-
-}
-
-
-// ==========================================================
 // BGM WEEKDAY MATCH
 // ==========================================================
 
@@ -2669,8 +2717,6 @@ function timeWindowMatches(
 
   }
 
-
-  // crosses midnight
 
   return (
     nowMinutes >= start ||
@@ -3321,11 +3367,6 @@ if (musicElement) {
       evaluateBGMSchedule();
 
 
-      /*
-        If evaluateBGMSchedule changed mode,
-        it already started another track.
-      */
-
       if (
         previousMode !==
         currentBGMMode
@@ -3423,9 +3464,10 @@ async function initializeTempleTV() {
 
   showUpcomingFallback();
 
+
   /*
-    Load weekly schedule early so Today's Schedule
-    displays correct Sheet data quickly.
+     Load Weekly Schedule and Special Events first
+     so Today's Schedule appears correctly.
   */
 
   await Promise.allSettled(
