@@ -2,32 +2,33 @@
    CHINMAYA SARASWATI ASHRAM - DEVI TEMPLE
    TEMPLE TV DIGITAL SIGNAGE
 
-   BGM SYSTEM
+   FEATURES
    ----------------------------------------------------------
-   DEFAULT = plays continuously
-
-   SPECIAL = overrides DEFAULT only when:
-     - Active = YES
-     - Weekday matches
-     - Current time is between StartTime and EndTime
-
-   After SPECIAL ends:
-     DEFAULT automatically resumes.
+   ✓ Google Sheet Flyers
+   ✓ Announcements
+   ✓ Upcoming Events
+   ✓ Special Events
+   ✓ Weekly Schedule from Google Sheets
+   ✓ Temporary Date Overrides
+   ✓ 1st / 2nd / 3rd Saturday Support
+   ✓ Today's Schedule
+   ✓ Automatic Completed Status
+   ✓ Default BGM
+   ✓ Scheduled Special BGM
 ========================================================== */
 
 
-
 // ==========================================================
-// GLOBAL STATE
+// STATE
 // ==========================================================
 
 let flyers = [];
-
 let currentFlyerIndex = 0;
-
 
 let specialEvents = [];
 
+let weeklyScheduleRows = [];
+let weeklyScheduleLoaded = false;
 
 
 // ==========================================================
@@ -35,76 +36,45 @@ let specialEvents = [];
 // ==========================================================
 
 let defaultBGMPlaylist = [];
-
 let specialBGMTracks = [];
-
 
 let currentBGMMode = "NONE";
 
 let currentBGMPlaylist = [];
-
 let currentBGMIndex = 0;
-
 
 let currentSpecialSignature = "";
 
-
 let savedDefaultIndex = 0;
-
 let savedDefaultTime = 0;
-
-
-let bgmStarted = false;
 
 let bgmErrorCount = 0;
 
 
-
 // ==========================================================
-// HTML ELEMENTS
+// ELEMENTS
 // ==========================================================
 
 const flyerElement =
-  document.getElementById(
-    "flyer"
-  );
-
+  document.getElementById("flyer");
 
 const tickerText =
-  document.getElementById(
-    "ticker-text"
-  );
-
+  document.getElementById("ticker-text");
 
 const upcomingEventsText =
-  document.getElementById(
-    "upcoming-events-text"
-  );
-
+  document.getElementById("upcoming-events-text");
 
 const scheduleList =
-  document.getElementById(
-    "today-schedule-list"
-  );
-
+  document.getElementById("today-schedule-list");
 
 const clockElement =
-  document.getElementById(
-    "clock"
-  );
-
+  document.getElementById("clock");
 
 const headerDateElement =
-  document.getElementById(
-    "header-date"
-  );
-
+  document.getElementById("header-date");
 
 const musicElement =
-  document.getElementById(
-    "background-music"
-  );
-
+  document.getElementById("background-music");
 
 
 // ==========================================================
@@ -114,24 +84,17 @@ const musicElement =
 function addCacheBuster(url) {
 
   if (!url) {
-
     return "";
-
   }
-
 
   const separator =
     url.includes("?")
-      ?
-      "&"
-      :
-      "?";
-
+      ? "&"
+      : "?";
 
   return `${url}${separator}_=${Date.now()}`;
 
 }
-
 
 
 // ==========================================================
@@ -143,11 +106,8 @@ function parseCSV(text) {
   const rows = [];
 
   let row = [];
-
   let field = "";
-
   let inQuotes = false;
-
 
   for (
     let i = 0;
@@ -155,16 +115,10 @@ function parseCSV(text) {
     i++
   ) {
 
-    const char =
-      text[i];
+    const char = text[i];
+    const next = text[i + 1];
 
-    const next =
-      text[i + 1];
-
-
-    if (
-      char === '"'
-    ) {
+    if (char === '"') {
 
       if (
         inQuotes &&
@@ -172,7 +126,6 @@ function parseCSV(text) {
       ) {
 
         field += '"';
-
         i++;
 
       }
@@ -186,7 +139,6 @@ function parseCSV(text) {
 
     }
 
-
     else if (
       char === "," &&
       !inQuotes
@@ -196,11 +148,9 @@ function parseCSV(text) {
         field.trim()
       );
 
-      field =
-        "";
+      field = "";
 
     }
-
 
     else if (
       (
@@ -214,20 +164,14 @@ function parseCSV(text) {
         char === "\r" &&
         next === "\n"
       ) {
-
         i++;
-
       }
-
 
       row.push(
         field.trim()
       );
 
-
-      field =
-        "";
-
+      field = "";
 
       if (
         row.some(
@@ -235,24 +179,16 @@ function parseCSV(text) {
             value !== ""
         )
       ) {
-
-        rows.push(
-          row
-        );
-
+        rows.push(row);
       }
 
-
-      row =
-        [];
+      row = [];
 
     }
 
-
     else {
 
-      field +=
-        char;
+      field += char;
 
     }
 
@@ -268,27 +204,20 @@ function parseCSV(text) {
       field.trim()
     );
 
-
     if (
       row.some(
         value =>
           value !== ""
       )
     ) {
-
-      rows.push(
-        row
-      );
-
+      rows.push(row);
     }
 
   }
 
-
   return rows;
 
 }
-
 
 
 // ==========================================================
@@ -300,52 +229,32 @@ function updateClock() {
   const now =
     new Date();
 
-
-  if (
-    clockElement
-  ) {
+  if (clockElement) {
 
     clockElement.textContent =
       now.toLocaleTimeString(
         "en-US",
         {
-
-          hour:
-            "numeric",
-
-          minute:
-            "2-digit",
-
-          hour12:
-            true
-
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true
         }
       );
 
   }
 
 
-  if (
-    headerDateElement
-  ) {
+  if (headerDateElement) {
 
     headerDateElement.textContent =
       now.toLocaleDateString(
         "en-US",
         {
-
-          weekday:
-            "short",
-
-          month:
-            "short",
-
-          day:
-            "numeric"
-
+          weekday: "short",
+          month: "short",
+          day: "numeric"
         }
-      )
-      .toUpperCase();
+      ).toUpperCase();
 
   }
 
@@ -354,12 +263,10 @@ function updateClock() {
 
 updateClock();
 
-
 setInterval(
   updateClock,
   1000
 );
-
 
 
 // ==========================================================
@@ -371,140 +278,87 @@ function dateKey(date) {
   const year =
     date.getFullYear();
 
-
   const month =
     String(
       date.getMonth() + 1
-    )
-    .padStart(
+    ).padStart(
       2,
       "0"
     );
-
 
   const day =
     String(
       date.getDate()
-    )
-    .padStart(
+    ).padStart(
       2,
       "0"
     );
-
 
   return `${year}-${month}-${day}`;
 
 }
 
 
-
 function normalizeDate(value) {
 
   if (!value) {
-
     return "";
-
   }
 
-
   const text =
-    String(
-      value
-    )
-    .trim();
+    String(value).trim();
 
+
+  // MM/DD/YYYY
 
   const usDate =
     text.match(
       /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
     );
 
-
-  if (
-    usDate
-  ) {
+  if (usDate) {
 
     return (
-
       usDate[3]
-
       +
-
       "-"
-
       +
-
-      usDate[1]
-        .padStart(
-          2,
-          "0"
-        )
-
+      usDate[1].padStart(2, "0")
       +
-
       "-"
-
       +
-
-      usDate[2]
-        .padStart(
-          2,
-          "0"
-        )
-
+      usDate[2].padStart(2, "0")
     );
 
   }
 
+
+  // YYYY-MM-DD
 
   const isoDate =
     text.match(
       /^(\d{4})-(\d{1,2})-(\d{1,2})$/
     );
 
-
-  if (
-    isoDate
-  ) {
+  if (isoDate) {
 
     return (
-
       isoDate[1]
-
       +
-
       "-"
-
       +
-
-      isoDate[2]
-        .padStart(
-          2,
-          "0"
-        )
-
+      isoDate[2].padStart(2, "0")
       +
-
       "-"
-
       +
-
-      isoDate[3]
-        .padStart(
-          2,
-          "0"
-        )
-
+      isoDate[3].padStart(2, "0")
     );
 
   }
 
 
   const parsed =
-    new Date(
-      text
-    );
-
+    new Date(text);
 
   if (
     !isNaN(
@@ -512,44 +366,64 @@ function normalizeDate(value) {
     )
   ) {
 
-    return dateKey(
-      parsed
-    );
+    return dateKey(parsed);
 
   }
-
 
   return "";
 
 }
 
 
+// ==========================================================
+// SATURDAY NUMBER
+// ==========================================================
+
+function getSaturdayNumber(date) {
+
+  return Math.ceil(
+    date.getDate() / 7
+  );
+
+}
+
 
 // ==========================================================
-// DRIVE FILE ID
+// WEEKDAY NAME
+// ==========================================================
+
+function getWeekdayName(date) {
+
+  return [
+    "SUNDAY",
+    "MONDAY",
+    "TUESDAY",
+    "WEDNESDAY",
+    "THURSDAY",
+    "FRIDAY",
+    "SATURDAY"
+  ][date.getDay()];
+
+}
+
+
+// ==========================================================
+// GOOGLE DRIVE
 // ==========================================================
 
 function getDriveFileId(url) {
 
   if (!url) {
-
     return "";
-
   }
-
 
   let match =
     url.match(
       /\/file\/d\/([^/]+)/
     );
 
-
-  if (
-    match
-  ) {
-
+  if (match) {
     return match[1];
-
   }
 
 
@@ -558,13 +432,8 @@ function getDriveFileId(url) {
       /[?&]id=([^&]+)/
     );
 
-
-  if (
-    match
-  ) {
-
+  if (match) {
     return match[1];
-
   }
 
 
@@ -573,108 +442,77 @@ function getDriveFileId(url) {
       /\/d\/([^/]+)/
     );
 
-
-  if (
-    match
-  ) {
-
+  if (match) {
     return match[1];
-
   }
-
 
   return "";
 
 }
 
 
-
 // ==========================================================
-// DRIVE IMAGE URL
+// DRIVE IMAGE
 // ==========================================================
 
 function convertDriveImageURL(url) {
 
   if (!url) {
-
     return "";
-
   }
-
 
   const fileId =
-    getDriveFileId(
-      url
-    );
+    getDriveFileId(url);
 
-
-  if (
-    !fileId
-  ) {
-
+  if (!fileId) {
     return url;
-
   }
 
-
   return (
-
     "https://drive.google.com/thumbnail"
-
     +
-
     `?id=${fileId}&sz=w3000`
-
   );
 
 }
 
 
-
 // ==========================================================
-// DRIVE AUDIO URL
+// DRIVE AUDIO
 // ==========================================================
 
 function convertDriveAudioURL(url) {
 
   if (!url) {
-
     return "";
-
   }
-
 
   const fileId =
-    getDriveFileId(
-      url
-    );
+    getDriveFileId(url);
 
+  /*
+     Local GitHub music paths such as:
 
-  if (
-    !fileId
-  ) {
+     music/default1.mp3
 
+     are returned directly.
+  */
+
+  if (!fileId) {
     return url;
-
   }
 
-
   return (
-
     "https://drive.google.com/uc"
-
     +
-
     `?export=download&id=${fileId}`
-
   );
 
 }
 
 
-
 // ==========================================================
-// TEST IMAGE
+// IMAGE TEST
 // ==========================================================
 
 function testImage(url) {
@@ -685,25 +523,14 @@ function testImage(url) {
       const image =
         new Image();
 
-
       image.onload =
-        () =>
-          resolve(
-            true
-          );
-
+        () => resolve(true);
 
       image.onerror =
-        () =>
-          resolve(
-            false
-          );
-
+        () => resolve(false);
 
       image.src =
-        addCacheBuster(
-          url
-        );
+        addCacheBuster(url);
 
     }
   );
@@ -711,21 +538,15 @@ function testImage(url) {
 }
 
 
-
 // ==========================================================
-// ANNOUNCEMENTS FALLBACK
+// ANNOUNCEMENTS
 // ==========================================================
 
 function loadLocalAnnouncements() {
 
-  if (
-    !tickerText
-  ) {
-
+  if (!tickerText) {
     return;
-
   }
-
 
   tickerText.textContent =
     templeContent
@@ -736,11 +557,6 @@ function loadLocalAnnouncements() {
 
 }
 
-
-
-// ==========================================================
-// ANNOUNCEMENTS
-// ==========================================================
 
 async function loadAnnouncements() {
 
@@ -753,17 +569,11 @@ async function loadAnnouncements() {
             .announcementSheetURL
         ),
         {
-
-          cache:
-            "no-store"
-
+          cache: "no-store"
         }
       );
 
-
-    if (
-      !response.ok
-    ) {
+    if (!response.ok) {
 
       throw new Error(
         "Announcement Sheet unavailable"
@@ -777,9 +587,7 @@ async function loadAnnouncements() {
         await response.text()
       );
 
-
-    const messages =
-      [];
+    const messages = [];
 
 
     rows.forEach(
@@ -794,34 +602,22 @@ async function loadAnnouncements() {
             const value =
               cell.trim();
 
-
-            if (
-              !value
-            ) {
-
+            if (!value) {
               return;
-
             }
 
-
             if (
-              index === 0
-              &&
+              index === 0 &&
               value
                 .toLowerCase()
                 .includes(
                   "announcement"
                 )
             ) {
-
               return;
-
             }
 
-
-            messages.push(
-              value
-            );
+            messages.push(value);
 
           }
         );
@@ -849,16 +645,12 @@ async function loadAnnouncements() {
 
   }
 
-
-  catch (
-    error
-  ) {
+  catch (error) {
 
     console.error(
       "Announcement Error:",
       error
     );
-
 
     loadLocalAnnouncements();
 
@@ -867,9 +659,8 @@ async function loadAnnouncements() {
 }
 
 
-
 // ==========================================================
-// REMOTE FLYERS
+// FLYERS
 // ==========================================================
 
 async function loadRemoteFlyers() {
@@ -883,17 +674,12 @@ async function loadRemoteFlyers() {
             .flyerSheetURL
         ),
         {
-
-          cache:
-            "no-store"
-
+          cache: "no-store"
         }
       );
 
 
-    if (
-      !response.ok
-    ) {
+    if (!response.ok) {
 
       throw new Error(
         "Flyer Sheet unavailable"
@@ -909,8 +695,7 @@ async function loadRemoteFlyers() {
 
 
     if (
-      rows.length <
-      2
+      rows.length < 2
     ) {
 
       throw new Error(
@@ -921,13 +706,12 @@ async function loadRemoteFlyers() {
 
 
     const headers =
-      rows[0]
-        .map(
-          value =>
-            value
-              .trim()
-              .toLowerCase()
-        );
+      rows[0].map(
+        value =>
+          value
+            .trim()
+            .toLowerCase()
+      );
 
 
     const imageIndex =
@@ -935,12 +719,10 @@ async function loadRemoteFlyers() {
         "imageurl"
       );
 
-
     const activeIndex =
       headers.indexOf(
         "active"
       );
-
 
     const orderIndex =
       headers.indexOf(
@@ -948,8 +730,7 @@ async function loadRemoteFlyers() {
       );
 
 
-    const remoteFlyers =
-      [];
+    const remoteFlyers = [];
 
 
     for (
@@ -966,10 +747,7 @@ async function loadRemoteFlyers() {
         activeIndex >= 0
           ?
           (
-            row[
-              activeIndex
-            ]
-            ||
+            row[activeIndex] ||
             ""
           )
           .trim()
@@ -979,32 +757,21 @@ async function loadRemoteFlyers() {
 
 
       if (
-        active !==
-        "YES"
+        active !== "YES"
       ) {
-
         continue;
-
       }
 
 
       const originalURL =
         (
-          row[
-            imageIndex
-          ]
-          ||
+          row[imageIndex] ||
           ""
-        )
-        .trim();
+        ).trim();
 
 
-      if (
-        !originalURL
-      ) {
-
+      if (!originalURL) {
         continue;
-
       }
 
 
@@ -1014,14 +781,12 @@ async function loadRemoteFlyers() {
         );
 
 
-      const displayOrder =
+      const order =
         orderIndex >= 0
           ?
           (
             parseInt(
-              row[
-                orderIndex
-              ],
+              row[orderIndex],
               10
             )
             ||
@@ -1031,25 +796,16 @@ async function loadRemoteFlyers() {
           999;
 
 
-      const imageWorks =
+      if (
         await testImage(
           imageURL
-        );
-
-
-      if (
-        imageWorks
+        )
       ) {
 
         remoteFlyers.push(
           {
-
-            url:
-              imageURL,
-
-            order:
-              displayOrder
-
+            url: imageURL,
+            order
           }
         );
 
@@ -1068,40 +824,23 @@ async function loadRemoteFlyers() {
     );
 
 
-    if (
+    flyers =
       remoteFlyers.length
-    ) {
-
-      flyers =
-        remoteFlyers
-          .map(
-            item =>
-              item.url
-          );
-
-    }
-
-    else {
-
-      flyers =
-        templeContent
-          .localFlyers;
-
-    }
+        ?
+        remoteFlyers.map(
+          item => item.url
+        )
+        :
+        templeContent.localFlyers;
 
 
-    currentFlyerIndex =
-      0;
-
+    currentFlyerIndex = 0;
 
     showFlyer();
 
   }
 
-
-  catch (
-    error
-  ) {
+  catch (error) {
 
     console.error(
       "Flyer Error:",
@@ -1110,13 +849,10 @@ async function loadRemoteFlyers() {
 
 
     flyers =
-      templeContent
-        .localFlyers;
+      templeContent.localFlyers;
 
 
-    currentFlyerIndex =
-      0;
-
+    currentFlyerIndex = 0;
 
     showFlyer();
 
@@ -1125,44 +861,32 @@ async function loadRemoteFlyers() {
 }
 
 
-
-// ==========================================================
-// SHOW FLYER
-// ==========================================================
-
 function showFlyer() {
 
   if (
     !flyerElement ||
     !flyers.length
   ) {
-
     return;
-
   }
 
 
-  flyerElement
-    .classList
-    .remove(
-      "flyer-landscape",
-      "flyer-portrait",
-      "flyer-square",
-      "flyer-visible"
-    );
+  flyerElement.classList.remove(
+    "flyer-landscape",
+    "flyer-portrait",
+    "flyer-square",
+    "flyer-visible"
+  );
 
 
   flyerElement.onload =
     () => {
 
       const width =
-        flyerElement
-          .naturalWidth;
-
+        flyerElement.naturalWidth;
 
       const height =
-        flyerElement
-          .naturalHeight;
+        flyerElement.naturalHeight;
 
 
       if (
@@ -1171,13 +895,11 @@ function showFlyer() {
       ) {
 
         const ratio =
-          width /
-          height;
+          width / height;
 
 
         if (
-          ratio >
-          1.15
+          ratio > 1.15
         ) {
 
           flyerElement
@@ -1188,10 +910,8 @@ function showFlyer() {
 
         }
 
-
         else if (
-          ratio <
-          0.85
+          ratio < 0.85
         ) {
 
           flyerElement
@@ -1201,7 +921,6 @@ function showFlyer() {
             );
 
         }
-
 
         else {
 
@@ -1217,15 +936,12 @@ function showFlyer() {
 
 
       requestAnimationFrame(
-        () => {
-
+        () =>
           flyerElement
             .classList
             .add(
               "flyer-visible"
-            );
-
-        }
+            )
       );
 
     };
@@ -1241,27 +957,18 @@ function showFlyer() {
 }
 
 
-
-// ==========================================================
-// ROTATE FLYERS
-// ==========================================================
-
 function rotateFlyer() {
 
   if (
-    flyers.length <=
-    1
+    flyers.length <= 1
   ) {
-
     return;
-
   }
 
 
   currentFlyerIndex =
     (
-      currentFlyerIndex +
-      1
+      currentFlyerIndex + 1
     )
     %
     flyers.length;
@@ -1272,336 +979,30 @@ function rotateFlyer() {
 }
 
 
-
 // ==========================================================
-// BGM TIME PARSER
-//
-// Supports:
-// 6:30 PM
-// 06:30 PM
-// 18:30
+// WEEKLY SCHEDULE GOOGLE SHEET
 // ==========================================================
 
-function parseTimeToMinutes(value) {
-
-  if (!value) {
-
-    return null;
-
-  }
-
-
-  const text =
-    String(
-      value
-    )
-    .trim()
-    .toUpperCase();
-
-
-  let match =
-    text.match(
-      /^(\d{1,2}):(\d{2})\s*(AM|PM)$/
-    );
-
-
-  if (
-    match
-  ) {
-
-    let hour =
-      Number(
-        match[1]
-      );
-
-
-    const minute =
-      Number(
-        match[2]
-      );
-
-
-    const period =
-      match[3];
-
-
-    if (
-      period === "PM" &&
-      hour !== 12
-    ) {
-
-      hour += 12;
-
-    }
-
-
-    if (
-      period === "AM" &&
-      hour === 12
-    ) {
-
-      hour = 0;
-
-    }
-
-
-    return (
-      hour *
-      60
-      +
-      minute
-    );
-
-  }
-
-
-  match =
-    text.match(
-      /^(\d{1,2}):(\d{2})$/
-    );
-
-
-  if (
-    match
-  ) {
-
-    return (
-
-      Number(
-        match[1]
-      )
-      *
-      60
-
-      +
-
-      Number(
-        match[2]
-      )
-
-    );
-
-  }
-
-
-  return null;
-
-}
-
-
-
-// ==========================================================
-// CURRENT SATURDAY NUMBER
-// ==========================================================
-
-function getSaturdayNumber(date) {
-
-  return Math.ceil(
-    date.getDate() /
-    7
-  );
-
-}
-
-
-
-// ==========================================================
-// WEEKDAY MATCHING
-// ==========================================================
-
-function weekdayMatches(
-  weekdayValue,
-  date
-) {
-
-  const value =
-    String(
-      weekdayValue ||
-      "ALL"
-    )
-    .trim()
-    .toUpperCase();
-
-
-  if (
-    value === "" ||
-    value === "ALL"
-  ) {
-
-    return true;
-
-  }
-
-
-  const weekdayNames =
-    [
-
-      "SUNDAY",
-
-      "MONDAY",
-
-      "TUESDAY",
-
-      "WEDNESDAY",
-
-      "THURSDAY",
-
-      "FRIDAY",
-
-      "SATURDAY"
-
-    ];
-
-
-  const todayName =
-    weekdayNames[
-      date.getDay()
-    ];
-
-
-  if (
-    value ===
-    todayName
-  ) {
-
-    return true;
-
-  }
-
-
-  if (
-    date.getDay() === 6 &&
-    value.startsWith(
-      "SATURDAY-"
-    )
-  ) {
-
-    const requestedSaturday =
-      Number(
-        value.split("-")[1]
-      );
-
-
-    const actualSaturday =
-      getSaturdayNumber(
-        date
-      );
-
-
-    return (
-      requestedSaturday ===
-      actualSaturday
-    );
-
-  }
-
-
-  return false;
-
-}
-
-
-
-// ==========================================================
-// TIME WINDOW MATCHING
-// ==========================================================
-
-function timeWindowMatches(
-  startValue,
-  endValue,
-  date
-) {
-
-  const start =
-    parseTimeToMinutes(
-      startValue
-    );
-
-
-  const end =
-    parseTimeToMinutes(
-      endValue
-    );
-
-
-  if (
-    start === null ||
-    end === null
-  ) {
-
-    return false;
-
-  }
-
-
-  const nowMinutes =
-    date.getHours() *
-    60
-    +
-    date.getMinutes();
-
-
-  // Normal window:
-  // 6:00 PM -> 8:00 PM
-
-  if (
-    start <= end
-  ) {
-
-    return (
-      nowMinutes >= start &&
-      nowMinutes < end
-    );
-
-  }
-
-
-  // Midnight crossover:
-  // 10:00 PM -> 1:00 AM
-
-  return (
-    nowMinutes >= start ||
-    nowMinutes < end
-  );
-
-}
-
-
-
-// ==========================================================
-// LOAD BGM SHEET
-// ==========================================================
-
-async function loadBGMPlaylist() {
+async function loadWeeklySchedule() {
 
   try {
-
-    console.log(
-      "Loading BGM Sheet..."
-    );
-
 
     const response =
       await fetch(
         addCacheBuster(
           templeContent
-            .bgmSheetURL
+            .weeklyScheduleSheetURL
         ),
         {
-
-          cache:
-            "no-store"
-
+          cache: "no-store"
         }
       );
 
 
-    if (
-      !response.ok
-    ) {
+    if (!response.ok) {
 
       throw new Error(
-        "BGM Sheet unavailable"
+        "WeeklySchedule Sheet unavailable"
       );
 
     }
@@ -1614,50 +1015,22 @@ async function loadBGMPlaylist() {
 
 
     if (
-      rows.length <
-      2
+      rows.length < 2
     ) {
 
-      console.warn(
-        "BGM Sheet has no rows."
+      throw new Error(
+        "WeeklySchedule Sheet contains no programs"
       );
-
-      return;
 
     }
 
 
     const headers =
-      rows[0]
-        .map(
-          value =>
-            value
-              .trim()
-              .toLowerCase()
-        );
-
-
-    const musicIndex =
-      headers.indexOf(
-        "musicurl"
-      );
-
-
-    const typeIndex =
-      headers.indexOf(
-        "type"
-      );
-
-
-    const activeIndex =
-      headers.indexOf(
-        "active"
-      );
-
-
-    const orderIndex =
-      headers.indexOf(
-        "displayorder"
+      rows[0].map(
+        value =>
+          value
+            .trim()
+            .toLowerCase()
       );
 
 
@@ -1666,36 +1039,51 @@ async function loadBGMPlaylist() {
         "weekday"
       );
 
-
-    const startIndex =
+    const weekNumberIndex =
       headers.indexOf(
-        "starttime"
+        "weeknumber"
       );
 
-
-    const endIndex =
+    const programIndex =
       headers.indexOf(
-        "endtime"
+        "program"
+      );
+
+    const timeIndex =
+      headers.indexOf(
+        "time"
+      );
+
+    const activeIndex =
+      headers.indexOf(
+        "active"
+      );
+
+    const startDateIndex =
+      headers.indexOf(
+        "startdate"
+      );
+
+    const endDateIndex =
+      headers.indexOf(
+        "enddate"
       );
 
 
     if (
-      musicIndex === -1
+      weekdayIndex === -1 ||
+      programIndex === -1 ||
+      timeIndex === -1
     ) {
 
       throw new Error(
-        "MusicURL column missing."
+        "WeeklySchedule requires Weekday, Program and Time columns."
       );
 
     }
 
 
-    const newDefaults =
-      [];
-
-
-    const newSpecials =
-      [];
+    const loadedRows = [];
 
 
     for (
@@ -1712,10 +1100,7 @@ async function loadBGMPlaylist() {
         activeIndex >= 0
           ?
           (
-            row[
-              activeIndex
-            ]
-            ||
+            row[activeIndex] ||
             ""
           )
           .trim()
@@ -1725,87 +1110,55 @@ async function loadBGMPlaylist() {
 
 
       if (
-        active !==
-        "YES"
+        active !== "YES"
       ) {
-
         continue;
-
       }
 
 
-      const originalURL =
+      const weekday =
         (
-          row[
-            musicIndex
-          ]
-          ||
+          row[weekdayIndex] ||
+          ""
+        )
+        .trim()
+        .toUpperCase();
+
+
+      const program =
+        (
+          row[programIndex] ||
+          ""
+        )
+        .trim();
+
+
+      const time =
+        (
+          row[timeIndex] ||
           ""
         )
         .trim();
 
 
       if (
-        !originalURL
+        !weekday ||
+        !program
       ) {
-
         continue;
-
       }
 
 
-      const type =
-        typeIndex >= 0
-          ?
-          (
-            row[
-              typeIndex
-            ]
-            ||
-            "DEFAULT"
-          )
-          .trim()
-          .toUpperCase()
-          :
-          "DEFAULT";
-
-
-      const order =
-        orderIndex >= 0
-          ?
-          (
-            parseInt(
-              row[
-                orderIndex
-              ],
-              10
-            )
-            ||
-            999
-          )
-          :
-          999;
-
-
-      const track =
+      loadedRows.push(
         {
 
-          url:
-            convertDriveAudioURL(
-              originalURL
-            ),
+          weekday,
 
-          order:
-            order,
-
-          weekday:
-            weekdayIndex >= 0
+          weekNumber:
+            weekNumberIndex >= 0
               ?
               (
-                row[
-                  weekdayIndex
-                ]
-                ||
+                row[weekNumberIndex] ||
                 "ALL"
               )
               .trim()
@@ -1813,781 +1166,398 @@ async function loadBGMPlaylist() {
               :
               "ALL",
 
-          startTime:
-            startIndex >= 0
+          program,
+
+          time,
+
+          startDate:
+            startDateIndex >= 0
               ?
-              (
-                row[
-                  startIndex
-                ]
-                ||
-                ""
+              normalizeDate(
+                row[startDateIndex]
               )
-              .trim()
               :
               "",
 
-          endTime:
-            endIndex >= 0
+          endDate:
+            endDateIndex >= 0
               ?
-              (
-                row[
-                  endIndex
-                ]
-                ||
-                ""
+              normalizeDate(
+                row[endDateIndex]
               )
-              .trim()
               :
-              ""
+              "",
 
-        };
+          rowOrder:
+            i
 
-
-      if (
-        type ===
-        "SPECIAL"
-      ) {
-
-        newSpecials.push(
-          track
-        );
-
-      }
-
-      else {
-
-        newDefaults.push(
-          track
-        );
-
-      }
+        }
+      );
 
     }
 
 
-    newDefaults.sort(
-      (
-        a,
-        b
-      ) =>
-        a.order -
-        b.order
-    );
+    weeklyScheduleRows =
+      loadedRows;
 
 
-    newSpecials.sort(
-      (
-        a,
-        b
-      ) =>
-        a.order -
-        b.order
-    );
-
-
-    defaultBGMPlaylist =
-      newDefaults;
-
-
-    specialBGMTracks =
-      newSpecials;
+    weeklyScheduleLoaded =
+      true;
 
 
     console.log(
-      "Default BGM Tracks:",
-      defaultBGMPlaylist.length
+      "WeeklySchedule loaded:",
+      weeklyScheduleRows.length
     );
 
 
-    console.log(
-      "Special BGM Tracks:",
-      specialBGMTracks.length
-    );
-
-
-    evaluateBGMSchedule();
+    renderTodaySchedule();
 
   }
 
-
-  catch (
-    error
-  ) {
+  catch (error) {
 
     console.error(
-      "BGM Sheet Error:",
+      "WeeklySchedule Error:",
       error
     );
 
+
+    /*
+      IMPORTANT:
+      Existing Google Sheet schedule remains
+      untouched if a later refresh temporarily fails.
+    */
+
+    if (
+      !weeklyScheduleRows.length
+    ) {
+
+      weeklyScheduleLoaded =
+        false;
+
+    }
+
+
+    renderTodaySchedule();
+
   }
 
 }
 
 
-
 // ==========================================================
-// GET CURRENT SPECIAL PLAYLIST
-// ==========================================================
-
-function getActiveSpecialPlaylist() {
-
-  const now =
-    new Date();
-
-
-  return specialBGMTracks
-    .filter(
-      track => {
-
-        return (
-
-          weekdayMatches(
-            track.weekday,
-            now
-          )
-
-          &&
-
-          timeWindowMatches(
-            track.startTime,
-            track.endTime,
-            now
-          )
-
-        );
-
-      }
-    )
-    .sort(
-      (
-        a,
-        b
-      ) =>
-        a.order -
-        b.order
-    );
-
-}
-
-
-
-// ==========================================================
-// PLAY TRACK
+// WEEKLY ROW DATE RANGE
 // ==========================================================
 
-function playCurrentBGMTrack(
-  startAtSeconds = 0
+function scheduleDateMatches(
+  row,
+  date
 ) {
 
-  if (
-    !musicElement ||
-    !currentBGMPlaylist.length
-  ) {
-
-    return;
-
-  }
-
-
-  const track =
-    currentBGMPlaylist[
-      currentBGMIndex
-    ];
+  const today =
+    dateKey(date);
 
 
   if (
-    !track
+    row.startDate &&
+    today < row.startDate
   ) {
-
-    return;
-
+    return false;
   }
-
-
-  musicElement.pause();
-
-
-  musicElement.src =
-    track.url;
-
-
-  musicElement.loop =
-    false;
-
-
-  musicElement.preload =
-    "auto";
-
-
-  musicElement.volume =
-    templeContent.bgmVolume
-    ??
-    0.30;
-
-
-  musicElement.load();
-
-
-  const playTrack =
-    () => {
-
-      if (
-        startAtSeconds > 0 &&
-        Number.isFinite(
-          startAtSeconds
-        )
-      ) {
-
-        try {
-
-          musicElement.currentTime =
-            startAtSeconds;
-
-        }
-
-        catch (
-          error
-        ) {
-
-          console.warn(
-            "Could not restore audio position:",
-            error
-          );
-
-        }
-
-      }
-
-
-      const promise =
-        musicElement.play();
-
-
-      if (
-        promise
-      ) {
-
-        promise
-
-          .then(
-            () => {
-
-              bgmStarted =
-                true;
-
-
-              bgmErrorCount =
-                0;
-
-
-              console.log(
-                "BGM Playing:",
-                currentBGMMode,
-                currentBGMIndex + 1
-              );
-
-            }
-          )
-
-          .catch(
-            error => {
-
-              bgmStarted =
-                false;
-
-
-              console.error(
-                "BGM play failed:",
-                error
-              );
-
-            }
-          );
-
-      }
-
-    };
 
 
   if (
-    startAtSeconds > 0
+    row.endDate &&
+    today > row.endDate
   ) {
-
-    musicElement.addEventListener(
-      "loadedmetadata",
-      playTrack,
-      {
-        once:
-          true
-      }
-    );
-
+    return false;
   }
 
-  else {
 
-    playTrack();
-
-  }
+  return true;
 
 }
 
 
-
 // ==========================================================
-// START DEFAULT BGM
+// WEEKLY ROW WEEKDAY MATCH
 // ==========================================================
 
-function startDefaultBGM(
-  resumePrevious = false
+function weeklyRowMatchesDay(
+  row,
+  date
 ) {
 
-  if (
-    !defaultBGMPlaylist.length
-  ) {
-
-    console.warn(
-      "No DEFAULT BGM tracks available."
-    );
-
-    return;
-
-  }
-
-
-  currentBGMMode =
-    "DEFAULT";
-
-
-  currentSpecialSignature =
-    "";
-
-
-  currentBGMPlaylist =
-    defaultBGMPlaylist;
+  const todayName =
+    getWeekdayName(date);
 
 
   if (
-    resumePrevious &&
-    savedDefaultIndex <
-    currentBGMPlaylist.length
+    row.weekday !==
+    todayName
   ) {
-
-    currentBGMIndex =
-      savedDefaultIndex;
-
-
-    const resumeTime =
-      savedDefaultTime;
-
-
-    savedDefaultTime =
-      0;
-
-
-    playCurrentBGMTrack(
-      resumeTime
-    );
-
-  }
-
-  else {
-
-    currentBGMIndex =
-      0;
-
-
-    playCurrentBGMTrack();
-
-  }
-
-}
-
-
-
-// ==========================================================
-// START SPECIAL BGM
-// ==========================================================
-
-function startSpecialBGM(
-  playlist
-) {
-
-  if (
-    !playlist.length
-  ) {
-
-    return;
-
+    return false;
   }
 
 
   /*
-     Save DEFAULT position before SPECIAL begins.
+    Monday-Friday:
+    WeekNumber normally ALL.
+
+    Saturday:
+    ALL = every Saturday
+    1 = first Saturday
+    2 = second Saturday
+    etc.
   */
 
   if (
-    currentBGMMode ===
-    "DEFAULT"
+    todayName !==
+    "SATURDAY"
   ) {
 
-    savedDefaultIndex =
-      currentBGMIndex;
-
-
-    if (
-      musicElement &&
-      Number.isFinite(
-        musicElement.currentTime
-      )
-    ) {
-
-      savedDefaultTime =
-        musicElement.currentTime;
-
-    }
+    return (
+      row.weekNumber === "ALL" ||
+      row.weekNumber === ""
+    );
 
   }
 
 
-  currentBGMMode =
-    "SPECIAL";
+  if (
+    row.weekNumber === "ALL" ||
+    row.weekNumber === ""
+  ) {
+    return true;
+  }
 
 
-  currentBGMPlaylist =
-    playlist;
-
-
-  currentBGMIndex =
-    0;
-
-
-  bgmErrorCount =
-    0;
-
-
-  playCurrentBGMTrack();
+  return (
+    Number(row.weekNumber) ===
+    getSaturdayNumber(date)
+  );
 
 }
 
 
-
 // ==========================================================
-// SPECIAL PLAYLIST SIGNATURE
+// TEMPORARY / PERMANENT SCHEDULE LOGIC
 // ==========================================================
 
-function makeSpecialSignature(
-  playlist
-) {
+function getSheetProgramsForDate(date) {
 
-  return playlist
-    .map(
-      track =>
+  if (
+    !weeklyScheduleLoaded ||
+    !weeklyScheduleRows.length
+  ) {
+    return null;
+  }
 
-        [
 
-          track.url,
+  const matching =
+    weeklyScheduleRows.filter(
+      row =>
 
-          track.weekday,
-
-          track.startTime,
-
-          track.endTime,
-
-          track.order
-
-        ]
-        .join(
-          "~"
+        weeklyRowMatchesDay(
+          row,
+          date
         )
 
-    )
-    .join(
-      "|"
+        &&
+
+        scheduleDateMatches(
+          row,
+          date
+        )
     );
 
-}
-
-
-
-// ==========================================================
-// EVALUATE BGM SCHEDULE
-// ==========================================================
-
-function evaluateBGMSchedule() {
-
-  const activeSpecial =
-    getActiveSpecialPlaylist();
-
-
-  // --------------------------------------------------------
-  // SPECIAL ACTIVE
-  // --------------------------------------------------------
 
   if (
-    activeSpecial.length
+    !matching.length
   ) {
-
-    const newSignature =
-      makeSpecialSignature(
-        activeSpecial
-      );
-
-
-    /*
-       Already playing this same SPECIAL playlist.
-       Do nothing.
-    */
-
-    if (
-      currentBGMMode ===
-      "SPECIAL"
-      &&
-      currentSpecialSignature ===
-      newSignature
-    ) {
-
-      return;
-
-    }
-
-
-    currentSpecialSignature =
-      newSignature;
-
-
-    console.log(
-      "SPECIAL BGM WINDOW ACTIVE"
-    );
-
-
-    startSpecialBGM(
-      activeSpecial
-    );
-
-
-    return;
-
+    return [];
   }
 
 
-  // --------------------------------------------------------
-  // SPECIAL JUST ENDED
-  // --------------------------------------------------------
+  /*
+    Group rows by program name.
 
-  if (
-    currentBGMMode ===
-    "SPECIAL"
-  ) {
+    Example:
 
-    console.log(
-      "SPECIAL BGM WINDOW ENDED"
-    );
+    Permanent:
+    Saraswati Devi Abhishekam | 6:30 PM
 
+    Temporary:
+    Saraswati Devi Abhishekam | 7:00 PM
+    StartDate 08/21/2026
+    EndDate   09/04/2026
 
-    currentSpecialSignature =
-      "";
+    During the temporary range:
+    7:00 PM wins.
 
+    Afterwards:
+    6:30 PM returns.
+  */
 
-    /*
-       Resume DEFAULT at the position
-       where it was interrupted.
-    */
-
-    startDefaultBGM(
-      true
-    );
+  const programGroups =
+    new Map();
 
 
-    return;
+  matching.forEach(
+    row => {
 
-  }
-
-
-  // --------------------------------------------------------
-  // DEFAULT IS NOT PLAYING
-  // --------------------------------------------------------
-
-  if (
-    currentBGMMode !==
-    "DEFAULT"
-  ) {
-
-    startDefaultBGM(
-      false
-    );
-
-  }
-
-}
+      const key =
+        row.program
+          .trim()
+          .toLowerCase();
 
 
+      if (
+        !programGroups.has(key)
+      ) {
 
-// ==========================================================
-// NEXT BGM TRACK
-// ==========================================================
+        programGroups.set(
+          key,
+          []
+        );
 
-function playNextBGM() {
-
-  if (
-    !currentBGMPlaylist.length
-  ) {
-
-    return;
-
-  }
+      }
 
 
-  currentBGMIndex =
-    (
-      currentBGMIndex +
-      1
-    )
-    %
-    currentBGMPlaylist.length;
-
-
-  playCurrentBGMTrack();
-
-}
-
-
-
-// ==========================================================
-// AUDIO EVENTS
-// ==========================================================
-
-if (
-  musicElement
-) {
-
-  musicElement.addEventListener(
-    "playing",
-    () => {
-
-      bgmStarted =
-        true;
-
-
-      bgmErrorCount =
-        0;
+      programGroups
+        .get(key)
+        .push(row);
 
     }
   );
 
 
-  musicElement.addEventListener(
-    "ended",
-    () => {
-
-      /*
-         Before playing next track,
-         check whether the schedule changed.
-      */
-
-      evaluateBGMSchedule();
+  const selected =
+    [];
 
 
-      /*
-         If schedule did not switch mode,
-         move to next song.
-      */
+  programGroups.forEach(
+    rows => {
+
+      const temporaryRows =
+        rows.filter(
+          row =>
+            row.startDate ||
+            row.endDate
+        );
+
 
       if (
-        !musicElement.paused
+        temporaryRows.length
       ) {
+
+        /*
+          If more than one temporary row matches,
+          use the one with latest StartDate.
+
+          If StartDate is blank,
+          later Sheet row wins.
+        */
+
+        temporaryRows.sort(
+          (
+            a,
+            b
+          ) => {
+
+            const aStart =
+              a.startDate ||
+              "0000-00-00";
+
+            const bStart =
+              b.startDate ||
+              "0000-00-00";
+
+
+            if (
+              aStart !==
+              bStart
+            ) {
+
+              return (
+                bStart.localeCompare(
+                  aStart
+                )
+              );
+
+            }
+
+
+            return (
+              b.rowOrder -
+              a.rowOrder
+            );
+
+          }
+        );
+
+
+        selected.push(
+          temporaryRows[0]
+        );
 
         return;
 
       }
 
 
-      playNextBGM();
+      /*
+        Permanent row.
+        First valid permanent row wins.
+      */
 
-    }
-  );
-
-
-  musicElement.addEventListener(
-    "error",
-    () => {
-
-      bgmErrorCount++;
-
-
-      console.error(
-        "Audio Track Error:",
-        musicElement.error
+      rows.sort(
+        (
+          a,
+          b
+        ) =>
+          a.rowOrder -
+          b.rowOrder
       );
 
 
-      if (
-        currentBGMPlaylist.length >
-        1
-      ) {
-
-        setTimeout(
-          playNextBGM,
-          1200
-        );
-
-      }
+      selected.push(
+        rows[0]
+      );
 
     }
   );
 
 
-  /*
-     Autoplay recovery if the page
-     receives user interaction.
-  */
-
-  const resumeAudio =
-    () => {
-
-      if (
-        musicElement.paused &&
-        currentBGMPlaylist.length
-      ) {
-
-        musicElement
-          .play()
-          .catch(
-            () => {}
-          );
-
-      }
-
-    };
-
-
-  document.addEventListener(
-    "click",
-    resumeAudio
+  selected.sort(
+    (
+      a,
+      b
+    ) =>
+      a.rowOrder -
+      b.rowOrder
   );
 
 
-  document.addEventListener(
-    "keydown",
-    resumeAudio
-  );
+  return selected.map(
+    row => ({
+      title:
+        row.program,
 
-
-  document.addEventListener(
-    "touchstart",
-    resumeAudio
+      time:
+        row.time
+    })
   );
 
 }
 
 
-
 // ==========================================================
-// REGULAR TEMPLE PROGRAMS
+// EMERGENCY HARDCODED FALLBACK
 // ==========================================================
 
-function getRegularPrograms(date) {
+function getFallbackRegularPrograms(date) {
 
   const day =
     date.getDay();
@@ -2597,43 +1567,63 @@ function getRegularPrograms(date) {
     day === 6
   ) {
 
-    const saturdayNumber =
-      getSaturdayNumber(
-        date
-      );
-
-
     return (
-
       templeContent
         .saturdaySchedule[
-          saturdayNumber
+          getSaturdayNumber(date)
         ]
-
       ||
-
       []
-
     );
 
   }
 
 
   return (
-
     templeContent
       .weeklySchedule[
         day
       ]
-
     ||
-
     []
-
   );
 
 }
 
+
+// ==========================================================
+// GET REGULAR PROGRAMS
+// ==========================================================
+
+function getRegularPrograms(date) {
+
+  const sheetPrograms =
+    getSheetProgramsForDate(
+      date
+    );
+
+
+  /*
+    null means Sheet unavailable.
+
+    [] means Sheet loaded correctly
+    but there is simply no program today.
+  */
+
+  if (
+    sheetPrograms !== null
+  ) {
+
+    return sheetPrograms;
+
+  }
+
+
+  return getFallbackRegularPrograms(
+    date
+  );
+
+}
 
 
 // ==========================================================
@@ -2651,17 +1641,12 @@ async function loadSpecialEvents() {
             .specialEventsSheetURL
         ),
         {
-
-          cache:
-            "no-store"
-
+          cache: "no-store"
         }
       );
 
 
-    if (
-      !response.ok
-    ) {
+    if (!response.ok) {
 
       throw new Error(
         "Special Events unavailable"
@@ -2677,16 +1662,12 @@ async function loadSpecialEvents() {
 
 
     if (
-      rows.length <
-      2
+      rows.length < 2
     ) {
 
-      specialEvents =
-        [];
-
+      specialEvents = [];
 
       renderTodaySchedule();
-
 
       return;
 
@@ -2694,13 +1675,12 @@ async function loadSpecialEvents() {
 
 
     const headers =
-      rows[0]
-        .map(
-          value =>
-            value
-              .trim()
-              .toLowerCase()
-        );
+      rows[0].map(
+        value =>
+          value
+            .trim()
+            .toLowerCase()
+      );
 
 
     const dateIndex =
@@ -2708,24 +1688,20 @@ async function loadSpecialEvents() {
         "date"
       );
 
-
     const eventIndex =
       headers.indexOf(
         "event"
       );
-
 
     const programIndex =
       headers.indexOf(
         "program"
       );
 
-
     const timeIndex =
       headers.indexOf(
         "time"
       );
-
 
     const activeIndex =
       headers.indexOf(
@@ -2733,8 +1709,7 @@ async function loadSpecialEvents() {
       );
 
 
-    specialEvents =
-      [];
+    specialEvents = [];
 
 
     for (
@@ -2751,10 +1726,7 @@ async function loadSpecialEvents() {
         activeIndex >= 0
           ?
           (
-            row[
-              activeIndex
-            ]
-            ||
+            row[activeIndex] ||
             ""
           )
           .trim()
@@ -2764,70 +1736,45 @@ async function loadSpecialEvents() {
 
 
       if (
-        active !==
-        "YES"
+        active !== "YES"
       ) {
-
         continue;
-
       }
 
 
       const date =
         normalizeDate(
-          row[
-            dateIndex
-          ]
+          row[dateIndex]
         );
 
 
-      if (
-        !date
-      ) {
-
+      if (!date) {
         continue;
-
       }
 
 
       specialEvents.push(
         {
 
-          date:
-            date,
-
+          date,
 
           event:
             (
-              row[
-                eventIndex
-              ]
-              ||
+              row[eventIndex] ||
               ""
-            )
-            .trim(),
-
+            ).trim(),
 
           program:
             (
-              row[
-                programIndex
-              ]
-              ||
+              row[programIndex] ||
               ""
-            )
-            .trim(),
-
+            ).trim(),
 
           time:
             (
-              row[
-                timeIndex
-              ]
-              ||
+              row[timeIndex] ||
               ""
-            )
-            .trim()
+            ).trim()
 
         }
       );
@@ -2839,27 +1786,16 @@ async function loadSpecialEvents() {
 
   }
 
-
-  catch (
-    error
-  ) {
+  catch (error) {
 
     console.error(
       "Special Event Error:",
       error
     );
 
-
-    specialEvents =
-      [];
-
-
-    renderTodaySchedule();
-
   }
 
 }
-
 
 
 // ==========================================================
@@ -2870,61 +1806,39 @@ function getProgramTimeStatus(
   timeText
 ) {
 
-  if (
-    !timeText
-  ) {
+  if (!timeText) {
 
     return {
-
-      completed:
-        false,
-
-      current:
-        false
-
+      completed: false,
+      current: false
     };
 
   }
 
 
   const match =
-    String(
-      timeText
-    )
-    .trim()
-    .match(
-      /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i
-    );
+    String(timeText)
+      .trim()
+      .match(
+        /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i
+      );
 
 
-  if (
-    !match
-  ) {
+  if (!match) {
 
     return {
-
-      completed:
-        false,
-
-      current:
-        false
-
+      completed: false,
+      current: false
     };
 
   }
 
 
   let hour =
-    Number(
-      match[1]
-    );
-
+    Number(match[1]);
 
   const minute =
-    Number(
-      match[2]
-    );
-
+    Number(match[2]);
 
   const period =
     match[3]
@@ -2980,21 +1894,15 @@ function getProgramTimeStatus(
   return {
 
     completed:
-      now >
-      programEnd,
-
+      now > programEnd,
 
     current:
-      now >=
-      programTime
-      &&
-      now <=
-      programEnd
+      now >= programTime &&
+      now <= programEnd
 
   };
 
 }
-
 
 
 // ==========================================================
@@ -3003,12 +1911,8 @@ function getProgramTimeStatus(
 
 function renderTodaySchedule() {
 
-  if (
-    !scheduleList
-  ) {
-
+  if (!scheduleList) {
     return;
-
   }
 
 
@@ -3017,14 +1921,15 @@ function renderTodaySchedule() {
 
 
   const todayKey =
-    dateKey(
-      today
-    );
+    dateKey(today);
 
 
-  const programs =
-    [];
+  const programs = [];
 
+
+  // --------------------------------------------------------
+  // WEEKLY SCHEDULE
+  // --------------------------------------------------------
 
   getRegularPrograms(
     today
@@ -3050,6 +1955,10 @@ function renderTodaySchedule() {
     }
   );
 
+
+  // --------------------------------------------------------
+  // SPECIAL EVENTS
+  // --------------------------------------------------------
 
   specialEvents
 
@@ -3081,31 +1990,25 @@ function renderTodaySchedule() {
           );
 
 
-        if (
-          !duplicate
-        ) {
+        if (!duplicate) {
 
           programs.push(
             {
 
-              title:
-                title,
-
+              title,
 
               time:
                 event.time,
 
-
               note:
                 (
                   event.event &&
-                  event.event !==
-                  title
+                  event.event !== title
                 )
-                  ?
-                  event.event
-                  :
-                  ""
+                ?
+                event.event
+                :
+                ""
 
             }
           );
@@ -3117,20 +2020,17 @@ function renderTodaySchedule() {
 
 
   if (
-    programs.length ===
-    0
+    !programs.length
   ) {
 
     scheduleList.innerHTML =
       `
         <div class="empty-schedule">
           ${escapeHTML(
-            templeContent
-              .noProgramMessage
+            templeContent.noProgramMessage
           )}
         </div>
       `;
-
 
     return;
 
@@ -3229,16 +2129,14 @@ function renderTodaySchedule() {
 }
 
 
-
 // ==========================================================
-// HTML ESCAPE
+// HTML SAFETY
 // ==========================================================
 
 function escapeHTML(value) {
 
   return String(
-    value ||
-    ""
+    value || ""
   )
 
   .replaceAll(
@@ -3269,19 +2167,14 @@ function escapeHTML(value) {
 }
 
 
-
 // ==========================================================
-// UPCOMING EVENTS FALLBACK
+// UPCOMING EVENTS
 // ==========================================================
 
 function showUpcomingFallback() {
 
-  if (
-    !upcomingEventsText
-  ) {
-
+  if (!upcomingEventsText) {
     return;
-
   }
 
 
@@ -3295,11 +2188,6 @@ function showUpcomingFallback() {
 }
 
 
-
-// ==========================================================
-// UPCOMING EVENTS
-// ==========================================================
-
 async function loadUpcomingEvents() {
 
   try {
@@ -3311,17 +2199,12 @@ async function loadUpcomingEvents() {
             .upcomingEventsSheetURL
         ),
         {
-
-          cache:
-            "no-store"
-
+          cache: "no-store"
         }
       );
 
 
-    if (
-      !response.ok
-    ) {
+    if (!response.ok) {
 
       throw new Error(
         "Upcoming Events unavailable"
@@ -3337,8 +2220,7 @@ async function loadUpcomingEvents() {
 
 
     if (
-      rows.length <
-      2
+      rows.length < 2
     ) {
 
       showUpcomingFallback();
@@ -3349,13 +2231,12 @@ async function loadUpcomingEvents() {
 
 
     const headers =
-      rows[0]
-        .map(
-          value =>
-            value
-              .trim()
-              .toLowerCase()
-        );
+      rows[0].map(
+        value =>
+          value
+            .trim()
+            .toLowerCase()
+      );
 
 
     const dateIndex =
@@ -3363,24 +2244,20 @@ async function loadUpcomingEvents() {
         "date"
       );
 
-
     const eventIndex =
       headers.indexOf(
         "event"
       );
-
 
     const timeIndex =
       headers.indexOf(
         "time"
       );
 
-
     const activeIndex =
       headers.indexOf(
         "active"
       );
-
 
     const orderIndex =
       headers.indexOf(
@@ -3400,8 +2277,7 @@ async function loadUpcomingEvents() {
     );
 
 
-    const events =
-      [];
+    const events = [];
 
 
     for (
@@ -3418,10 +2294,7 @@ async function loadUpcomingEvents() {
         activeIndex >= 0
           ?
           (
-            row[
-              activeIndex
-            ]
-            ||
+            row[activeIndex] ||
             ""
           )
           .trim()
@@ -3431,49 +2304,32 @@ async function loadUpcomingEvents() {
 
 
       if (
-        active !==
-        "YES"
+        active !== "YES"
       ) {
-
         continue;
-
       }
 
 
       const title =
         (
-          row[
-            eventIndex
-          ]
-          ||
+          row[eventIndex] ||
           ""
-        )
-        .trim();
+        ).trim();
 
 
-      if (
-        !title
-      ) {
-
+      if (!title) {
         continue;
-
       }
 
 
       const normalizedDate =
         normalizeDate(
-          row[
-            dateIndex
-          ]
+          row[dateIndex]
         );
 
 
-      if (
-        !normalizedDate
-      ) {
-
+      if (!normalizedDate) {
         continue;
-
       }
 
 
@@ -3485,12 +2341,9 @@ async function loadUpcomingEvents() {
 
 
       if (
-        eventDate <
-        today
+        eventDate < today
       ) {
-
         continue;
-
       }
 
 
@@ -3499,9 +2352,7 @@ async function loadUpcomingEvents() {
           ?
           (
             parseInt(
-              row[
-                orderIndex
-              ],
+              row[orderIndex],
               10
             )
             ||
@@ -3517,24 +2368,15 @@ async function loadUpcomingEvents() {
           date:
             eventDate,
 
-
-          title:
-            title,
-
+          title,
 
           time:
             (
-              row[
-                timeIndex
-              ]
-              ||
+              row[timeIndex] ||
               ""
-            )
-            .trim(),
+            ).trim(),
 
-
-          order:
-            order
+          order
 
         }
       );
@@ -3591,30 +2433,21 @@ async function loadUpcomingEvents() {
                 .toLocaleDateString(
                   "en-US",
                   {
-
                     month:
                       "short",
 
                     day:
                       "numeric"
-
                   }
                 );
 
 
-            if (
-              event.time
-            ) {
-
-              return (
-                `${eventDate} – ${event.title} (${event.time})`
-              );
-
-            }
-
-
             return (
-              `${eventDate} – ${event.title}`
+              event.time
+                ?
+                `${eventDate} – ${event.title} (${event.time})`
+                :
+                `${eventDate} – ${event.title}`
             );
 
           }
@@ -3625,10 +2458,7 @@ async function loadUpcomingEvents() {
 
   }
 
-
-  catch (
-    error
-  ) {
+  catch (error) {
 
     console.error(
       "Upcoming Events Error:",
@@ -3643,6 +2473,945 @@ async function loadUpcomingEvents() {
 }
 
 
+// ==========================================================
+// BGM TIME
+// ==========================================================
+
+function parseTimeToMinutes(value) {
+
+  if (!value) {
+    return null;
+  }
+
+
+  const text =
+    String(value)
+      .trim()
+      .toUpperCase();
+
+
+  let match =
+    text.match(
+      /^(\d{1,2}):(\d{2})\s*(AM|PM)$/
+    );
+
+
+  if (match) {
+
+    let hour =
+      Number(match[1]);
+
+    const minute =
+      Number(match[2]);
+
+    const period =
+      match[3];
+
+
+    if (
+      period === "PM" &&
+      hour !== 12
+    ) {
+
+      hour += 12;
+
+    }
+
+
+    if (
+      period === "AM" &&
+      hour === 12
+    ) {
+
+      hour = 0;
+
+    }
+
+
+    return (
+      hour * 60 +
+      minute
+    );
+
+  }
+
+
+  match =
+    text.match(
+      /^(\d{1,2}):(\d{2})$/
+    );
+
+
+  if (match) {
+
+    return (
+      Number(match[1]) *
+      60
+      +
+      Number(match[2])
+    );
+
+  }
+
+
+  return null;
+
+}
+
+
+// ==========================================================
+// BGM WEEKDAY MATCH
+// ==========================================================
+
+function weekdayMatches(
+  value,
+  date
+) {
+
+  const weekday =
+    String(
+      value || "ALL"
+    )
+    .trim()
+    .toUpperCase();
+
+
+  if (
+    weekday === "" ||
+    weekday === "ALL"
+  ) {
+
+    return true;
+
+  }
+
+
+  const today =
+    getWeekdayName(date);
+
+
+  if (
+    weekday === today
+  ) {
+
+    return true;
+
+  }
+
+
+  if (
+    date.getDay() === 6 &&
+    weekday.startsWith(
+      "SATURDAY-"
+    )
+  ) {
+
+    return (
+      Number(
+        weekday.split("-")[1]
+      )
+      ===
+      getSaturdayNumber(date)
+    );
+
+  }
+
+
+  return false;
+
+}
+
+
+// ==========================================================
+// BGM TIME WINDOW
+// ==========================================================
+
+function timeWindowMatches(
+  startValue,
+  endValue,
+  date
+) {
+
+  const start =
+    parseTimeToMinutes(
+      startValue
+    );
+
+  const end =
+    parseTimeToMinutes(
+      endValue
+    );
+
+
+  if (
+    start === null ||
+    end === null
+  ) {
+    return false;
+  }
+
+
+  const nowMinutes =
+    date.getHours() *
+    60
+    +
+    date.getMinutes();
+
+
+  if (
+    start <= end
+  ) {
+
+    return (
+      nowMinutes >= start &&
+      nowMinutes < end
+    );
+
+  }
+
+
+  // crosses midnight
+
+  return (
+    nowMinutes >= start ||
+    nowMinutes < end
+  );
+
+}
+
+
+// ==========================================================
+// LOAD BGM
+// ==========================================================
+
+async function loadBGMPlaylist() {
+
+  try {
+
+    const response =
+      await fetch(
+        addCacheBuster(
+          templeContent
+            .bgmSheetURL
+        ),
+        {
+          cache: "no-store"
+        }
+      );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        "BGM Sheet unavailable"
+      );
+
+    }
+
+
+    const rows =
+      parseCSV(
+        await response.text()
+      );
+
+
+    if (
+      rows.length < 2
+    ) {
+      return;
+    }
+
+
+    const headers =
+      rows[0].map(
+        value =>
+          value
+            .trim()
+            .toLowerCase()
+      );
+
+
+    const musicIndex =
+      headers.indexOf(
+        "musicurl"
+      );
+
+    const typeIndex =
+      headers.indexOf(
+        "type"
+      );
+
+    const activeIndex =
+      headers.indexOf(
+        "active"
+      );
+
+    const orderIndex =
+      headers.indexOf(
+        "displayorder"
+      );
+
+    const weekdayIndex =
+      headers.indexOf(
+        "weekday"
+      );
+
+    const startIndex =
+      headers.indexOf(
+        "starttime"
+      );
+
+    const endIndex =
+      headers.indexOf(
+        "endtime"
+      );
+
+
+    const defaults = [];
+    const specials = [];
+
+
+    for (
+      let i = 1;
+      i < rows.length;
+      i++
+    ) {
+
+      const row =
+        rows[i];
+
+
+      const active =
+        (
+          row[activeIndex] ||
+          "YES"
+        )
+        .trim()
+        .toUpperCase();
+
+
+      if (
+        active !== "YES"
+      ) {
+        continue;
+      }
+
+
+      const originalURL =
+        (
+          row[musicIndex] ||
+          ""
+        ).trim();
+
+
+      if (!originalURL) {
+        continue;
+      }
+
+
+      const type =
+        (
+          row[typeIndex] ||
+          "DEFAULT"
+        )
+        .trim()
+        .toUpperCase();
+
+
+      const track =
+        {
+
+          url:
+            convertDriveAudioURL(
+              originalURL
+            ),
+
+          order:
+            parseInt(
+              row[orderIndex],
+              10
+            )
+            ||
+            999,
+
+          weekday:
+            (
+              row[weekdayIndex] ||
+              "ALL"
+            )
+            .trim()
+            .toUpperCase(),
+
+          startTime:
+            (
+              row[startIndex] ||
+              ""
+            ).trim(),
+
+          endTime:
+            (
+              row[endIndex] ||
+              ""
+            ).trim()
+
+        };
+
+
+      if (
+        type === "SPECIAL"
+      ) {
+
+        specials.push(track);
+
+      }
+
+      else {
+
+        defaults.push(track);
+
+      }
+
+    }
+
+
+    defaults.sort(
+      (
+        a,
+        b
+      ) =>
+        a.order -
+        b.order
+    );
+
+
+    specials.sort(
+      (
+        a,
+        b
+      ) =>
+        a.order -
+        b.order
+    );
+
+
+    defaultBGMPlaylist =
+      defaults;
+
+
+    specialBGMTracks =
+      specials;
+
+
+    evaluateBGMSchedule();
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "BGM Error:",
+      error
+    );
+
+  }
+
+}
+
+
+// ==========================================================
+// ACTIVE SPECIAL BGM
+// ==========================================================
+
+function getActiveSpecialPlaylist() {
+
+  const now =
+    new Date();
+
+
+  return specialBGMTracks
+    .filter(
+      track =>
+
+        weekdayMatches(
+          track.weekday,
+          now
+        )
+
+        &&
+
+        timeWindowMatches(
+          track.startTime,
+          track.endTime,
+          now
+        )
+    )
+    .sort(
+      (
+        a,
+        b
+      ) =>
+        a.order -
+        b.order
+    );
+
+}
+
+
+// ==========================================================
+// SPECIAL SIGNATURE
+// ==========================================================
+
+function makeSpecialSignature(
+  playlist
+) {
+
+  return playlist
+    .map(
+      track =>
+        [
+          track.url,
+          track.weekday,
+          track.startTime,
+          track.endTime,
+          track.order
+        ].join("~")
+    )
+    .join("|");
+
+}
+
+
+// ==========================================================
+// PLAY BGM TRACK
+// ==========================================================
+
+function playCurrentBGMTrack(
+  resumeSeconds = 0
+) {
+
+  if (
+    !musicElement ||
+    !currentBGMPlaylist.length
+  ) {
+    return;
+  }
+
+
+  const track =
+    currentBGMPlaylist[
+      currentBGMIndex
+    ];
+
+
+  if (!track) {
+    return;
+  }
+
+
+  musicElement.pause();
+
+  musicElement.src =
+    track.url;
+
+  musicElement.loop =
+    false;
+
+  musicElement.preload =
+    "auto";
+
+  musicElement.volume =
+    templeContent.bgmVolume
+    ??
+    0.30;
+
+
+  musicElement.load();
+
+
+  const startPlayback =
+    () => {
+
+      if (
+        resumeSeconds > 0
+      ) {
+
+        try {
+
+          musicElement.currentTime =
+            resumeSeconds;
+
+        }
+
+        catch (error) {}
+
+      }
+
+
+      musicElement
+        .play()
+        .catch(
+          error =>
+            console.error(
+              "BGM play error:",
+              error
+            )
+        );
+
+    };
+
+
+  if (
+    resumeSeconds > 0
+  ) {
+
+    musicElement.addEventListener(
+      "loadedmetadata",
+      startPlayback,
+      {
+        once: true
+      }
+    );
+
+  }
+
+  else {
+
+    startPlayback();
+
+  }
+
+}
+
+
+// ==========================================================
+// DEFAULT BGM
+// ==========================================================
+
+function startDefaultBGM(
+  resume = false
+) {
+
+  if (
+    !defaultBGMPlaylist.length
+  ) {
+    return;
+  }
+
+
+  currentBGMMode =
+    "DEFAULT";
+
+
+  currentSpecialSignature =
+    "";
+
+
+  currentBGMPlaylist =
+    defaultBGMPlaylist;
+
+
+  if (
+    resume &&
+    savedDefaultIndex <
+    currentBGMPlaylist.length
+  ) {
+
+    currentBGMIndex =
+      savedDefaultIndex;
+
+
+    const restoreTime =
+      savedDefaultTime;
+
+
+    savedDefaultTime = 0;
+
+
+    playCurrentBGMTrack(
+      restoreTime
+    );
+
+  }
+
+  else {
+
+    currentBGMIndex = 0;
+
+    playCurrentBGMTrack();
+
+  }
+
+}
+
+
+// ==========================================================
+// SPECIAL BGM
+// ==========================================================
+
+function startSpecialBGM(
+  playlist
+) {
+
+  if (
+    !playlist.length
+  ) {
+    return;
+  }
+
+
+  if (
+    currentBGMMode ===
+    "DEFAULT"
+  ) {
+
+    savedDefaultIndex =
+      currentBGMIndex;
+
+
+    if (
+      musicElement &&
+      Number.isFinite(
+        musicElement.currentTime
+      )
+    ) {
+
+      savedDefaultTime =
+        musicElement.currentTime;
+
+    }
+
+  }
+
+
+  currentBGMMode =
+    "SPECIAL";
+
+
+  currentBGMPlaylist =
+    playlist;
+
+
+  currentBGMIndex = 0;
+
+
+  playCurrentBGMTrack();
+
+}
+
+
+// ==========================================================
+// EVALUATE BGM
+// ==========================================================
+
+function evaluateBGMSchedule() {
+
+  const activeSpecial =
+    getActiveSpecialPlaylist();
+
+
+  if (
+    activeSpecial.length
+  ) {
+
+    const signature =
+      makeSpecialSignature(
+        activeSpecial
+      );
+
+
+    if (
+      currentBGMMode ===
+      "SPECIAL"
+      &&
+      currentSpecialSignature ===
+      signature
+    ) {
+
+      return;
+
+    }
+
+
+    currentSpecialSignature =
+      signature;
+
+
+    startSpecialBGM(
+      activeSpecial
+    );
+
+
+    return;
+
+  }
+
+
+  if (
+    currentBGMMode ===
+    "SPECIAL"
+  ) {
+
+    startDefaultBGM(
+      true
+    );
+
+    return;
+
+  }
+
+
+  if (
+    currentBGMMode !==
+    "DEFAULT"
+  ) {
+
+    startDefaultBGM(
+      false
+    );
+
+  }
+
+}
+
+
+// ==========================================================
+// NEXT BGM
+// ==========================================================
+
+function playNextBGM() {
+
+  if (
+    !currentBGMPlaylist.length
+  ) {
+    return;
+  }
+
+
+  currentBGMIndex =
+    (
+      currentBGMIndex + 1
+    )
+    %
+    currentBGMPlaylist.length;
+
+
+  playCurrentBGMTrack();
+
+}
+
+
+// ==========================================================
+// AUDIO EVENTS
+// ==========================================================
+
+if (musicElement) {
+
+  musicElement.addEventListener(
+    "ended",
+    () => {
+
+      const previousMode =
+        currentBGMMode;
+
+
+      const previousSignature =
+        currentSpecialSignature;
+
+
+      evaluateBGMSchedule();
+
+
+      /*
+        If evaluateBGMSchedule changed mode,
+        it already started another track.
+      */
+
+      if (
+        previousMode !==
+        currentBGMMode
+      ) {
+        return;
+      }
+
+
+      if (
+        previousSignature !==
+        currentSpecialSignature
+      ) {
+        return;
+      }
+
+
+      playNextBGM();
+
+    }
+  );
+
+
+  musicElement.addEventListener(
+    "error",
+    () => {
+
+      bgmErrorCount++;
+
+
+      console.error(
+        "Audio Error:",
+        musicElement.error
+      );
+
+
+      if (
+        currentBGMPlaylist.length > 1
+      ) {
+
+        setTimeout(
+          playNextBGM,
+          1200
+        );
+
+      }
+
+    }
+  );
+
+
+  const resumeAudio =
+    () => {
+
+      if (
+        musicElement.paused &&
+        currentBGMPlaylist.length
+      ) {
+
+        musicElement
+          .play()
+          .catch(
+            () => {}
+          );
+
+      }
+
+    };
+
+
+  document.addEventListener(
+    "click",
+    resumeAudio
+  );
+
+  document.addEventListener(
+    "keydown",
+    resumeAudio
+  );
+
+  document.addEventListener(
+    "touchstart",
+    resumeAudio
+  );
+
+}
+
 
 // ==========================================================
 // INITIALIZATION
@@ -3652,8 +3421,19 @@ async function initializeTempleTV() {
 
   loadLocalAnnouncements();
 
-
   showUpcomingFallback();
+
+  /*
+    Load weekly schedule early so Today's Schedule
+    displays correct Sheet data quickly.
+  */
+
+  await Promise.allSettled(
+    [
+      loadWeeklySchedule(),
+      loadSpecialEvents()
+    ]
+  );
 
 
   renderTodaySchedule();
@@ -3661,48 +3441,29 @@ async function initializeTempleTV() {
 
   await Promise.allSettled(
     [
-
       loadAnnouncements(),
-
       loadRemoteFlyers(),
-
-      loadSpecialEvents(),
-
-      loadUpcomingEvents()
-
+      loadUpcomingEvents(),
+      loadBGMPlaylist()
     ]
   );
 
-
-  /*
-     BGM loads after the display content.
-  */
-
-  await loadBGMPlaylist();
-
 }
-
 
 
 initializeTempleTV();
 
 
-
 // ==========================================================
-// FLYER ROTATION
+// FLYER TIMER
 // ==========================================================
 
 setInterval(
   rotateFlyer,
 
-  templeContent
-    .flyerDuration
-
-  *
-
+  templeContent.flyerDuration *
   1000
 );
-
 
 
 // ==========================================================
@@ -3714,16 +3475,13 @@ setInterval(
 
   templeContent
     .bgmScheduleCheckSeconds
-
   *
-
   1000
 );
 
 
-
 // ==========================================================
-// REMOTE SHEET REFRESH
+// REMOTE REFRESH
 // ==========================================================
 
 const remoteRefreshMilliseconds =
@@ -3751,13 +3509,14 @@ setInterval(
 
     loadUpcomingEvents();
 
+    loadWeeklySchedule();
+
     loadBGMPlaylist();
 
   },
 
   remoteRefreshMilliseconds
 );
-
 
 
 // ==========================================================
