@@ -1,6 +1,5 @@
 const templeContent = {
 
-
   // =======================================================
   // GOOGLE SHEETS
   // =======================================================
@@ -8,26 +7,20 @@ const templeContent = {
   announcementSheetURL:
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?output=csv",
 
-
   flyerSheetURL:
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=1481450155&single=true&output=csv",
-
 
   specialEventsSheetURL:
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=159824805&single=true&output=csv",
 
-
   upcomingEventsSheetURL:
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=519294883&single=true&output=csv",
-
-
-  // =======================================================
-  // BGM SHEET
-  // =======================================================
 
   bgmSheetURL:
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=397630639&single=true&output=csv",
 
+  weeklyScheduleSheetURL:
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=1586421151&single=true&output=csv",
 
 
   // =======================================================
@@ -36,17 +29,9 @@ const templeContent = {
 
   remoteRefreshMinutes: 5,
 
-
-  // How often to check whether a SPECIAL BGM
-  // should start or stop.
   bgmScheduleCheckSeconds: 15,
 
-
-  // BGM Volume
-  // 0.00 = mute
-  // 1.00 = full volume
   bgmVolume: 0.30,
-
 
 
   // =======================================================
@@ -54,16 +39,11 @@ const templeContent = {
   // =======================================================
 
   localFlyers: [
-
     "images/flyer1.jpg",
-
     "images/flyer2.jpg"
-
   ],
 
-
   flyerDuration: 10,
-
 
 
   // =======================================================
@@ -71,21 +51,14 @@ const templeContent = {
   // =======================================================
 
   announcements: [
-
     "Welcome to Chinmaya Saraswati Ashram - Devi Temple",
-
     "Please join us for our upcoming temple programs",
-
     "Scan the QR code to receive temple updates",
-
     "Hari Om"
-
   ],
-
 
   separator:
     "     •     ",
-
 
 
   // =======================================================
@@ -93,149 +66,77 @@ const templeContent = {
   // =======================================================
 
   upcomingEventsFallback: [
-
     "Please check temple announcements for upcoming events"
-
   ],
 
 
-
   // =======================================================
-  // WEEKLY PROGRAMS
+  // EMERGENCY WEEKLY SCHEDULE FALLBACK
   //
-  // Sunday    = 0
-  // Monday    = 1
-  // Tuesday   = 2
-  // Wednesday = 3
-  // Thursday  = 4
-  // Friday    = 5
-  // Saturday  = 6
+  // This is ONLY used if WeeklySchedule Google Sheet
+  // cannot be loaded.
   // =======================================================
 
   weeklySchedule: {
 
-
-    // MONDAY
-
     1: [
-
       {
-
-        title:
-          "Shiva Abhishekam",
-
-        time:
-          "6:30 PM"
-
+        title: "Shiva Abhishekam",
+        time: "6:30 PM"
       }
-
     ],
-
-
-
-    // TUESDAY
 
     2: [
-
       {
-
         title:
           "Hanuman Abhishekam Followed By Hanumana Chalisa Parayanam, Archana, Aarati",
-
-        time:
-          "6:30 PM"
-
+        time: "6:30 PM"
       }
-
     ],
 
-
-
-    // FRIDAY
-
     5: [
-
       {
-
-        title:
-          "Saraswati Devi Abhishekam",
-
-        time:
-          "6:30 PM"
-
+        title: "Saraswati Devi Abhishekam",
+        time: "6:30 PM"
       }
-
     ]
 
   },
 
 
-
   // =======================================================
-  // SATURDAY PROGRAMS
+  // EMERGENCY SATURDAY FALLBACK
   // =======================================================
 
   saturdaySchedule: {
 
-
-    // FIRST SATURDAY
-
     1: [
-
       {
-
-        title:
-          "Lakshmi Devi Abhishekam",
-
-        time:
-          "6:30 PM"
-
+        title: "Lakshmi Devi Abhishekam",
+        time: "6:30 PM"
       }
-
     ],
-
-
-
-    // SECOND SATURDAY
 
     2: [
-
       {
-
-        title:
-          "Durga Devi Abhishekam",
-
-        time:
-          "6:30 PM"
-
+        title: "Durga Devi Abhishekam",
+        time: "6:30 PM"
       }
-
     ],
 
-
-
-    // THIRD SATURDAY
-
     3: [
-
       {
-
         title:
           "Hanuman Abhishekam Followed by Tulasidas Sundarakanda Parayanam",
-
-        time:
-          "10:00 AM"
-
+        time: "10:00 AM"
       }
-
     ]
 
   },
 
 
-
   // =======================================================
-  // NO REGULAR PROGRAM
+  // NO PROGRAM
   // =======================================================
 
   noProgramMessage:
