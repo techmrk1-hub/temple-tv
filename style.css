@@ -63,7 +63,7 @@ body {
 
 
 /* ==========================================================
-   TV CANVAS
+   TV SCREEN
 ========================================================== */
 
 .tv-screen {
@@ -121,44 +121,32 @@ body {
 }
 
 
-/* ==========================================================
-   LOGO
-========================================================== */
-
 .temple-logo {
   grid-column: 1;
 
   width: 66px;
   height: 66px;
 
-  display: block;
-
   justify-self: center;
   align-self: center;
-
-  margin: 0 auto;
 
   object-fit: contain;
 
   padding: 4px;
 
-  background: #ffffff;
+  background: white;
 
   border-radius: 8px;
 
   box-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.18);
+    0 2px 6px
+    rgba(0, 0, 0, 0.18);
 }
 
-
-/* ==========================================================
-   HEADER TITLE
-========================================================== */
 
 .brand-copy {
   grid-column: 2;
 
-  min-width: 0;
   width: 100%;
 
   text-align: center;
@@ -184,8 +172,6 @@ body {
   font-weight: 700;
 
   line-height: 1;
-
-  letter-spacing: 0.008em;
 
   color: #ffffff;
 
@@ -219,8 +205,6 @@ body {
 
   font-weight: 700;
 
-  line-height: 1;
-
   white-space: nowrap;
 }
 
@@ -249,10 +233,7 @@ body {
 .time-zone {
   grid-column: 3;
 
-  min-width: 0;
-
   justify-self: end;
-  align-self: center;
 
   text-align: right;
 }
@@ -278,27 +259,12 @@ body {
 
   line-height: 1;
 
-  letter-spacing: 0.5px;
-
   white-space: nowrap;
 }
 
 
 .header-date {
   margin-top: 6px;
-
-  font-family:
-    "Segoe UI",
-    Arial,
-    sans-serif;
-
-  color:
-    rgba(
-      255,
-      255,
-      255,
-      0.96
-    );
 
   font-size:
     clamp(
@@ -309,7 +275,7 @@ body {
 
   font-weight: 700;
 
-  letter-spacing: 0.02em;
+  color: white;
 
   white-space: nowrap;
 }
@@ -321,16 +287,15 @@ body {
 
 .content-grid {
   min-height: 0;
-  min-width: 0;
 
   display: grid;
 
   grid-template-columns:
     minmax(0, 1fr)
     clamp(
-      285px,
+      300px,
       20vw,
-      345px
+      350px
     );
 
   gap: 14px;
@@ -344,12 +309,11 @@ body {
 
 
 /* ==========================================================
-   FLYER PANEL
+   FLYER
 ========================================================== */
 
 .feature-panel {
   min-height: 0;
-  min-width: 0;
 
   display: flex;
 
@@ -358,7 +322,7 @@ body {
 
   overflow: hidden;
 
-  background: #ffffff;
+  background: white;
 
   border:
     1px solid
@@ -385,12 +349,13 @@ body {
   max-height: 100%;
 
   object-fit: contain;
-  object-position: center;
 
   opacity: 0;
 
   transition:
-    opacity 0.45s ease;
+    opacity
+    0.45s
+    ease;
 }
 
 
@@ -425,13 +390,14 @@ body {
   min-height: 0;
 
   display: flex;
+
   flex-direction: column;
 
   overflow: hidden;
 
   padding:
-    14px
-    16px;
+    10px
+    14px;
 
   background:
     #fffdf7;
@@ -461,85 +427,48 @@ body {
 }
 
 
-.community-section {
-  flex:
-    0 0 auto;
-
-  text-align: center;
-}
-
-
 /* ==========================================================
-   TODAY'S SCHEDULE CARD
+   TODAY ORNAMENT
 ========================================================== */
 
 .schedule-card {
-  position: relative;
-
   padding:
-    4px
-    4px
-    12px;
-
-  color: #231f1c;
+    2px
+    2px
+    6px;
 }
 
 
-/* ==========================================================
-   SCHEDULE ORNAMENT
-========================================================== */
-
 .schedule-ornament {
-  position: relative;
-
   display: flex;
 
   align-items: center;
   justify-content: center;
 
-  height: 30px;
-
-  margin-bottom: 1px;
-}
-
-
-.schedule-ornament span {
-  position: relative;
-
-  width: 72px;
-  height: 23px;
-
-  display: block;
+  height: 25px;
 }
 
 
 .schedule-ornament span::before {
   content: "❧";
 
-  position: absolute;
-
-  left: 50%;
-  top: 50%;
+  display: block;
 
   transform:
-    translate(-50%, -50%)
     rotate(-90deg);
 
   color: #9b6d36;
 
   font-family:
     Georgia,
-    "Times New Roman",
     serif;
 
-  font-size: 35px;
-
-  line-height: 1;
+  font-size: 31px;
 }
 
 
 /* ==========================================================
-   SCHEDULE HEADING
+   TODAY HEADING
 ========================================================== */
 
 .schedule-heading {
@@ -555,44 +484,37 @@ body {
   font-size:
     clamp(
       20px,
-      1.3vw,
-      25px
+      1.25vw,
+      24px
     );
 
   font-weight: 700;
-
-  line-height: 1.05;
-
-  letter-spacing: 0.015em;
 
   white-space: nowrap;
 }
 
 
-/* ==========================================================
-   DECORATIVE DIVIDER
-========================================================== */
-
-.schedule-heading-divider {
-  position: relative;
-
+.schedule-heading-divider,
+.tomorrow-heading-divider {
   display: flex;
 
   align-items: center;
   justify-content: center;
 
-  width: 88%;
+  width: 86%;
 
-  height: 17px;
+  height: 15px;
 
   margin:
-    4px auto
-    15px;
+    3px auto
+    10px;
 }
 
 
 .schedule-heading-divider::before,
-.schedule-heading-divider::after {
+.schedule-heading-divider::after,
+.tomorrow-heading-divider::before,
+.tomorrow-heading-divider::after {
   content: "";
 
   flex: 1;
@@ -608,7 +530,8 @@ body {
 }
 
 
-.schedule-heading-divider::after {
+.schedule-heading-divider::after,
+.tomorrow-heading-divider::after {
   background:
     linear-gradient(
       90deg,
@@ -619,12 +542,12 @@ body {
 
 
 .divider-diamond {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
 
   margin:
     0
-    7px;
+    6px;
 
   background: #a67a3c;
 
@@ -634,109 +557,63 @@ body {
 
 
 /* ==========================================================
-   SCHEDULE LIST
+   TODAY LIST
 ========================================================== */
 
 .schedule-list {
-  width: 100%;
-
   display: flex;
 
   flex-direction: column;
 
-  gap: 18px;
-
-  padding:
-    0
-    2px;
+  gap: 14px;
 }
 
-
-/* ==========================================================
-   SCHEDULE ROW
-========================================================== */
 
 .schedule-item {
   display: grid;
 
   grid-template-columns:
-    88px
+    78px
     2px
     minmax(0, 1fr);
 
+  column-gap: 8px;
+
   align-items: start;
-
-  column-gap: 10px;
-
-  padding: 0;
-
-  border: none;
 }
 
-
-/* vertical gold line */
-
-.schedule-separator {
-  grid-column: 2;
-
-  width: 2px;
-  height: 100%;
-
-  min-height: 52px;
-
-  align-self: stretch;
-
-  background:
-    linear-gradient(
-      180deg,
-      #d8ad4a,
-      #b9862b
-    );
-
-  border-radius: 2px;
-}
-
-
-/* ==========================================================
-   TIME
-========================================================== */
 
 .schedule-time {
-  grid-column: 1;
-
-  padding-top: 1px;
+  text-align: right;
 
   color: #161616;
 
-  font-family:
-    "Segoe UI",
-    Arial,
-    sans-serif;
-
   font-size:
     clamp(
-      17px,
-      1.08vw,
-      21px
+      15px,
+      1vw,
+      19px
     );
 
   font-weight: 800;
-
-  line-height: 1.15;
-
-  text-align: right;
 
   white-space: nowrap;
 }
 
 
-/* ==========================================================
-   PROGRAM CONTENT
-========================================================== */
+.schedule-separator {
+  width: 2px;
+
+  height: 100%;
+
+  min-height: 43px;
+
+  background:
+    var(--gold);
+}
+
 
 .schedule-content {
-  grid-column: 3;
-
   min-width: 0;
 }
 
@@ -744,47 +621,30 @@ body {
 .schedule-name {
   color: #24201d;
 
-  font-family:
-    "Segoe UI",
-    Arial,
-    sans-serif;
-
   font-size:
     clamp(
-      17px,
-      1.08vw,
-      21px
+      15px,
+      1vw,
+      19px
     );
 
   font-weight: 600;
 
-  line-height: 1.2;
+  line-height: 1.16;
 
   overflow-wrap: anywhere;
 }
 
 
 .schedule-note {
-  margin-top: 5px;
+  margin-top: 4px;
 
-  color: #74675f;
+  color: var(--muted);
 
   font-size:
-    clamp(
-      11px,
-      0.72vw,
-      14px
-    );
-
-  font-weight: 500;
-
-  line-height: 1.25;
+    12px;
 }
 
-
-/* ==========================================================
-   COMPLETED STATUS
-========================================================== */
 
 .schedule-status {
   display: block;
@@ -795,77 +655,168 @@ body {
 
   font-family:
     Georgia,
+    serif;
+
+  font-size:
+    14px;
+
+  font-weight: 600;
+}
+
+
+.schedule-item.is-completed {
+  opacity: 0.72;
+}
+
+
+.schedule-item.is-current .schedule-time,
+.schedule-item.is-current .schedule-name {
+  color: var(--maroon);
+}
+
+
+.empty-schedule {
+  padding:
+    8px
+    4px;
+
+  text-align: center;
+
+  color: var(--muted);
+
+  font-size: 14px;
+}
+
+
+/* ==========================================================
+   TOMORROW SCHEDULE
+========================================================== */
+
+.tomorrow-section {
+  flex:
+    0
+    0
+    auto;
+}
+
+
+.tomorrow-divider {
+  width: 100%;
+  height: 1px;
+
+  margin:
+    8px
+    0
+    8px;
+
+  background:
+    #dfd1b7;
+}
+
+
+.tomorrow-heading {
+  text-align: center;
+
+  color: #57170f;
+
+  font-family:
+    Georgia,
     "Times New Roman",
     serif;
 
   font-size:
     clamp(
-      14px,
-      0.9vw,
-      17px
+      15px,
+      0.95vw,
+      18px
+    );
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.02em;
+}
+
+
+.tomorrow-heading-divider {
+  margin-bottom: 7px;
+}
+
+
+.tomorrow-schedule-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+
+.tomorrow-schedule-item {
+  display: grid;
+
+  grid-template-columns:
+    68px
+    2px
+    minmax(0, 1fr);
+
+  column-gap: 7px;
+
+  align-items: start;
+}
+
+
+.tomorrow-time {
+  text-align: right;
+
+  color: var(--maroon);
+
+  font-size:
+    clamp(
+      12px,
+      0.8vw,
+      15px
+    );
+
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+
+.tomorrow-separator {
+  width: 2px;
+  height: 100%;
+
+  min-height: 31px;
+
+  background:
+    var(--gold);
+}
+
+
+.tomorrow-name {
+  color: #332c27;
+
+  font-size:
+    clamp(
+      12px,
+      0.8vw,
+      15px
     );
 
   font-weight: 600;
 
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 
-.schedule-item.is-completed {
-  opacity: 0.74;
-}
-
-
-.schedule-item.is-completed .schedule-name {
-  color: #5d554f;
-}
-
-
-/* ==========================================================
-   CURRENT PROGRAM
-========================================================== */
-
-.schedule-item.is-current .schedule-time,
-.schedule-item.is-current .schedule-name {
-  color: #6f160e;
-}
-
-
-.schedule-item.is-current .schedule-separator {
-  background:
-    linear-gradient(
-      180deg,
-      #f0c960,
-      #c49329
-    );
-
-  width: 3px;
-}
-
-
-/* ==========================================================
-   EMPTY SCHEDULE
-========================================================== */
-
-.empty-schedule {
-  padding:
-    12px
-    8px;
-
-  color: #73675f;
-
-  font-size:
-    clamp(
-      14px,
-      0.9vw,
-      17px
-    );
-
-  font-weight: 500;
-
-  line-height: 1.4;
-
+.tomorrow-empty {
   text-align: center;
+
+  color: var(--muted);
+
+  font-size: 12px;
 }
 
 
@@ -873,14 +824,24 @@ body {
    COMMUNITY
 ========================================================== */
 
+.community-section {
+  flex:
+    0
+    0
+    auto;
+
+  text-align: center;
+}
+
+
 .community-divider {
   width: 100%;
   height: 1px;
 
   margin:
-    12px
+    9px
     0
-    16px;
+    10px;
 
   background:
     #dfd1b7;
@@ -891,46 +852,39 @@ body {
   color:
     var(--maroon);
 
-  font-size:
-    clamp(
-      17px,
-      1.1vw,
-      21px
-    );
-
   font-weight: 800;
-
-  letter-spacing:
-    0.06em;
 }
 
 
 .community-heading {
-  margin-bottom: 12px;
+  margin-bottom: 7px;
 
   font-family:
     Georgia,
-    "Times New Roman",
     serif;
 
-  letter-spacing:
-    0.03em;
+  font-size:
+    clamp(
+      15px,
+      0.95vw,
+      18px
+    );
 }
 
 
 .community-qr {
   width:
     clamp(
-      95px,
-      7vw,
-      120px
+      82px,
+      6vw,
+      105px
     );
 
   height:
     clamp(
-      95px,
-      7vw,
-      120px
+      82px,
+      6vw,
+      105px
     );
 
   object-fit: contain;
@@ -938,17 +892,13 @@ body {
 
 
 .community-copy {
-  margin-top: 9px;
+  margin-top: 5px;
 
   color:
     var(--muted);
 
   font-size:
-    clamp(
-      11px,
-      0.72vw,
-      14px
-    );
+    11px;
 
   font-weight: 600;
 }
@@ -963,20 +913,13 @@ body {
 
   grid-template-columns:
     205px
-    minmax(
-      0,
-      1fr
-    );
+    minmax(0, 1fr);
 
   overflow: hidden;
 }
 
 
 .ticker-label {
-  position: relative;
-
-  z-index: 2;
-
   display: flex;
 
   align-items: center;
@@ -1000,16 +943,11 @@ body {
 
   font-weight: 800;
 
-  letter-spacing:
-    0.035em;
-
   white-space: nowrap;
 }
 
 
 .ticker-viewport {
-  min-width: 0;
-
   position: relative;
 
   overflow: hidden;
@@ -1038,8 +976,6 @@ body {
 
   font-weight: 600;
 
-  will-change: transform;
-
   animation:
     scroll-left
     44s
@@ -1047,10 +983,6 @@ body {
     infinite;
 }
 
-
-/* ==========================================================
-   ANNOUNCEMENTS
-========================================================== */
 
 .announcement-row {
   background:
@@ -1062,22 +994,9 @@ body {
 }
 
 
-/* ==========================================================
-   UPCOMING EVENTS
-========================================================== */
-
 .upcoming-row {
   background:
     var(--maroon-soft);
-
-  border-top:
-    1px solid
-    rgba(
-      255,
-      255,
-      255,
-      0.16
-    );
 }
 
 
@@ -1095,10 +1014,6 @@ body {
     50s;
 }
 
-
-/* ==========================================================
-   TICKER ANIMATION
-========================================================== */
 
 @keyframes scroll-left {
 
@@ -1120,7 +1035,7 @@ body {
 
 
 /* ==========================================================
-   1680 x 1050
+   1680 SCREEN
 ========================================================== */
 
 @media (max-width: 1700px) {
@@ -1139,46 +1054,12 @@ body {
       90px
       minmax(0, 1fr)
       195px;
-
-    padding:
-      8px
-      18px;
   }
 
 
   .temple-logo {
     width: 62px;
     height: 62px;
-  }
-
-
-  .temple-name {
-    font-size:
-      clamp(
-        29px,
-        2.15vw,
-        37px
-      );
-  }
-
-
-  .temple-meta {
-    font-size:
-      clamp(
-        16px,
-        1.08vw,
-        20px
-      );
-  }
-
-
-  .clock {
-    font-size:
-      clamp(
-        26px,
-        1.7vw,
-        32px
-      );
   }
 
 
@@ -1197,30 +1078,15 @@ body {
 
   .info-rail {
     padding:
-      10px
-      12px;
-  }
-
-
-  .schedule-item {
-    grid-template-columns:
-      80px
-      2px
-      minmax(0, 1fr);
-
-    column-gap: 8px;
-  }
-
-
-  .schedule-list {
-    gap: 15px;
+      8px
+      10px;
   }
 
 }
 
 
 /* ==========================================================
-   SHORTER VIEWPORT
+   SHORT SCREEN
 ========================================================== */
 
 @media (max-height: 850px) {
@@ -1234,74 +1100,49 @@ body {
   }
 
 
-  .top-header {
-    grid-template-columns:
-      86px
-      minmax(0, 1fr)
-      190px;
-  }
-
-
-  .temple-logo {
-    width: 58px;
-    height: 58px;
-  }
-
-
-  .content-grid {
-    padding:
-      8px
-      10px;
-  }
-
-
-  .info-rail {
-    padding:
-      8px
-      10px;
+  .schedule-list {
+    gap: 8px;
   }
 
 
   .schedule-ornament {
-    height: 23px;
+    height: 19px;
   }
 
 
   .schedule-ornament span::before {
-    font-size: 28px;
+    font-size: 25px;
   }
 
 
   .schedule-heading-divider {
-    margin-bottom: 9px;
+    margin-bottom: 6px;
   }
 
 
-  .schedule-list {
-    gap: 11px;
+  .tomorrow-divider {
+    margin:
+      5px
+      0;
   }
 
 
-  .schedule-item {
-    grid-template-columns:
-      74px
-      2px
-      minmax(0, 1fr);
-
-    column-gap: 7px;
-  }
-
-
-  .schedule-separator {
-    min-height: 43px;
+  .tomorrow-schedule-list {
+    gap: 4px;
   }
 
 
   .community-divider {
     margin:
-      8px
+      5px
       0
-      10px;
+      6px;
+  }
+
+
+  .community-qr {
+    width: 75px;
+    height: 75px;
   }
 
 }
