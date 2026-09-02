@@ -24,7 +24,7 @@ const templeContent = {
 
 
   // =======================================================
-  // REFRESH SETTINGS
+  // REFRESH
   // =======================================================
 
   remoteRefreshMinutes: 5,
@@ -36,6 +36,7 @@ const templeContent = {
 
   // =======================================================
   // FLYERS
+  // 15 SECONDS
   // =======================================================
 
   localFlyers: [
@@ -47,14 +48,19 @@ const templeContent = {
 
 
   // =======================================================
-  // ANNOUNCEMENT FALLBACK
+  // ANNOUNCEMENTS FALLBACK
   // =======================================================
 
   announcements: [
+
     "Welcome to Chinmaya Saraswati Ashram - Devi Temple",
+
     "Please join us for our upcoming temple programs",
+
     "Scan the QR code to receive temple updates",
+
     "Hari Om"
+
   ],
 
   separator:
@@ -66,38 +72,45 @@ const templeContent = {
   // =======================================================
 
   upcomingEventsFallback: [
+
     "Please check temple announcements for upcoming events"
+
   ],
 
 
   // =======================================================
-  // EMERGENCY WEEKLY SCHEDULE FALLBACK
-  //
-  // This is ONLY used if WeeklySchedule Google Sheet
-  // cannot be loaded.
+  // EMERGENCY WEEKLY FALLBACK
   // =======================================================
 
   weeklySchedule: {
 
     1: [
       {
-        title: "Shiva Abhishekam",
-        time: "6:30 PM"
+        title:
+          "Shiva Abhishekam",
+
+        time:
+          "6:30 PM"
       }
     ],
 
     2: [
       {
         title:
-          "Hanuman Abhishekam Followed By Hanumana Chalisa Parayanam, Archana, Aarati",
-        time: "6:30 PM"
+          "Hanuman Abhishekam Followed By Hanuman Chalisa Parayanam, Archana, Aarati",
+
+        time:
+          "6:30 PM"
       }
     ],
 
     5: [
       {
-        title: "Saraswati Devi Abhishekam",
-        time: "6:30 PM"
+        title:
+          "Saraswati Devi Abhishekam",
+
+        time:
+          "6:30 PM"
       }
     ]
 
@@ -112,15 +125,21 @@ const templeContent = {
 
     1: [
       {
-        title: "Lakshmi Devi Abhishekam",
-        time: "6:30 PM"
+        title:
+          "Lakshmi Devi Abhishekam",
+
+        time:
+          "6:30 PM"
       }
     ],
 
     2: [
       {
-        title: "Durga Devi Abhishekam",
-        time: "6:30 PM"
+        title:
+          "Durga Devi Abhishekam",
+
+        time:
+          "6:30 PM"
       }
     ],
 
@@ -128,7 +147,9 @@ const templeContent = {
       {
         title:
           "Hanuman Abhishekam Followed by Tulasidas Sundarakanda Parayanam",
-        time: "10:00 AM"
+
+        time:
+          "10:00 AM"
       }
     ]
 
@@ -140,6 +161,6 @@ const templeContent = {
   // =======================================================
 
   noProgramMessage:
-    "Please check announcements for today's temple programs."
+    "No scheduled programs"
 
 };
