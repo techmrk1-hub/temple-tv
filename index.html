@@ -9,10 +9,16 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Chinmaya Saraswati Ashram - Devi Temple</title>
+  <title>
+    Chinmaya Saraswati Ashram - Devi Temple
+  </title>
 
-  <link rel="stylesheet" href="style.css">
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
 </head>
+
 
 <body>
 
@@ -22,13 +28,14 @@
   <!-- =====================================================
        HEADER
   ====================================================== -->
+
   <header class="top-header">
 
     <div class="brand-zone">
 
       <img
         src="images/logo.png"
-        alt="Temple Logo"
+        alt="Chinmaya Mission"
         class="temple-logo"
       >
 
@@ -40,11 +47,17 @@
 
         <div class="temple-meta">
 
-          <span>DEVI TEMPLE</span>
+          <span>
+            DEVI TEMPLE
+          </span>
 
-          <span class="meta-dot">•</span>
+          <span class="meta-dot">
+            •
+          </span>
 
-          <span>Orange, Connecticut</span>
+          <span>
+            Orange, Connecticut
+          </span>
 
         </div>
 
@@ -76,14 +89,16 @@
 
 
   <!-- =====================================================
-       MAIN AREA
+       MAIN CONTENT
   ====================================================== -->
+
   <main class="content-grid">
 
 
     <!-- ===================================================
-         FLYER
+         FLYER PANEL
     ==================================================== -->
+
     <section class="feature-panel">
 
       <img
@@ -100,13 +115,17 @@
     <!-- ===================================================
          RIGHT PANEL
     ==================================================== -->
+
     <aside class="info-rail">
 
 
       <!-- =================================================
            TODAY
       ================================================== -->
-      <section class="rail-section today-section schedule-card">
+
+      <section
+        class="rail-section today-section schedule-card"
+      >
 
         <div
           class="schedule-ornament"
@@ -127,9 +146,11 @@
           id="today-schedule-list"
           class="schedule-list"
         >
+
           <div class="empty-schedule">
             Loading today's programs...
           </div>
+
         </div>
 
       </section>
@@ -137,45 +158,56 @@
 
 
       <!-- =================================================
-     TOMORROW'S SCHEDULE
-================================================== -->
-<section class="rail-section tomorrow-section schedule-card">
+           TOMORROW
+      ================================================== -->
 
-  <div
-    class="schedule-ornament"
-    aria-hidden="true"
-  >
-    <span></span>
-  </div>
+      <section
+        class="rail-section tomorrow-section schedule-card"
+      >
 
-  <div class="schedule-heading tomorrow-heading">
-    TOMORROW'S SCHEDULE
-  </div>
+        <div
+          class="schedule-ornament"
+          aria-hidden="true"
+        >
+          <span></span>
+        </div>
 
-  <div class="schedule-heading-divider">
-    <span class="divider-diamond"></span>
-  </div>
+        <div
+          class="schedule-heading tomorrow-heading"
+        >
+          TOMORROW'S SCHEDULE
+        </div>
 
-  <div
-    id="tomorrow-schedule-list"
-    class="schedule-list tomorrow-schedule-list"
-  >
-    <div class="empty-schedule">
-      Loading tomorrow's programs...
-    </div>
-  </div>
+        <div class="schedule-heading-divider">
+          <span class="divider-diamond"></span>
+        </div>
 
-</section>
+        <div
+          id="tomorrow-schedule-list"
+          class="schedule-list tomorrow-schedule-list"
+        >
+
+          <div class="empty-schedule">
+            Loading tomorrow's programs...
+          </div>
+
+        </div>
+
+      </section>
+
 
 
       <!-- =================================================
            COMMUNITY
       ================================================== -->
-      <section class="rail-section community-section">
+
+      <section
+        class="rail-section community-section"
+      >
 
         <div class="community-divider"></div>
 
-        <div class="section-eyebrow community-heading">
+        <div class="community-heading">
           JOIN OUR COMMUNITY
         </div>
 
@@ -200,7 +232,10 @@
   <!-- =====================================================
        ANNOUNCEMENTS
   ====================================================== -->
-  <section class="ticker-row announcement-row">
+
+  <section
+    class="ticker-row announcement-row"
+  >
 
     <div class="ticker-label">
       ANNOUNCEMENTS
@@ -224,7 +259,10 @@
   <!-- =====================================================
        UPCOMING EVENTS
   ====================================================== -->
-  <section class="ticker-row upcoming-row">
+
+  <section
+    class="ticker-row upcoming-row"
+  >
 
     <div class="ticker-label upcoming-label">
       UPCOMING EVENTS
@@ -248,18 +286,24 @@
 
 
 <!-- =======================================================
-     BGM PLAYER
+     BGM
 ======================================================== -->
+
 <audio
   id="background-music"
-  autoplay
   preload="auto"
 ></audio>
 
 
+
+<!-- IMPORTANT:
+     announcements.js MUST load first
+-->
+
 <script src="announcements.js"></script>
+
 <script src="script.js"></script>
 
-</body>
 
+</body>
 </html>
