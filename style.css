@@ -169,10 +169,8 @@ body {
 ========================================================== */
 
 .feature-flyer {
-  position: absolute;
 
-  top: 50%;
-  left: 50%;
+  display: block;
 
   max-width: 100%;
   max-height: 100%;
@@ -182,21 +180,18 @@ body {
 
   object-fit: contain;
 
-  opacity: 0;
+  opacity: 1;
 
   transform:
-    translate(-50%, -50%)
-    scale(1.045)
-    translateX(18px);
+    scale(1);
 
   filter:
-    blur(7px)
-    brightness(1.04);
+    blur(0);
 
   transition:
-    opacity 1.35s cubic-bezier(.4,0,.2,1),
-    transform 1.75s cubic-bezier(.22,1,.36,1),
-    filter 1.35s cubic-bezier(.4,0,.2,1);
+    opacity 0.9s ease,
+    transform 1.2s ease,
+    filter 0.9s ease;
 
   will-change:
     opacity,
@@ -205,54 +200,80 @@ body {
 }
 
 
-/* Incoming flyer */
+/* Flyer entering */
+
+.feature-flyer.flyer-enter {
+
+  opacity: 0;
+
+  transform:
+    scale(1.04)
+    translateX(12px);
+
+  filter:
+    blur(5px);
+}
+
+
+/* Flyer fully visible */
 
 .feature-flyer.flyer-visible {
+
   opacity: 1;
 
   transform:
-    translate(-50%, -50%)
     scale(1)
     translateX(0);
 
   filter:
-    blur(0)
-    brightness(1);
+    blur(0);
 }
 
 
-/* Outgoing flyer */
+/* Flyer leaving */
 
 .feature-flyer.flyer-exit {
+
   opacity: 0;
 
   transform:
-    translate(-50%, -50%)
     scale(0.98)
-    translateX(-18px);
+    translateX(-12px);
 
   filter:
-    blur(5px)
-    brightness(0.98);
+    blur(4px);
 }
 
 
-/* Orientation helpers */
+/* ==========================================================
+   FLYER ORIENTATION
+========================================================== */
 
 .feature-flyer.flyer-landscape {
+
   width: 100%;
-  height: auto;
+  height: 100%;
+
+  object-fit: contain;
 }
+
 
 .feature-flyer.flyer-portrait {
+
   width: auto;
   height: 100%;
+
+  object-fit: contain;
 }
 
+
 .feature-flyer.flyer-square {
+
   width: auto;
   height: 100%;
-}
+
+  object-fit: contain;
+}}
 
 
 /* ==========================================================
