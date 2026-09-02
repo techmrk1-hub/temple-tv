@@ -1,58 +1,42 @@
 /* ==========================================================
-   CHINMAYA SARASWATI ASHRAM - DEVI TEMPLE
    TEMPLE TV DIGITAL SIGNAGE
+   Chinmaya Saraswati Ashram - Devi Temple
 ========================================================== */
 
 
-// ==========================================================
-// STATE
-// ==========================================================
+/* ==========================================================
+   GLOBAL STATE
+========================================================== */
 
 let flyers = [];
 let currentFlyerIndex = 0;
 
 let specialEvents = [];
+let upcomingEvents = [];
 
 let weeklyScheduleRows = [];
 let weeklyScheduleLoaded = false;
 
-
-// ==========================================================
-// BGM STATE
-// ==========================================================
-
 let defaultBGMPlaylist = [];
-let specialBGMTracks = [];
+let specialBGMPlaylist = [];
 
-let currentBGMMode = "NONE";
-
-let currentBGMPlaylist = [];
 let currentBGMIndex = 0;
+let currentBGMMode = "";
+let currentBGMSignature = "";
 
-let currentSpecialSignature = "";
-
-let savedDefaultIndex = 0;
-let savedDefaultTime = 0;
-
-let bgmErrorCount = 0;
+let flyerTimer = null;
 
 
-// ==========================================================
-// ELEMENTS
-// ==========================================================
+/* ==========================================================
+   ELEMENT REFERENCES
+========================================================== */
 
 const flyerElement =
-  document.getElementById("flyer");
-
-const tickerText =
-  document.getElementById("ticker-text");
-
-const upcomingEventsText =
   document.getElementById(
-    "upcoming-events-text"
+    "feature-flyer"
   );
 
-const scheduleList =
+const todayScheduleList =
   document.getElementById(
     "today-schedule-list"
   );
@@ -62,51 +46,33 @@ const tomorrowScheduleList =
     "tomorrow-schedule-list"
   );
 
-const clockElement =
-  document.getElementById("clock");
-
-const headerDateElement =
+const announcementsTicker =
   document.getElementById(
-    "header-date"
+    "announcements-track"
   );
 
-const musicElement =
+const upcomingEventsTicker =
+  document.getElementById(
+    "upcoming-events-track"
+  );
+
+const backgroundMusic =
   document.getElementById(
     "background-music"
   );
 
 
-// ==========================================================
-// CACHE BUSTER
-// ==========================================================
-
-function addCacheBuster(url) {
-
-  if (!url) {
-    return "";
-  }
-
-  const separator =
-    url.includes("?")
-      ? "&"
-      : "?";
-
-  return `${url}${separator}_=${Date.now()}`;
-}
-
-
-// ==========================================================
-// CSV PARSER
-// ==========================================================
+/* ==========================================================
+   CSV PARSER
+========================================================== */
 
 function parseCSV(text) {
 
   const rows = [];
 
   let row = [];
-  let field = "";
-  let inQuotes = false;
-
+  let value = "";
+  let insideQuotes = false;
 
   for (
     let i = 0;
@@ -115,25 +81,26 @@ function parseCSV(text) {
   ) {
 
     const char = text[i];
-    const next = text[i + 1];
 
-
-    if (char === '"') {
+    if (
+      char === '"'
+    ) {
 
       if (
-        inQuotes &&
-        next === '"'
+        insideQuotes &&
+        text[i + 1] === '"'
       ) {
 
-        field += '"';
+        value += '"';
+
         i++;
 
       }
 
       else {
 
-        inQuotes =
-          !inQuotes;
+        insideQuotes =
+          !insideQuotes;
 
       }
 
@@ -141,14 +108,14 @@ function parseCSV(text) {
 
     else if (
       char === "," &&
-      !inQuotes
+      !insideQuotes
     ) {
 
       row.push(
-        field.trim()
+        value.trim()
       );
 
-      field = "";
+      value = "";
 
     }
 
@@ -157,43 +124,43 @@ function parseCSV(text) {
         char === "\n" ||
         char === "\r"
       ) &&
-      !inQuotes
+      !insideQuotes
     ) {
 
       if (
         char === "\r" &&
-        next === "\n"
+        text[i + 1] === "\n"
       ) {
+
         i++;
+
       }
 
-
       row.push(
-        field.trim()
+        value.trim()
       );
-
-      field = "";
-
 
       if (
         row.some(
-          value =>
-            value !== ""
+          cell =>
+            cell !== ""
         )
       ) {
 
-        rows.push(row);
+        rows.push(
+          row
+        );
 
       }
 
-
       row = [];
+      value = "";
 
     }
 
     else {
 
-      field += char;
+      value += char;
 
     }
 
@@ -201,601 +168,318 @@ function parseCSV(text) {
 
 
   if (
-    field ||
+    value.length ||
     row.length
   ) {
 
     row.push(
-      field.trim()
+      value.trim()
     );
-
 
     if (
       row.some(
-        value =>
-          value !== ""
+        cell =>
+          cell !== ""
       )
     ) {
 
-      rows.push(row);
+      rows.push(
+        row
+      );
 
     }
 
   }
 
-
   return rows;
+
 }
 
 
-// ==========================================================
-// CLOCK
-// ==========================================================
+/* ==========================================================
+   FETCH CSV
+========================================================== */
+
+async function fetchCSV(
+  url
+) {
+
+  if (
+    !url
+  ) {
+
+    return [];
+
+  }
+
+  const separator =
+    url.includes("?")
+      ? "&"
+      : "?";
+
+  const freshURL =
+    url +
+    separator +
+    "t=" +
+    Date.now();
+
+  const response =
+    await fetch(
+      freshURL,
+      {
+        cache:
+          "no-store"
+      }
+    );
+
+  if (
+    !response.ok
+  ) {
+
+    throw new Error(
+      "Unable to fetch CSV"
+    );
+
+  }
+
+  const text =
+    await response.text();
+
+  return parseCSV(
+    text
+  );
+
+}
+
+
+/* ==========================================================
+   CACHE BUSTER
+========================================================== */
+
+function addCacheBuster(
+  url
+) {
+
+  if (
+    !url
+  ) {
+
+    return url;
+
+  }
+
+  const separator =
+    url.includes("?")
+      ? "&"
+      : "?";
+
+  return (
+    url +
+    separator +
+    "_tv=" +
+    Date.now()
+  );
+
+}
+
+
+/* ==========================================================
+   GOOGLE DRIVE IMAGE URL
+========================================================== */
+
+function normalizeFlyerURL(
+  url
+) {
+
+  if (
+    !url
+  ) {
+
+    return "";
+
+  }
+
+  const trimmed =
+    url.trim();
+
+  const driveMatch =
+    trimmed.match(
+      /\/d\/([^/]+)/
+    );
+
+  if (
+    driveMatch
+  ) {
+
+    return (
+      "https://drive.google.com/thumbnail?id=" +
+      driveMatch[1] +
+      "&sz=w2000"
+    );
+
+  }
+
+
+  const idMatch =
+    trimmed.match(
+      /[?&]id=([^&]+)/
+    );
+
+  if (
+    idMatch
+  ) {
+
+    return (
+      "https://drive.google.com/thumbnail?id=" +
+      idMatch[1] +
+      "&sz=w2000"
+    );
+
+  }
+
+  return trimmed;
+
+}
+
+
+/* ==========================================================
+   CLOCK
+========================================================== */
 
 function updateClock() {
 
   const now =
     new Date();
 
+  const timeElement =
+    document.getElementById(
+      "clock-time"
+    );
 
-  if (clockElement) {
+  const dateElement =
+    document.getElementById(
+      "clock-date"
+    );
 
-    clockElement.textContent =
+  if (
+    timeElement
+  ) {
+
+    timeElement.textContent =
       now.toLocaleTimeString(
-        "en-US",
+        [],
         {
-          hour: "numeric",
-          minute: "2-digit",
-          hour12: true
+          hour:
+            "numeric",
+
+          minute:
+            "2-digit"
         }
       );
 
   }
-
-
-  if (headerDateElement) {
-
-    headerDateElement.textContent =
-      now.toLocaleDateString(
-        "en-US",
-        {
-          weekday: "short",
-          month: "short",
-          day: "numeric"
-        }
-      ).toUpperCase();
-
-  }
-
-}
-
-
-updateClock();
-
-
-setInterval(
-  updateClock,
-  1000
-);
-
-
-// ==========================================================
-// DATE HELPERS
-// ==========================================================
-
-function dateKey(date) {
-
-  const year =
-    date.getFullYear();
-
-
-  const month =
-    String(
-      date.getMonth() + 1
-    ).padStart(
-      2,
-      "0"
-    );
-
-
-  const day =
-    String(
-      date.getDate()
-    ).padStart(
-      2,
-      "0"
-    );
-
-
-  return `${year}-${month}-${day}`;
-}
-
-
-function normalizeDate(value) {
-
-  if (!value) {
-    return "";
-  }
-
-
-  const text =
-    String(value)
-      .trim();
-
-
-  const usDate =
-    text.match(
-      /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
-    );
-
-
-  if (usDate) {
-
-    return (
-      usDate[3] +
-      "-" +
-      usDate[1].padStart(2, "0") +
-      "-" +
-      usDate[2].padStart(2, "0")
-    );
-
-  }
-
-
-  const isoDate =
-    text.match(
-      /^(\d{4})-(\d{1,2})-(\d{1,2})$/
-    );
-
-
-  if (isoDate) {
-
-    return (
-      isoDate[1] +
-      "-" +
-      isoDate[2].padStart(2, "0") +
-      "-" +
-      isoDate[3].padStart(2, "0")
-    );
-
-  }
-
-
-  const parsed =
-    new Date(text);
 
 
   if (
-    !isNaN(
-      parsed.getTime()
-    )
+    dateElement
   ) {
 
-    return dateKey(parsed);
+    dateElement.textContent =
+      now.toLocaleDateString(
+        [],
+        {
+          weekday:
+            "long",
+
+          month:
+            "long",
+
+          day:
+            "numeric",
+
+          year:
+            "numeric"
+        }
+      );
 
   }
 
-
-  return "";
 }
 
 
-// ==========================================================
-// SATURDAY NUMBER
-// ==========================================================
+/* ==========================================================
+   FLYER ORIENTATION
+========================================================== */
 
-function getSaturdayNumber(date) {
+function setFlyerOrientation() {
 
-  return Math.ceil(
-    date.getDate() / 7
-  );
-}
+  if (
+    !flyerElement
+  ) {
 
-
-// ==========================================================
-// WEEKDAY
-// ==========================================================
-
-function getWeekdayName(date) {
-
-  return [
-    "SUNDAY",
-    "MONDAY",
-    "TUESDAY",
-    "WEDNESDAY",
-    "THURSDAY",
-    "FRIDAY",
-    "SATURDAY"
-  ][date.getDay()];
-}
-
-
-// ==========================================================
-// GOOGLE DRIVE
-// ==========================================================
-
-function getDriveFileId(url) {
-
-  if (!url) {
-    return "";
-  }
-
-
-  let match =
-    url.match(
-      /\/file\/d\/([^/]+)/
-    );
-
-
-  if (match) {
-    return match[1];
-  }
-
-
-  match =
-    url.match(
-      /[?&]id=([^&]+)/
-    );
-
-
-  if (match) {
-    return match[1];
-  }
-
-
-  return "";
-}
-
-
-function convertDriveImageURL(url) {
-
-  const fileId =
-    getDriveFileId(url);
-
-
-  if (!fileId) {
-    return url;
-  }
-
-
-  return (
-    "https://drive.google.com/thumbnail"
-    +
-    `?id=${fileId}&sz=w3000`
-  );
-}
-
-
-function convertDriveAudioURL(url) {
-
-  const fileId =
-    getDriveFileId(url);
-
-
-  if (!fileId) {
-    return url;
-  }
-
-
-  return (
-    "https://drive.google.com/uc"
-    +
-    `?export=download&id=${fileId}`
-  );
-}
-
-
-// ==========================================================
-// IMAGE TEST
-// ==========================================================
-
-function testImage(url) {
-
-  return new Promise(
-    resolve => {
-
-      const image =
-        new Image();
-
-
-      image.onload =
-        () => resolve(true);
-
-
-      image.onerror =
-        () => resolve(false);
-
-
-      image.src =
-        addCacheBuster(url);
-
-    }
-  );
-}
-
-
-// ==========================================================
-// ANNOUNCEMENTS
-// ==========================================================
-
-function loadLocalAnnouncements() {
-
-  if (!tickerText) {
     return;
+
   }
 
+  flyerElement.classList.remove(
+    "flyer-landscape",
+    "flyer-portrait",
+    "flyer-square"
+  );
 
-  tickerText.textContent =
-    templeContent
-      .announcements
-      .join(
-        templeContent.separator
-      );
-}
+  const width =
+    flyerElement.naturalWidth;
 
+  const height =
+    flyerElement.naturalHeight;
 
-async function loadAnnouncements() {
+  if (
+    !width ||
+    !height
+  ) {
 
-  try {
+    return;
 
-    const response =
-      await fetch(
-        addCacheBuster(
-          templeContent
-            .announcementSheetURL
-        ),
-        {
-          cache: "no-store"
-        }
-      );
+  }
 
+  const ratio =
+    width /
+    height;
 
-    if (!response.ok) {
-      throw new Error(
-        "Announcement error"
-      );
-    }
+  if (
+    ratio > 1.15
+  ) {
 
-
-    const rows =
-      parseCSV(
-        await response.text()
-      );
-
-
-    const messages = [];
-
-
-    rows.forEach(
-      (
-        row,
-        index
-      ) => {
-
-        row.forEach(
-          cell => {
-
-            const value =
-              cell.trim();
-
-
-            if (!value) {
-              return;
-            }
-
-
-            if (
-              index === 0 &&
-              value
-                .toLowerCase()
-                .includes(
-                  "announcement"
-                )
-            ) {
-              return;
-            }
-
-
-            messages.push(value);
-
-          }
-        );
-
-      }
+    flyerElement.classList.add(
+      "flyer-landscape"
     );
 
-
-    tickerText.textContent =
-      messages.length
-        ?
-        messages.join(
-          templeContent.separator
-        )
-        :
-        templeContent
-          .announcements
-          .join(
-            templeContent.separator
-          );
-
   }
 
-  catch (error) {
+  else if (
+    ratio < 0.85
+  ) {
 
-    console.error(error);
-
-    loadLocalAnnouncements();
-
-  }
-
-}
-
-
-// ==========================================================
-// FLYERS
-// ==========================================================
-
-async function loadRemoteFlyers() {
-
-  try {
-
-    const response =
-      await fetch(
-        addCacheBuster(
-          templeContent
-            .flyerSheetURL
-        ),
-        {
-          cache: "no-store"
-        }
-      );
-
-
-    const rows =
-      parseCSV(
-        await response.text()
-      );
-
-
-    const headers =
-      rows[0].map(
-        value =>
-          value
-            .trim()
-            .toLowerCase()
-      );
-
-
-    const imageIndex =
-      headers.indexOf(
-        "imageurl"
-      );
-
-
-    const activeIndex =
-      headers.indexOf(
-        "active"
-      );
-
-
-    const orderIndex =
-      headers.indexOf(
-        "displayorder"
-      );
-
-
-    const remote = [];
-
-
-    for (
-      let i = 1;
-      i < rows.length;
-      i++
-    ) {
-
-      const row = rows[i];
-
-
-      const active =
-        (
-          row[activeIndex] ||
-          ""
-        )
-        .trim()
-        .toUpperCase();
-
-
-      if (
-        active !== "YES"
-      ) {
-        continue;
-      }
-
-
-      const original =
-        (
-          row[imageIndex] ||
-          ""
-        ).trim();
-
-
-      if (!original) {
-        continue;
-      }
-
-
-      const url =
-        convertDriveImageURL(
-          original
-        );
-
-
-      if (
-        await testImage(url)
-      ) {
-
-        remote.push(
-          {
-
-            url,
-
-            order:
-              parseInt(
-                row[orderIndex],
-                10
-              ) ||
-              999
-
-          }
-        );
-
-      }
-
-    }
-
-
-    remote.sort(
-      (
-        a,
-        b
-      ) =>
-        a.order -
-        b.order
+    flyerElement.classList.add(
+      "flyer-portrait"
     );
 
-
-    flyers =
-      remote.length
-        ?
-        remote.map(
-          item => item.url
-        )
-        :
-        templeContent.localFlyers;
-
-
-    currentFlyerIndex = 0;
-
-
-    showFlyer();
-
   }
 
-  catch (error) {
+  else {
 
-    console.error(error);
-
-
-    flyers =
-      templeContent.localFlyers;
-
-
-    showFlyer();
+    flyerElement.classList.add(
+      "flyer-square"
+    );
 
   }
 
 }
 
+
+/* ==========================================================
+   MORPH FLYER DISPLAY
+========================================================== */
 
 function showFlyer() {
 
@@ -803,284 +487,1223 @@ function showFlyer() {
     !flyerElement ||
     !flyers.length
   ) {
+
     return;
+
   }
+
+  const flyerURL =
+    flyers[
+      currentFlyerIndex
+    ];
 
 
   flyerElement.classList.remove(
-    "flyer-landscape",
-    "flyer-portrait",
-    "flyer-square",
-    "flyer-visible"
+    "flyer-visible",
+    "flyer-exit"
   );
 
 
   flyerElement.onload =
-    () => {
+    function () {
 
-      const ratio =
-        flyerElement.naturalWidth /
-        flyerElement.naturalHeight;
+      setFlyerOrientation();
 
 
-      if (
-        ratio > 1.15
-      ) {
+      requestAnimationFrame(
+        () => {
 
-        flyerElement
-          .classList
-          .add(
-            "flyer-landscape"
+          requestAnimationFrame(
+            () => {
+
+              flyerElement
+                .classList
+                .add(
+                  "flyer-visible"
+                );
+
+            }
           );
 
-      }
+        }
+      );
 
-      else if (
-        ratio < 0.85
-      ) {
-
-        flyerElement
-          .classList
-          .add(
-            "flyer-portrait"
-          );
-
-      }
-
-      else {
-
-        flyerElement
-          .classList
-          .add(
-            "flyer-square"
-          );
-
-      }
+    };
 
 
-      flyerElement
-        .classList
-        .add(
-          "flyer-visible"
-        );
+  flyerElement.onerror =
+    function () {
+
+      console.warn(
+        "Flyer failed:",
+        flyerURL
+      );
+
+      rotateFlyer(
+        true
+      );
 
     };
 
 
   flyerElement.src =
     addCacheBuster(
-      flyers[
-        currentFlyerIndex
-      ]
+      flyerURL
     );
 
 }
 
 
-function rotateFlyer() {
+/* ==========================================================
+   FLYER ROTATION
+========================================================== */
+
+function rotateFlyer(
+  immediate = false
+) {
 
   if (
     flyers.length <= 1
   ) {
+
     return;
+
+  }
+
+  const advance =
+    () => {
+
+      currentFlyerIndex =
+        (
+          currentFlyerIndex + 1
+        ) %
+        flyers.length;
+
+      flyerElement
+        .classList
+        .remove(
+          "flyer-exit"
+        );
+
+      showFlyer();
+
+    };
+
+
+  if (
+    immediate
+  ) {
+
+    advance();
+
+    return;
+
   }
 
 
-  currentFlyerIndex =
-    (
-      currentFlyerIndex + 1
-    )
-    %
-    flyers.length;
+  flyerElement
+    .classList
+    .remove(
+      "flyer-visible"
+    );
 
 
-  showFlyer();
+  flyerElement
+    .classList
+    .add(
+      "flyer-exit"
+    );
+
+
+  setTimeout(
+    advance,
+    850
+  );
 
 }
 
 
-// ==========================================================
-// WEEKLY SCHEDULE
-// ==========================================================
+/* ==========================================================
+   START FLYER TIMER
+========================================================== */
+
+function startFlyerRotation() {
+
+  if (
+    flyerTimer
+  ) {
+
+    clearInterval(
+      flyerTimer
+    );
+
+  }
+
+
+  const seconds =
+    Number(
+      templeContent.flyerDuration
+    ) ||
+    15;
+
+
+  flyerTimer =
+    setInterval(
+      rotateFlyer,
+      seconds *
+      1000
+    );
+
+}
+
+
+/* ==========================================================
+   LOAD FLYERS
+========================================================== */
+
+async function loadFlyers() {
+
+  let remoteFlyers =
+    [];
+
+  try {
+
+    const rows =
+      await fetchCSV(
+        templeContent.flyerSheetURL
+      );
+
+    if (
+      rows.length > 1
+    ) {
+
+      const headers =
+        rows[0].map(
+          header =>
+            header.trim()
+        );
+
+      const imageIndex =
+        headers.indexOf(
+          "ImageURL"
+        );
+
+      const activeIndex =
+        headers.indexOf(
+          "Active"
+        );
+
+      const orderIndex =
+        headers.indexOf(
+          "DisplayOrder"
+        );
+
+
+      remoteFlyers =
+        rows
+          .slice(1)
+          .map(
+            row => ({
+
+              url:
+                normalizeFlyerURL(
+                  row[
+                    imageIndex
+                  ] ||
+                  ""
+                ),
+
+              active:
+                (
+                  row[
+                    activeIndex
+                  ] ||
+                  ""
+                )
+                  .trim()
+                  .toUpperCase(),
+
+              order:
+                Number(
+                  row[
+                    orderIndex
+                  ]
+                ) ||
+                999
+
+            })
+          )
+          .filter(
+            item =>
+              item.url &&
+              item.active ===
+                "YES"
+          )
+          .sort(
+            (
+              a,
+              b
+            ) =>
+              a.order -
+              b.order
+          )
+          .map(
+            item =>
+              item.url
+          );
+
+    }
+
+  }
+
+  catch (
+    error
+  ) {
+
+    console.warn(
+      "Remote flyers failed:",
+      error
+    );
+
+  }
+
+
+  if (
+    remoteFlyers.length
+  ) {
+
+    flyers =
+      remoteFlyers;
+
+  }
+
+  else {
+
+    flyers =
+      (
+        templeContent.localFlyers ||
+        []
+      ).slice();
+
+  }
+
+
+  if (
+    currentFlyerIndex >=
+    flyers.length
+  ) {
+
+    currentFlyerIndex =
+      0;
+
+  }
+
+
+  if (
+    flyers.length
+  ) {
+
+    showFlyer();
+
+    startFlyerRotation();
+
+  }
+
+}
+
+
+/* ==========================================================
+   ANNOUNCEMENTS
+========================================================== */
+
+async function loadAnnouncements() {
+
+  let announcements =
+    [];
+
+  try {
+
+    const rows =
+      await fetchCSV(
+        templeContent
+          .announcementSheetURL
+      );
+
+    if (
+      rows.length > 1
+    ) {
+
+      const headers =
+        rows[0].map(
+          h =>
+            h.trim()
+        );
+
+      let messageIndex =
+        headers.indexOf(
+          "Announcement"
+        );
+
+      if (
+        messageIndex === -1
+      ) {
+
+        messageIndex =
+          headers.indexOf(
+            "Message"
+          );
+
+      }
+
+      const activeIndex =
+        headers.indexOf(
+          "Active"
+        );
+
+      const orderIndex =
+        headers.indexOf(
+          "DisplayOrder"
+        );
+
+
+      announcements =
+        rows
+          .slice(1)
+          .map(
+            row => ({
+
+              message:
+                (
+                  row[
+                    messageIndex
+                  ] ||
+                  ""
+                ).trim(),
+
+              active:
+                (
+                  row[
+                    activeIndex
+                  ] ||
+                  ""
+                )
+                  .trim()
+                  .toUpperCase(),
+
+              order:
+                Number(
+                  row[
+                    orderIndex
+                  ]
+                ) ||
+                999
+
+            })
+          )
+          .filter(
+            item =>
+              item.message &&
+              (
+                activeIndex === -1 ||
+                item.active === "YES"
+              )
+          )
+          .sort(
+            (
+              a,
+              b
+            ) =>
+              a.order -
+              b.order
+          )
+          .map(
+            item =>
+              item.message
+          );
+
+    }
+
+  }
+
+  catch (
+    error
+  ) {
+
+    console.warn(
+      "Announcements failed:",
+      error
+    );
+
+  }
+
+
+  if (
+    !announcements.length
+  ) {
+
+    announcements =
+      templeContent
+        .announcements ||
+      [];
+
+  }
+
+
+  if (
+    announcementsTicker
+  ) {
+
+    announcementsTicker
+      .textContent =
+        announcements.join(
+          templeContent.separator ||
+          "     •     "
+        );
+
+  }
+
+}
+
+
+/* ==========================================================
+   DATE HELPERS
+========================================================== */
+
+function normalizeDate(
+  value
+) {
+
+  if (
+    !value
+  ) {
+
+    return null;
+
+  }
+
+  const parsed =
+    new Date(
+      value
+    );
+
+  if (
+    Number.isNaN(
+      parsed.getTime()
+    )
+  ) {
+
+    return null;
+
+  }
+
+  return new Date(
+    parsed.getFullYear(),
+    parsed.getMonth(),
+    parsed.getDate()
+  );
+
+}
+
+
+function sameDate(
+  a,
+  b
+) {
+
+  return (
+    a &&
+    b &&
+    a.getFullYear() ===
+      b.getFullYear() &&
+    a.getMonth() ===
+      b.getMonth() &&
+    a.getDate() ===
+      b.getDate()
+  );
+
+}
+
+
+function getTomorrow() {
+
+  const tomorrow =
+    new Date();
+
+  tomorrow.setDate(
+    tomorrow.getDate() +
+    1
+  );
+
+  return tomorrow;
+
+}
+
+
+function weekdayName(
+  date
+) {
+
+  return date
+    .toLocaleDateString(
+      "en-US",
+      {
+        weekday:
+          "long"
+      }
+    )
+    .toUpperCase();
+
+}
+
+
+function getSaturdayNumber(
+  date
+) {
+
+  const day =
+    date.getDate();
+
+  return Math.ceil(
+    day /
+    7
+  );
+
+}
+
+
+/* ==========================================================
+   TIME HELPERS
+========================================================== */
+
+function parseTimeToMinutes(
+  value
+) {
+
+  if (
+    !value
+  ) {
+
+    return null;
+
+  }
+
+  const text =
+    value
+      .trim()
+      .toUpperCase();
+
+
+  /* 12-hour */
+
+  const twelve =
+    text.match(
+      /^(\d{1,2}):(\d{2})\s*(AM|PM)$/
+    );
+
+  if (
+    twelve
+  ) {
+
+    let hour =
+      Number(
+        twelve[1]
+      );
+
+    const minute =
+      Number(
+        twelve[2]
+      );
+
+    const period =
+      twelve[3];
+
+    if (
+      period === "AM" &&
+      hour === 12
+    ) {
+
+      hour =
+        0;
+
+    }
+
+    if (
+      period === "PM" &&
+      hour !== 12
+    ) {
+
+      hour +=
+        12;
+
+    }
+
+    return (
+      hour *
+      60 +
+      minute
+    );
+
+  }
+
+
+  /* 24-hour */
+
+  const twentyFour =
+    text.match(
+      /^(\d{1,2}):(\d{2})$/
+    );
+
+  if (
+    twentyFour
+  ) {
+
+    return (
+      Number(
+        twentyFour[1]
+      ) *
+      60 +
+      Number(
+        twentyFour[2]
+      )
+    );
+
+  }
+
+  return null;
+
+}
+
+
+/* ==========================================================
+   WEEKLY SCHEDULE
+========================================================== */
 
 async function loadWeeklySchedule() {
 
   try {
 
-    const response =
-      await fetch(
-        addCacheBuster(
-          templeContent
-            .weeklyScheduleSheetURL
-        ),
-        {
-          cache: "no-store"
-        }
-      );
-
-
     const rows =
-      parseCSV(
-        await response.text()
+      await fetchCSV(
+        templeContent
+          .weeklyScheduleSheetURL
       );
 
+    if (
+      rows.length <= 1
+    ) {
+
+      weeklyScheduleLoaded =
+        false;
+
+      return;
+
+    }
 
     const headers =
       rows[0].map(
-        value =>
-          value
-            .trim()
-            .toLowerCase()
+        h =>
+          h.trim()
       );
 
-
     const weekdayIndex =
-      headers.indexOf("weekday");
-
-    const weekNumberIndex =
       headers.indexOf(
-        "weeknumber"
+        "Weekday"
+      );
+
+    const weekIndex =
+      headers.indexOf(
+        "WeekNumber"
       );
 
     const programIndex =
-      headers.indexOf("program");
+      headers.indexOf(
+        "Program"
+      );
 
     const timeIndex =
-      headers.indexOf("time");
+      headers.indexOf(
+        "Time"
+      );
 
     const endTimeIndex =
-      headers.indexOf("endtime");
+      headers.indexOf(
+        "EndTime"
+      );
 
     const activeIndex =
-      headers.indexOf("active");
+      headers.indexOf(
+        "Active"
+      );
 
     const startDateIndex =
       headers.indexOf(
-        "startdate"
+        "StartDate"
       );
 
     const endDateIndex =
       headers.indexOf(
-        "enddate"
+        "EndDate"
       );
-
-
-    const loaded = [];
-
-
-    for (
-      let i = 1;
-      i < rows.length;
-      i++
-    ) {
-
-      const row = rows[i];
-
-
-      const active =
-        (
-          row[activeIndex] ||
-          "YES"
-        )
-        .trim()
-        .toUpperCase();
-
-
-      if (
-        active !== "YES"
-      ) {
-        continue;
-      }
-
-
-      const weekday =
-        (
-          row[weekdayIndex] ||
-          ""
-        )
-        .trim()
-        .toUpperCase();
-
-
-      const program =
-        (
-          row[programIndex] ||
-          ""
-        ).trim();
-
-
-      if (
-        !weekday ||
-        !program
-      ) {
-        continue;
-      }
-
-
-      loaded.push(
-        {
-
-          weekday,
-
-          weekNumber:
-            (
-              row[weekNumberIndex] ||
-              "ALL"
-            )
-            .trim()
-            .toUpperCase(),
-
-          program,
-
-          time:
-            (
-              row[timeIndex] ||
-              ""
-            ).trim(),
-
-          endTime:
-            (
-              row[endTimeIndex] ||
-              ""
-            ).trim(),
-
-          startDate:
-            normalizeDate(
-              row[startDateIndex]
-            ),
-
-          endDate:
-            normalizeDate(
-              row[endDateIndex]
-            ),
-
-          rowOrder:
-            i
-
-        }
-      );
-
-    }
 
 
     weeklyScheduleRows =
-      loaded;
+      rows
+        .slice(1)
+        .map(
+          row => ({
 
+            weekday:
+              (
+                row[
+                  weekdayIndex
+                ] ||
+                ""
+              )
+                .trim()
+                .toUpperCase(),
+
+            weekNumber:
+              Number(
+                row[
+                  weekIndex
+                ]
+              ) ||
+              0,
+
+            program:
+              (
+                row[
+                  programIndex
+                ] ||
+                ""
+              ).trim(),
+
+            time:
+              (
+                row[
+                  timeIndex
+                ] ||
+                ""
+              ).trim(),
+
+            endTime:
+              endTimeIndex >= 0
+                ?
+                  (
+                    row[
+                      endTimeIndex
+                    ] ||
+                    ""
+                  ).trim()
+                :
+                  "",
+
+            active:
+              (
+                row[
+                  activeIndex
+                ] ||
+                ""
+              )
+                .trim()
+                .toUpperCase(),
+
+            startDate:
+              startDateIndex >= 0
+                ?
+                  normalizeDate(
+                    row[
+                      startDateIndex
+                    ]
+                  )
+                :
+                  null,
+
+            endDate:
+              endDateIndex >= 0
+                ?
+                  normalizeDate(
+                    row[
+                      endDateIndex
+                    ]
+                  )
+                :
+                  null
+
+          })
+        )
+        .filter(
+          row =>
+            row.program &&
+            row.active === "YES"
+        );
 
     weeklyScheduleLoaded =
       true;
 
+  }
 
-    renderTodaySchedule();
+  catch (
+    error
+  ) {
 
-    renderTomorrowSchedule();
+    console.warn(
+      "Weekly schedule failed:",
+      error
+    );
+
+    weeklyScheduleLoaded =
+      false;
 
   }
 
-  catch (error) {
+}
 
-    console.error(
-      "Weekly Schedule:",
+
+/* ==========================================================
+   ACTIVE WEEKLY ROWS FOR DATE
+========================================================== */
+
+function getWeeklyScheduleForDate(
+  date
+) {
+
+  if (
+    !weeklyScheduleLoaded
+  ) {
+
+    return [];
+
+  }
+
+  const weekday =
+    weekdayName(
+      date
+    );
+
+  const saturdayNumber =
+    weekday === "SATURDAY"
+      ?
+        getSaturdayNumber(
+          date
+        )
+      :
+        0;
+
+
+  const candidates =
+    weeklyScheduleRows
+      .filter(
+        row => {
+
+          if (
+            row.weekday !==
+            weekday
+          ) {
+
+            return false;
+
+          }
+
+
+          if (
+            weekday ===
+            "SATURDAY"
+          ) {
+
+            if (
+              row.weekNumber &&
+              row.weekNumber !==
+                saturdayNumber
+            ) {
+
+              return false;
+
+            }
+
+          }
+
+
+          return true;
+
+        }
+      );
+
+
+  const grouped =
+    new Map();
+
+
+  candidates.forEach(
+    row => {
+
+      const key =
+        row.program
+          .toLowerCase();
+
+      if (
+        !grouped.has(
+          key
+        )
+      ) {
+
+        grouped.set(
+          key,
+          []
+        );
+
+      }
+
+      grouped
+        .get(
+          key
+        )
+        .push(
+          row
+        );
+
+    }
+  );
+
+
+  const result =
+    [];
+
+
+  grouped.forEach(
+    rows => {
+
+      const temporary =
+        rows.find(
+          row => {
+
+            if (
+              !row.startDate &&
+              !row.endDate
+            ) {
+
+              return false;
+
+            }
+
+            const current =
+              new Date(
+                date.getFullYear(),
+                date.getMonth(),
+                date.getDate()
+              );
+
+
+            if (
+              row.startDate &&
+              current <
+              row.startDate
+            ) {
+
+              return false;
+
+            }
+
+            if (
+              row.endDate &&
+              current >
+              row.endDate
+            ) {
+
+              return false;
+
+            }
+
+            return true;
+
+          }
+        );
+
+
+      if (
+        temporary
+      ) {
+
+        result.push(
+          temporary
+        );
+
+        return;
+
+      }
+
+
+      const permanent =
+        rows.find(
+          row =>
+            !row.startDate &&
+            !row.endDate
+        );
+
+
+      if (
+        permanent
+      ) {
+
+        result.push(
+          permanent
+        );
+
+      }
+
+    }
+  );
+
+
+  result.sort(
+    (
+      a,
+      b
+    ) => {
+
+      const aMinutes =
+        parseTimeToMinutes(
+          a.time
+        ) ??
+        9999;
+
+      const bMinutes =
+        parseTimeToMinutes(
+          b.time
+        ) ??
+        9999;
+
+      return (
+        aMinutes -
+        bMinutes
+      );
+
+    }
+  );
+
+
+  return result;
+
+}
+
+
+/* ==========================================================
+   SPECIAL EVENTS
+========================================================== */
+
+async function loadSpecialEvents() {
+
+  specialEvents =
+    [];
+
+  try {
+
+    const rows =
+      await fetchCSV(
+        templeContent
+          .specialEventsSheetURL
+      );
+
+    if (
+      rows.length <= 1
+    ) {
+
+      return;
+
+    }
+
+    const headers =
+      rows[0].map(
+        h =>
+          h.trim()
+      );
+
+    const dateIndex =
+      headers.indexOf(
+        "Date"
+      );
+
+    const eventIndex =
+      headers.indexOf(
+        "Event"
+      );
+
+    const programIndex =
+      headers.indexOf(
+        "Program"
+      );
+
+    const timeIndex =
+      headers.indexOf(
+        "Time"
+      );
+
+    const activeIndex =
+      headers.indexOf(
+        "Active"
+      );
+
+
+    specialEvents =
+      rows
+        .slice(1)
+        .map(
+          row => ({
+
+            date:
+              normalizeDate(
+                row[
+                  dateIndex
+                ]
+              ),
+
+            title:
+              (
+                row[
+                  programIndex
+                ] ||
+                row[
+                  eventIndex
+                ] ||
+                ""
+              ).trim(),
+
+            time:
+              (
+                row[
+                  timeIndex
+                ] ||
+                ""
+              ).trim(),
+
+            active:
+              (
+                row[
+                  activeIndex
+                ] ||
+                ""
+              )
+                .trim()
+                .toUpperCase()
+
+          })
+        )
+        .filter(
+          item =>
+            item.date &&
+            item.title &&
+            item.active ===
+              "YES"
+        );
+
+  }
+
+  catch (
+    error
+  ) {
+
+    console.warn(
+      "Special events failed:",
       error
     );
 
@@ -1089,892 +1712,159 @@ async function loadWeeklySchedule() {
 }
 
 
-// ==========================================================
-// DATE MATCH
-// ==========================================================
+/* ==========================================================
+   SPECIAL EVENTS FOR DATE
+========================================================== */
 
-function scheduleDateMatches(
-  row,
+function getSpecialEventsForDate(
   date
 ) {
 
-  const today =
-    dateKey(date);
-
-
-  if (
-    row.startDate &&
-    today < row.startDate
-  ) {
-    return false;
-  }
-
-
-  if (
-    row.endDate &&
-    today > row.endDate
-  ) {
-    return false;
-  }
-
-
-  return true;
-}
-
-
-// ==========================================================
-// WEEKDAY MATCH
-// ==========================================================
-
-function weeklyRowMatchesDay(
-  row,
-  date
-) {
-
-  const weekday =
-    getWeekdayName(date);
-
-
-  if (
-    row.weekday !== weekday
-  ) {
-    return false;
-  }
-
-
-  if (
-    weekday !==
-    "SATURDAY"
-  ) {
-
-    return (
-      row.weekNumber === "ALL" ||
-      row.weekNumber === ""
-    );
-
-  }
-
-
-  if (
-    row.weekNumber === "ALL" ||
-    row.weekNumber === ""
-  ) {
-
-    return true;
-
-  }
-
-
-  return (
-    Number(row.weekNumber)
-    ===
-    getSaturdayNumber(date)
-  );
-}
-
-
-// ==========================================================
-// GET SHEET PROGRAMS
-// ==========================================================
-
-function getSheetProgramsForDate(
-  date
-) {
-
-  if (
-    !weeklyScheduleLoaded
-  ) {
-    return null;
-  }
-
-
-  const matching =
-    weeklyScheduleRows.filter(
-      row =>
-
-        weeklyRowMatchesDay(
-          row,
+  return specialEvents
+    .filter(
+      event =>
+        sameDate(
+          event.date,
           date
         )
+    )
+    .sort(
+      (
+        a,
+        b
+      ) => {
 
-        &&
+        const aTime =
+          parseTimeToMinutes(
+            a.time
+          ) ??
+          9999;
 
-        scheduleDateMatches(
-          row,
-          date
-        )
+        const bTime =
+          parseTimeToMinutes(
+            b.time
+          ) ??
+          9999;
+
+        return (
+          aTime -
+          bTime
+        );
+
+      }
     );
 
-
-  const groups =
-    new Map();
-
-
-  matching.forEach(
-    row => {
-
-      const key =
-        row.program
-          .toLowerCase();
-
-
-      if (
-        !groups.has(key)
-      ) {
-
-        groups.set(
-          key,
-          []
-        );
-
-      }
-
-
-      groups
-        .get(key)
-        .push(row);
-
-    }
-  );
-
-
-  const selected = [];
-
-
-  groups.forEach(
-    rows => {
-
-      const temporary =
-        rows.filter(
-          row =>
-            row.startDate ||
-            row.endDate
-        );
-
-
-      if (
-        temporary.length
-      ) {
-
-        temporary.sort(
-          (
-            a,
-            b
-          ) => {
-
-            const aStart =
-              a.startDate ||
-              "0000-00-00";
-
-            const bStart =
-              b.startDate ||
-              "0000-00-00";
-
-
-            if (
-              aStart !==
-              bStart
-            ) {
-
-              return (
-                bStart.localeCompare(
-                  aStart
-                )
-              );
-
-            }
-
-
-            return (
-              b.rowOrder -
-              a.rowOrder
-            );
-
-          }
-        );
-
-
-        selected.push(
-          temporary[0]
-        );
-
-      }
-
-      else {
-
-        selected.push(
-          rows[0]
-        );
-
-      }
-
-    }
-  );
-
-
-  selected.sort(
-    (
-      a,
-      b
-    ) =>
-      a.rowOrder -
-      b.rowOrder
-  );
-
-
-  return selected.map(
-    row => ({
-
-      title:
-        row.program,
-
-      time:
-        row.time,
-
-      endTime:
-        row.endTime
-
-    })
-  );
 }
 
 
-// ==========================================================
-// FALLBACK SCHEDULE
-// ==========================================================
+/* ==========================================================
+   MERGE SCHEDULES
+========================================================== */
 
-function getFallbackRegularPrograms(
+function getScheduleForDate(
   date
 ) {
 
-  const day =
-    date.getDay();
-
-
-  if (
-    day === 6
-  ) {
-
-    return (
-      templeContent
-        .saturdaySchedule[
-          getSaturdayNumber(date)
-        ]
-      ||
-      []
+  const weekly =
+    getWeeklyScheduleForDate(
+      date
     );
 
-  }
-
-
-  return (
-    templeContent
-      .weeklySchedule[
-        day
-      ]
-    ||
-    []
-  );
-}
-
-
-function getRegularPrograms(date) {
-
-  const sheet =
-    getSheetProgramsForDate(
+  const special =
+    getSpecialEventsForDate(
       date
     );
 
 
-  if (
-    sheet !== null
-  ) {
+  const output =
+    weekly.map(
+      row => ({
+        title:
+          row.program,
 
-    return sheet;
+        time:
+          row.time,
 
-  }
-
-
-  return getFallbackRegularPrograms(
-    date
-  );
-}
-
-
-// ==========================================================
-// SPECIAL EVENTS
-// ==========================================================
-
-async function loadSpecialEvents() {
-
-  try {
-
-    const response =
-      await fetch(
-        addCacheBuster(
-          templeContent
-            .specialEventsSheetURL
-        ),
-        {
-          cache: "no-store"
-        }
-      );
+        endTime:
+          row.endTime
+      })
+    );
 
 
-    const rows =
-      parseCSV(
-        await response.text()
-      );
+  special.forEach(
+    event => {
 
-
-    const headers =
-      rows[0].map(
-        value =>
-          value
-            .trim()
-            .toLowerCase()
-      );
-
-
-    const dateIndex =
-      headers.indexOf("date");
-
-    const eventIndex =
-      headers.indexOf("event");
-
-    const programIndex =
-      headers.indexOf("program");
-
-    const timeIndex =
-      headers.indexOf("time");
-
-    const activeIndex =
-      headers.indexOf("active");
-
-
-    specialEvents = [];
-
-
-    for (
-      let i = 1;
-      i < rows.length;
-      i++
-    ) {
-
-      const row = rows[i];
-
-
-      const active =
-        (
-          row[activeIndex] ||
-          "YES"
-        )
-        .trim()
-        .toUpperCase();
-
-
-      if (
-        active !== "YES"
-      ) {
-        continue;
-      }
-
-
-      const date =
-        normalizeDate(
-          row[dateIndex]
+      const duplicate =
+        output.some(
+          item =>
+            item.title
+              .trim()
+              .toLowerCase() ===
+            event.title
+              .trim()
+              .toLowerCase()
         );
 
+      if (
+        !duplicate
+      ) {
 
-      if (!date) {
-        continue;
-      }
-
-
-      specialEvents.push(
-        {
-
-          date,
-
-          event:
-            (
-              row[eventIndex] ||
-              ""
-            ).trim(),
-
-          program:
-            (
-              row[programIndex] ||
-              ""
-            ).trim(),
+        output.push({
+          title:
+            event.title,
 
           time:
-            (
-              row[timeIndex] ||
-              ""
-            ).trim(),
+            event.time,
 
-          endTime: ""
+          endTime:
+            ""
+        });
 
-        }
+      }
+
+    }
+  );
+
+
+  output.sort(
+    (
+      a,
+      b
+    ) => {
+
+      const aTime =
+        parseTimeToMinutes(
+          a.time
+        ) ??
+        9999;
+
+      const bTime =
+        parseTimeToMinutes(
+          b.time
+        ) ??
+        9999;
+
+      return (
+        aTime -
+        bTime
       );
 
     }
+  );
 
 
-    renderTodaySchedule();
-
-    renderTomorrowSchedule();
-
-  }
-
-  catch (error) {
-
-    console.error(error);
-
-  }
+  return output;
 
 }
 
 
-// ==========================================================
-// TIME TO MINUTES
-// ==========================================================
+/* ==========================================================
+   ESCAPE HTML
+========================================================== */
 
-function parseTimeToMinutes(value) {
-
-  if (!value) {
-    return null;
-  }
-
-
-  const text =
-    String(value)
-      .trim()
-      .toUpperCase();
-
-
-  let match =
-    text.match(
-      /^(\d{1,2}):(\d{2})\s*(AM|PM)$/
-    );
-
-
-  if (match) {
-
-    let hour =
-      Number(match[1]);
-
-
-    const minute =
-      Number(match[2]);
-
-
-    if (
-      match[3] === "PM" &&
-      hour !== 12
-    ) {
-      hour += 12;
-    }
-
-
-    if (
-      match[3] === "AM" &&
-      hour === 12
-    ) {
-      hour = 0;
-    }
-
-
-    return (
-      hour * 60 +
-      minute
-    );
-
-  }
-
-
-  return null;
-}
-
-
-// ==========================================================
-// PROGRAM STATUS
-// ==========================================================
-
-function getProgramTimeStatus(
-  start,
-  end
+function escapeHTML(
+  value
 ) {
-
-  const startMinutes =
-    parseTimeToMinutes(start);
-
-
-  if (
-    startMinutes === null
-  ) {
-
-    return {
-      current: false,
-      completed: false
-    };
-
-  }
-
-
-  let endMinutes =
-    parseTimeToMinutes(end);
-
-
-  if (
-    endMinutes === null
-  ) {
-
-    endMinutes =
-      startMinutes + 90;
-
-  }
-
-
-  const now =
-    new Date();
-
-
-  const nowMinutes =
-    now.getHours() *
-    60
-    +
-    now.getMinutes();
-
-
-  return {
-
-    current:
-      nowMinutes >= startMinutes &&
-      nowMinutes < endMinutes,
-
-    completed:
-      nowMinutes >= endMinutes
-
-  };
-}
-
-
-// ==========================================================
-// TODAY
-// ==========================================================
-
-function renderTodaySchedule() {
-
-  if (!scheduleList) {
-    return;
-  }
-
-
-  const today =
-    new Date();
-
-
-  const programs = [];
-
-
-  getRegularPrograms(
-    today
-  )
-  .forEach(
-    program =>
-      programs.push(
-        {
-          ...program,
-          note: ""
-        }
-      )
-  );
-
-
-  const key =
-    dateKey(today);
-
-
-  specialEvents
-    .filter(
-      event =>
-        event.date === key
-    )
-    .forEach(
-      event => {
-
-        const title =
-          event.program ||
-          event.event ||
-          "Special Temple Program";
-
-
-        const duplicate =
-          programs.some(
-            program =>
-              program.title
-                .toLowerCase()
-              ===
-              title.toLowerCase()
-          );
-
-
-        if (!duplicate) {
-
-          programs.push(
-            {
-
-              title,
-
-              time:
-                event.time,
-
-              endTime:
-                event.endTime,
-
-              note:
-                event.event !== title
-                  ?
-                  event.event
-                  :
-                  ""
-
-            }
-          );
-
-        }
-
-      }
-    );
-
-
-  if (
-    !programs.length
-  ) {
-
-    scheduleList.innerHTML =
-      `
-        <div class="empty-schedule">
-          No scheduled programs
-        </div>
-      `;
-
-    return;
-
-  }
-
-
-  scheduleList.innerHTML =
-    programs.map(
-      program => {
-
-        const status =
-          getProgramTimeStatus(
-            program.time,
-            program.endTime
-          );
-
-
-        let className =
-          "schedule-item";
-
-
-        if (
-          status.completed
-        ) {
-
-          className +=
-            " is-completed";
-
-        }
-
-        else if (
-          status.current
-        ) {
-
-          className +=
-            " is-current";
-
-        }
-
-
-        return `
-          <article class="${className}">
-
-            <div class="schedule-time">
-              ${escapeHTML(program.time)}
-            </div>
-
-            <div class="schedule-separator"></div>
-
-            <div class="schedule-content">
-
-              <div class="schedule-name">
-                ${escapeHTML(program.title)}
-              </div>
-
-              ${
-                status.completed
-                  ?
-                  `
-                    <span class="schedule-status">
-                      (Completed)
-                    </span>
-                  `
-                  :
-                  ""
-              }
-
-            </div>
-
-          </article>
-        `;
-
-      }
-    ).join("");
-
-}
-
-
-// ==========================================================
-// TOMORROW
-// ==========================================================
-
-function renderTomorrowSchedule() {
-
-  if (!tomorrowScheduleList) {
-    return;
-  }
-
-
-  const tomorrow =
-    new Date();
-
-
-  tomorrow.setDate(
-    tomorrow.getDate() + 1
-  );
-
-
-  tomorrow.setHours(
-    12,
-    0,
-    0,
-    0
-  );
-
-
-  const programs = [];
-
-
-  getRegularPrograms(
-    tomorrow
-  )
-  .forEach(
-    program =>
-      programs.push(
-        program
-      )
-  );
-
-
-  const tomorrowKey =
-    dateKey(tomorrow);
-
-
-  specialEvents
-    .filter(
-      event =>
-        event.date ===
-        tomorrowKey
-    )
-    .forEach(
-      event => {
-
-        const title =
-          event.program ||
-          event.event ||
-          "Special Temple Program";
-
-
-        const duplicate =
-          programs.some(
-            program =>
-              program.title
-                .toLowerCase()
-              ===
-              title.toLowerCase()
-          );
-
-
-        if (!duplicate) {
-
-          programs.push(
-            {
-
-              title,
-
-              time:
-                event.time,
-
-              endTime:
-                event.endTime
-
-            }
-          );
-
-        }
-
-      }
-    );
-
-
-  if (
-    !programs.length
-  ) {
-
-    tomorrowScheduleList.innerHTML =
-      `
-        <div class="tomorrow-empty">
-          No scheduled programs
-        </div>
-      `;
-
-    return;
-
-  }
-
-
-  tomorrowScheduleList.innerHTML =
-    programs.map(
-      program =>
-        `
-          <div class="tomorrow-schedule-item">
-
-            <div class="tomorrow-time">
-              ${escapeHTML(program.time)}
-            </div>
-
-            <div class="tomorrow-separator"></div>
-
-            <div class="tomorrow-name">
-              ${escapeHTML(program.title)}
-            </div>
-
-          </div>
-        `
-    ).join("");
-
-}
-
-
-// ==========================================================
-// ESCAPE HTML
-// ==========================================================
-
-function escapeHTML(value) {
 
   return String(
     value || ""
@@ -1999,81 +1889,334 @@ function escapeHTML(value) {
       "'",
       "&#039;"
     );
+
 }
 
 
-// ==========================================================
-// UPCOMING EVENTS
-// ==========================================================
+/* ==========================================================
+   TODAY STATUS
+========================================================== */
 
-function showUpcomingFallback() {
+function getProgramStatus(
+  program,
+  date
+) {
 
-  if (!upcomingEventsText) {
-    return;
+  const now =
+    new Date();
+
+  if (
+    !sameDate(
+      now,
+      date
+    )
+  ) {
+
+    return "";
+
   }
 
 
-  upcomingEventsText.textContent =
-    templeContent
-      .upcomingEventsFallback
-      .join(
-        templeContent.separator
-      );
+  const start =
+    parseTimeToMinutes(
+      program.time
+    );
+
+  if (
+    start === null
+  ) {
+
+    return "";
+
+  }
+
+
+  let end =
+    parseTimeToMinutes(
+      program.endTime
+    );
+
+
+  if (
+    end === null
+  ) {
+
+    end =
+      start +
+      90;
+
+  }
+
+
+  const current =
+    now.getHours() *
+    60 +
+    now.getMinutes();
+
+
+  if (
+    current >
+    end
+  ) {
+
+    return "Completed";
+
+  }
+
+
+  if (
+    current >=
+    start &&
+    current <=
+    end
+  ) {
+
+    return "In Progress";
+
+  }
+
+  return "";
+
 }
 
 
+/* ==========================================================
+   RENDER TODAY
+========================================================== */
+
+function renderTodaySchedule() {
+
+  if (
+    !todayScheduleList
+  ) {
+
+    return;
+
+  }
+
+  const today =
+    new Date();
+
+  const programs =
+    getScheduleForDate(
+      today
+    );
+
+
+  if (
+    !programs.length
+  ) {
+
+    todayScheduleList
+      .innerHTML =
+        `
+        <div class="empty-schedule">
+          ${
+            escapeHTML(
+              templeContent
+                .noProgramMessage ||
+              "Please check announcements for today's temple programs."
+            )
+          }
+        </div>
+        `;
+
+    return;
+
+  }
+
+
+  todayScheduleList
+    .innerHTML =
+      programs
+        .map(
+          program => {
+
+            const status =
+              getProgramStatus(
+                program,
+                today
+              );
+
+            return `
+              <div class="schedule-item">
+
+                <div class="schedule-time">
+                  ${
+                    escapeHTML(
+                      program.time
+                    )
+                  }
+                </div>
+
+                <div class="schedule-separator"></div>
+
+                <div class="schedule-name">
+
+                  ${
+                    escapeHTML(
+                      program.title
+                    )
+                  }
+
+                  ${
+                    status
+                      ?
+                        `
+                        <span class="schedule-status">
+                          (${escapeHTML(status)})
+                        </span>
+                        `
+                      :
+                        ""
+                  }
+
+                </div>
+
+              </div>
+            `;
+
+          }
+        )
+        .join("");
+
+}
+
+
+/* ==========================================================
+   RENDER TOMORROW
+========================================================== */
+
+function renderTomorrowSchedule() {
+
+  if (
+    !tomorrowScheduleList
+  ) {
+
+    return;
+
+  }
+
+  const tomorrow =
+    getTomorrow();
+
+  const programs =
+    getScheduleForDate(
+      tomorrow
+    );
+
+
+  if (
+    !programs.length
+  ) {
+
+    tomorrowScheduleList
+      .innerHTML =
+        `
+        <div class="tomorrow-empty">
+          No scheduled programs.
+        </div>
+        `;
+
+    return;
+
+  }
+
+
+  tomorrowScheduleList
+    .innerHTML =
+      programs
+        .map(
+          program => `
+            <div class="tomorrow-schedule-item">
+
+              <div class="tomorrow-time">
+                ${
+                  escapeHTML(
+                    program.time
+                  )
+                }
+              </div>
+
+              <div class="tomorrow-separator"></div>
+
+              <div class="tomorrow-name">
+                ${
+                  escapeHTML(
+                    program.title
+                  )
+                }
+              </div>
+
+            </div>
+          `
+        )
+        .join("");
+
+}
+
+
+/* ==========================================================
+   UPCOMING EVENTS
+========================================================== */
+
 async function loadUpcomingEvents() {
+
+  upcomingEvents =
+    [];
 
   try {
 
-    const response =
-      await fetch(
-        addCacheBuster(
-          templeContent
-            .upcomingEventsSheetURL
-        ),
-        {
-          cache: "no-store"
-        }
-      );
-
-
     const rows =
-      parseCSV(
-        await response.text()
+      await fetchCSV(
+        templeContent
+          .upcomingEventsSheetURL
       );
 
+    if (
+      rows.length <= 1
+    ) {
+
+      throw new Error(
+        "No upcoming events rows"
+      );
+
+    }
 
     const headers =
       rows[0].map(
-        value =>
-          value
-            .trim()
-            .toLowerCase()
+        h =>
+          h.trim()
       );
 
-
     const dateIndex =
-      headers.indexOf("date");
+      headers.indexOf(
+        "Date"
+      );
 
     const eventIndex =
-      headers.indexOf("event");
+      headers.indexOf(
+        "Event"
+      );
 
     const timeIndex =
-      headers.indexOf("time");
+      headers.indexOf(
+        "Time"
+      );
 
     const activeIndex =
-      headers.indexOf("active");
+      headers.indexOf(
+        "Active"
+      );
 
     const orderIndex =
       headers.indexOf(
-        "displayorder"
+        "DisplayOrder"
       );
 
 
     const today =
       new Date();
-
 
     today.setHours(
       0,
@@ -2083,792 +2226,745 @@ async function loadUpcomingEvents() {
     );
 
 
-    const events = [];
+    upcomingEvents =
+      rows
+        .slice(1)
+        .map(
+          row => ({
 
+            date:
+              normalizeDate(
+                row[
+                  dateIndex
+                ]
+              ),
 
-    for (
-      let i = 1;
-      i < rows.length;
-      i++
-    ) {
+            event:
+              (
+                row[
+                  eventIndex
+                ] ||
+                ""
+              ).trim(),
 
-      const row = rows[i];
+            time:
+              (
+                row[
+                  timeIndex
+                ] ||
+                ""
+              ).trim(),
 
+            active:
+              (
+                row[
+                  activeIndex
+                ] ||
+                ""
+              )
+                .trim()
+                .toUpperCase(),
 
-      if (
-        (
-          row[activeIndex] ||
-          ""
+            order:
+              Number(
+                row[
+                  orderIndex
+                ]
+              ) ||
+              999
+
+          })
         )
-        .trim()
-        .toUpperCase()
-        !==
-        "YES"
-      ) {
-        continue;
-      }
+        .filter(
+          item =>
+            item.date &&
+            item.event &&
+            item.active ===
+              "YES" &&
+            item.date >=
+              today
+        )
+        .sort(
+          (
+            a,
+            b
+          ) => {
 
+            if (
+              a.order !==
+              b.order
+            ) {
 
-      const date =
-        normalizeDate(
-          row[dateIndex]
-        );
-
-
-      if (!date) {
-        continue;
-      }
-
-
-      const eventDate =
-        new Date(
-          date +
-          "T00:00:00"
-        );
-
-
-      if (
-        eventDate < today
-      ) {
-        continue;
-      }
-
-
-      events.push(
-        {
-
-          date:
-            eventDate,
-
-          title:
-            (
-              row[eventIndex] ||
-              ""
-            ).trim(),
-
-          time:
-            (
-              row[timeIndex] ||
-              ""
-            ).trim(),
-
-          order:
-            parseInt(
-              row[orderIndex],
-              10
-            ) ||
-            999
-
-        }
-      );
-
-    }
-
-
-    events.sort(
-      (
-        a,
-        b
-      ) =>
-        a.order !== b.order
-          ?
-          a.order - b.order
-          :
-          a.date - b.date
-    );
-
-
-    upcomingEventsText.textContent =
-      events.map(
-        event => {
-
-          const date =
-            event.date
-              .toLocaleDateString(
-                "en-US",
-                {
-                  month: "short",
-                  day: "numeric"
-                }
+              return (
+                a.order -
+                b.order
               );
 
+            }
 
-          return (
-            event.time
-              ?
-              `${date} – ${event.title} (${event.time})`
-              :
-              `${date} – ${event.title}`
-          );
+            return (
+              a.date -
+              b.date
+            );
 
-        }
-      )
-      .join(
-        templeContent.separator
-      );
+          }
+        );
 
   }
 
-  catch (error) {
+  catch (
+    error
+  ) {
 
-    console.error(error);
+    console.warn(
+      "Upcoming events failed:",
+      error
+    );
 
-    showUpcomingFallback();
+  }
+
+
+  let tickerText =
+    "";
+
+
+  if (
+    upcomingEvents.length
+  ) {
+
+    tickerText =
+      upcomingEvents
+        .map(
+          item => {
+
+            const date =
+              item.date
+                .toLocaleDateString(
+                  "en-US",
+                  {
+                    month:
+                      "short",
+
+                    day:
+                      "numeric"
+                  }
+                );
+
+            const time =
+              item.time
+                ?
+                  ` • ${item.time}`
+                :
+                  "";
+
+            return (
+              `${date} • ${item.event}${time}`
+            );
+
+          }
+        )
+        .join(
+          templeContent.separator ||
+          "     •     "
+        );
+
+  }
+
+  else {
+
+    tickerText =
+      (
+        templeContent
+          .upcomingEventsFallback ||
+        [
+          "Please check temple announcements for upcoming events"
+        ]
+      )
+        .join(
+          templeContent.separator ||
+          "     •     "
+        );
+
+  }
+
+
+  if (
+    upcomingEventsTicker
+  ) {
+
+    upcomingEventsTicker
+      .textContent =
+        tickerText;
 
   }
 
 }
 
 
-// ==========================================================
-// BGM WEEKDAY MATCH
-// ==========================================================
+/* ==========================================================
+   BGM HELPERS
+========================================================== */
 
 function weekdayMatches(
-  value,
+  rule,
   date
 ) {
 
-  const weekday =
-    String(
-      value || "ALL"
+  const normalized =
+    (
+      rule ||
+      "ALL"
     )
-    .trim()
-    .toUpperCase();
+      .trim()
+      .toUpperCase();
 
 
   if (
-    weekday === "ALL"
+    normalized ===
+    "ALL"
   ) {
+
     return true;
+
+  }
+
+
+  const weekday =
+    weekdayName(
+      date
+    );
+
+
+  if (
+    normalized ===
+    weekday
+  ) {
+
+    return true;
+
   }
 
 
   if (
     weekday ===
-    getWeekdayName(date)
-  ) {
-    return true;
-  }
-
-
-  if (
-    date.getDay() === 6 &&
-    weekday.startsWith(
-      "SATURDAY-"
-    )
+    "SATURDAY"
   ) {
 
-    return (
-      Number(
-        weekday.split("-")[1]
-      )
-      ===
-      getSaturdayNumber(date)
-    );
-
-  }
-
-
-  return false;
-}
-
-
-// ==========================================================
-// BGM TIME WINDOW
-// ==========================================================
-
-function timeWindowMatches(
-  startValue,
-  endValue,
-  date
-) {
-
-  const start =
-    parseTimeToMinutes(
-      startValue
-    );
-
-
-  const end =
-    parseTimeToMinutes(
-      endValue
-    );
-
-
-  if (
-    start === null ||
-    end === null
-  ) {
-    return false;
-  }
-
-
-  const now =
-    date.getHours() *
-    60
-    +
-    date.getMinutes();
-
-
-  if (
-    start <= end
-  ) {
-
-    return (
-      now >= start &&
-      now < end
-    );
-
-  }
-
-
-  return (
-    now >= start ||
-    now < end
-  );
-}
-
-
-// ==========================================================
-// BGM LOAD
-// ==========================================================
-
-async function loadBGMPlaylist() {
-
-  try {
-
-    const response =
-      await fetch(
-        addCacheBuster(
-          templeContent
-            .bgmSheetURL
-        ),
-        {
-          cache: "no-store"
-        }
+    const saturdayRule =
+      "SATURDAY-" +
+      getSaturdayNumber(
+        date
       );
 
-
-    const rows =
-      parseCSV(
-        await response.text()
-      );
-
-
-    const headers =
-      rows[0].map(
-        value =>
-          value
-            .trim()
-            .toLowerCase()
-      );
-
-
-    const musicIndex =
-      headers.indexOf("musicurl");
-
-    const typeIndex =
-      headers.indexOf("type");
-
-    const activeIndex =
-      headers.indexOf("active");
-
-    const orderIndex =
-      headers.indexOf(
-        "displayorder"
-      );
-
-    const weekdayIndex =
-      headers.indexOf("weekday");
-
-    const startIndex =
-      headers.indexOf("starttime");
-
-    const endIndex =
-      headers.indexOf("endtime");
-
-
-    const defaults = [];
-    const specials = [];
-
-
-    for (
-      let i = 1;
-      i < rows.length;
-      i++
+    if (
+      normalized ===
+      saturdayRule
     ) {
 
-      const row = rows[i];
-
-
-      if (
-        (
-          row[activeIndex] ||
-          "YES"
-        )
-        .trim()
-        .toUpperCase()
-        !==
-        "YES"
-      ) {
-        continue;
-      }
-
-
-      const original =
-        (
-          row[musicIndex] ||
-          ""
-        ).trim();
-
-
-      if (!original) {
-        continue;
-      }
-
-
-      const track =
-        {
-
-          url:
-            convertDriveAudioURL(
-              original
-            ),
-
-          order:
-            parseInt(
-              row[orderIndex],
-              10
-            ) ||
-            999,
-
-          weekday:
-            (
-              row[weekdayIndex] ||
-              "ALL"
-            )
-            .trim()
-            .toUpperCase(),
-
-          startTime:
-            (
-              row[startIndex] ||
-              ""
-            ).trim(),
-
-          endTime:
-            (
-              row[endIndex] ||
-              ""
-            ).trim()
-
-        };
-
-
-      const type =
-        (
-          row[typeIndex] ||
-          "DEFAULT"
-        )
-        .trim()
-        .toUpperCase();
-
-
-      if (
-        type === "SPECIAL"
-      ) {
-
-        specials.push(track);
-
-      }
-
-      else {
-
-        defaults.push(track);
-
-      }
+      return true;
 
     }
 
+  }
 
-    defaults.sort(
-      (
-        a,
-        b
-      ) =>
-        a.order -
-        b.order
+  return false;
+
+}
+
+
+function timeWindowMatches(
+  startTime,
+  endTime,
+  date
+) {
+
+  if (
+    !startTime &&
+    !endTime
+  ) {
+
+    return true;
+
+  }
+
+
+  const nowMinutes =
+    date.getHours() *
+    60 +
+    date.getMinutes();
+
+
+  const startMinutes =
+    parseTimeToMinutes(
+      startTime
+    );
+
+  const endMinutes =
+    parseTimeToMinutes(
+      endTime
     );
 
 
-    specials.sort(
-      (
-        a,
-        b
-      ) =>
-        a.order -
-        b.order
-    );
+  if (
+    startMinutes !==
+      null &&
+    nowMinutes <
+      startMinutes
+  ) {
+
+    return false;
+
+  }
+
+
+  if (
+    endMinutes !==
+      null &&
+    nowMinutes >
+      endMinutes
+  ) {
+
+    return false;
+
+  }
+
+  return true;
+
+}
+
+
+/* ==========================================================
+   LOAD BGM
+========================================================== */
+
+async function loadBGMPlaylist() {
+
+  defaultBGMPlaylist =
+    [];
+
+  specialBGMPlaylist =
+    [];
+
+  try {
+
+    const rows =
+      await fetchCSV(
+        templeContent
+          .bgmSheetURL
+      );
+
+    if (
+      rows.length <= 1
+    ) {
+
+      return;
+
+    }
+
+    const headers =
+      rows[0].map(
+        h =>
+          h.trim()
+      );
+
+    const urlIndex =
+      headers.indexOf(
+        "MusicURL"
+      );
+
+    const typeIndex =
+      headers.indexOf(
+        "Type"
+      );
+
+    const activeIndex =
+      headers.indexOf(
+        "Active"
+      );
+
+    const orderIndex =
+      headers.indexOf(
+        "DisplayOrder"
+      );
+
+    const weekdayIndex =
+      headers.indexOf(
+        "Weekday"
+      );
+
+    const startTimeIndex =
+      headers.indexOf(
+        "StartTime"
+      );
+
+    const endTimeIndex =
+      headers.indexOf(
+        "EndTime"
+      );
+
+
+    const tracks =
+      rows
+        .slice(1)
+        .map(
+          row => ({
+
+            url:
+              (
+                row[
+                  urlIndex
+                ] ||
+                ""
+              ).trim(),
+
+            type:
+              (
+                row[
+                  typeIndex
+                ] ||
+                "DEFAULT"
+              )
+                .trim()
+                .toUpperCase(),
+
+            active:
+              (
+                row[
+                  activeIndex
+                ] ||
+                ""
+              )
+                .trim()
+                .toUpperCase(),
+
+            order:
+              Number(
+                row[
+                  orderIndex
+                ]
+              ) ||
+              999,
+
+            weekday:
+              (
+                row[
+                  weekdayIndex
+                ] ||
+                "ALL"
+              ).trim(),
+
+            startTime:
+              (
+                row[
+                  startTimeIndex
+                ] ||
+                ""
+              ).trim(),
+
+            endTime:
+              (
+                row[
+                  endTimeIndex
+                ] ||
+                ""
+              ).trim()
+
+          })
+        )
+        .filter(
+          track =>
+            track.url &&
+            track.active ===
+              "YES"
+        )
+        .sort(
+          (
+            a,
+            b
+          ) =>
+            a.order -
+            b.order
+        );
 
 
     defaultBGMPlaylist =
-      defaults;
+      tracks.filter(
+        track =>
+          track.type ===
+          "DEFAULT"
+      );
 
 
-    specialBGMTracks =
-      specials;
-
-
-    evaluateBGMSchedule();
+    specialBGMPlaylist =
+      tracks.filter(
+        track =>
+          track.type ===
+          "SPECIAL"
+      );
 
   }
 
-  catch (error) {
-
-    console.error(error);
-
-  }
-
-}
-
-
-// ==========================================================
-// SPECIAL BGM
-// ==========================================================
-
-function getActiveSpecialPlaylist() {
-
-  const now =
-    new Date();
-
-
-  return specialBGMTracks.filter(
-    track =>
-
-      weekdayMatches(
-        track.weekday,
-        now
-      )
-
-      &&
-
-      timeWindowMatches(
-        track.startTime,
-        track.endTime,
-        now
-      )
-  );
-}
-
-
-function makeSpecialSignature(
-  playlist
-) {
-
-  return playlist
-    .map(
-      track =>
-        [
-          track.url,
-          track.weekday,
-          track.startTime,
-          track.endTime
-        ].join("~")
-    )
-    .join("|");
-}
-
-
-// ==========================================================
-// PLAY BGM
-// ==========================================================
-
-function playCurrentBGMTrack(
-  resumeSeconds = 0
-) {
-
-  if (
-    !musicElement ||
-    !currentBGMPlaylist.length
-  ) {
-    return;
-  }
-
-
-  const track =
-    currentBGMPlaylist[
-      currentBGMIndex
-    ];
-
-
-  musicElement.pause();
-
-
-  musicElement.src =
-    track.url;
-
-
-  musicElement.loop =
-    false;
-
-
-  musicElement.volume =
-    templeContent.bgmVolume
-    ??
-    0.30;
-
-
-  musicElement.load();
-
-
-  const start =
-    () => {
-
-      if (
-        resumeSeconds > 0
-      ) {
-
-        try {
-
-          musicElement.currentTime =
-            resumeSeconds;
-
-        }
-
-        catch (error) {}
-
-      }
-
-
-      musicElement
-        .play()
-        .catch(
-          error =>
-            console.error(
-              "BGM:",
-              error
-            )
-        );
-
-    };
-
-
-  if (
-    resumeSeconds > 0
+  catch (
+    error
   ) {
 
-    musicElement.addEventListener(
-      "loadedmetadata",
-      start,
-      {
-        once: true
-      }
+    console.warn(
+      "BGM failed:",
+      error
     );
 
   }
 
-  else {
 
-    start();
-
-  }
+  evaluateBGMSchedule();
 
 }
 
 
-function startDefaultBGM(
-  resume = false
+/* ==========================================================
+   BGM PLAYER
+========================================================== */
+
+function getTrackSignature(
+  tracks
 ) {
 
+  return tracks
+    .map(
+      track =>
+        track.url
+    )
+    .join("|");
+
+}
+
+
+function getCurrentBGMPlaylist() {
+
+  return currentBGMMode ===
+    "SPECIAL"
+      ?
+        specialBGMPlaylist.filter(
+          track => {
+
+            const now =
+              new Date();
+
+            return (
+              weekdayMatches(
+                track.weekday,
+                now
+              ) &&
+              timeWindowMatches(
+                track.startTime,
+                track.endTime,
+                now
+              )
+            );
+
+          }
+        )
+      :
+        defaultBGMPlaylist;
+
+}
+
+
+function playCurrentBGM() {
+
   if (
-    !defaultBGMPlaylist.length
+    !backgroundMusic
   ) {
+
     return;
+
   }
 
 
-  currentBGMMode =
-    "DEFAULT";
-
-
-  currentSpecialSignature =
-    "";
-
-
-  currentBGMPlaylist =
-    defaultBGMPlaylist;
+  const playlist =
+    getCurrentBGMPlaylist();
 
 
   if (
-    resume
+    !playlist.length
+  ) {
+
+    backgroundMusic.pause();
+
+    return;
+
+  }
+
+
+  if (
+    currentBGMIndex >=
+    playlist.length
   ) {
 
     currentBGMIndex =
-      savedDefaultIndex;
-
-
-    playCurrentBGMTrack(
-      savedDefaultTime
-    );
-
-
-    savedDefaultTime = 0;
-
-  }
-
-  else {
-
-    currentBGMIndex = 0;
-
-    playCurrentBGMTrack();
-
-  }
-
-}
-
-
-function startSpecialBGM(
-  playlist
-) {
-
-  if (
-    currentBGMMode ===
-    "DEFAULT"
-  ) {
-
-    savedDefaultIndex =
-      currentBGMIndex;
-
-
-    savedDefaultTime =
-      musicElement.currentTime ||
       0;
 
   }
 
 
-  currentBGMMode =
-    "SPECIAL";
+  const track =
+    playlist[
+      currentBGMIndex
+    ];
 
 
-  currentBGMPlaylist =
-    playlist;
+  backgroundMusic.volume =
+    Number(
+      templeContent.bgmVolume
+    ) ||
+    0.30;
 
 
-  currentBGMIndex = 0;
+  backgroundMusic.src =
+    track.url;
 
 
-  playCurrentBGMTrack();
+  backgroundMusic
+    .play()
+    .catch(
+      error => {
 
-}
+        console.warn(
+          "BGM play blocked:",
+          error
+        );
 
-
-function evaluateBGMSchedule() {
-
-  const special =
-    getActiveSpecialPlaylist();
-
-
-  if (
-    special.length
-  ) {
-
-    const signature =
-      makeSpecialSignature(
-        special
-      );
-
-
-    if (
-      currentBGMMode ===
-      "SPECIAL"
-      &&
-      currentSpecialSignature ===
-      signature
-    ) {
-      return;
-    }
-
-
-    currentSpecialSignature =
-      signature;
-
-
-    startSpecialBGM(
-      special
+      }
     );
-
-
-    return;
-
-  }
-
-
-  if (
-    currentBGMMode ===
-    "SPECIAL"
-  ) {
-
-    startDefaultBGM(
-      true
-    );
-
-    return;
-
-  }
-
-
-  if (
-    currentBGMMode !==
-    "DEFAULT"
-  ) {
-
-    startDefaultBGM();
-
-  }
 
 }
 
 
 function playNextBGM() {
 
+  const playlist =
+    getCurrentBGMPlaylist();
+
+
   if (
-    !currentBGMPlaylist.length
+    !playlist.length
   ) {
+
     return;
+
   }
 
 
   currentBGMIndex =
     (
       currentBGMIndex + 1
-    )
-    %
-    currentBGMPlaylist.length;
+    ) %
+    playlist.length;
 
 
-  playCurrentBGMTrack();
+  playCurrentBGM();
 
 }
 
 
-if (musicElement) {
+/* ==========================================================
+   EVALUATE BGM MODE
+========================================================== */
 
-  musicElement.addEventListener(
+function evaluateBGMSchedule() {
+
+  const now =
+    new Date();
+
+
+  const activeSpecial =
+    specialBGMPlaylist.filter(
+      track =>
+        weekdayMatches(
+          track.weekday,
+          now
+        ) &&
+        timeWindowMatches(
+          track.startTime,
+          track.endTime,
+          now
+        )
+    );
+
+
+  const nextMode =
+    activeSpecial.length
+      ?
+        "SPECIAL"
+      :
+        "DEFAULT";
+
+
+  const nextPlaylist =
+    nextMode ===
+    "SPECIAL"
+      ?
+        activeSpecial
+      :
+        defaultBGMPlaylist;
+
+
+  const nextSignature =
+    getTrackSignature(
+      nextPlaylist
+    );
+
+
+  if (
+    nextMode !==
+      currentBGMMode ||
+    nextSignature !==
+      currentBGMSignature
+  ) {
+
+    currentBGMMode =
+      nextMode;
+
+    currentBGMSignature =
+      nextSignature;
+
+    currentBGMIndex =
+      0;
+
+    playCurrentBGM();
+
+  }
+
+}
+
+
+/* ==========================================================
+   AUDIO ENDED
+========================================================== */
+
+if (
+  backgroundMusic
+) {
+
+  backgroundMusic.addEventListener(
     "ended",
     () => {
 
-      const mode =
+      const previousMode =
         currentBGMMode;
+
+      const previousSignature =
+        currentBGMSignature;
 
 
       evaluateBGMSchedule();
 
 
       if (
-        mode ===
-        currentBGMMode
+        previousMode ===
+          currentBGMMode &&
+        previousSignature ===
+          currentBGMSignature
       ) {
 
         playNextBGM();
@@ -2878,145 +2974,105 @@ if (musicElement) {
     }
   );
 
-
-  const resumeAudio =
-    () => {
-
-      if (
-        musicElement.paused &&
-        currentBGMPlaylist.length
-      ) {
-
-        musicElement
-          .play()
-          .catch(
-            () => {}
-          );
-
-      }
-
-    };
-
-
-  document.addEventListener(
-    "click",
-    resumeAudio
-  );
-
-
-  document.addEventListener(
-    "keydown",
-    resumeAudio
-  );
-
 }
 
 
-// ==========================================================
-// INITIALIZE
-// ==========================================================
+/* ==========================================================
+   REFRESH EVERYTHING
+========================================================== */
 
-async function initializeTempleTV() {
+async function refreshRemoteContent() {
 
-  loadLocalAnnouncements();
+  await Promise.allSettled([
 
-  showUpcomingFallback();
+    loadAnnouncements(),
 
+    loadFlyers(),
 
-  await Promise.allSettled(
-    [
-      loadWeeklySchedule(),
-      loadSpecialEvents()
-    ]
-  );
+    loadSpecialEvents(),
+
+    loadWeeklySchedule(),
+
+    loadUpcomingEvents(),
+
+    loadBGMPlaylist()
+
+  ]);
 
 
   renderTodaySchedule();
 
   renderTomorrowSchedule();
 
+}
 
-  await Promise.allSettled(
-    [
-      loadAnnouncements(),
-      loadRemoteFlyers(),
-      loadUpcomingEvents(),
-      loadBGMPlaylist()
-    ]
+
+/* ==========================================================
+   INITIALIZATION
+========================================================== */
+
+async function initializeTempleTV() {
+
+  updateClock();
+
+  setInterval(
+    updateClock,
+    1000
+  );
+
+
+  await refreshRemoteContent();
+
+
+  setInterval(
+    refreshRemoteContent,
+
+    (
+      Number(
+        templeContent
+          .remoteRefreshMinutes
+      ) ||
+      5
+    ) *
+    60 *
+    1000
+  );
+
+
+  setInterval(
+    () => {
+
+      renderTodaySchedule();
+
+      renderTomorrowSchedule();
+
+    },
+    60 *
+    1000
+  );
+
+
+  setInterval(
+    evaluateBGMSchedule,
+
+    (
+      Number(
+        templeContent
+          .bgmScheduleCheckSeconds
+      ) ||
+      15
+    ) *
+    1000
   );
 
 }
 
 
-initializeTempleTV();
+/* ==========================================================
+   START
+========================================================== */
 
-
-// ==========================================================
-// TIMERS
-// ==========================================================
-
-setInterval(
-  rotateFlyer,
-
-  templeContent.flyerDuration *
-  1000
-);
-
-
-setInterval(
-  evaluateBGMSchedule,
-
-  templeContent
-    .bgmScheduleCheckSeconds
-  *
-  1000
-);
-
-
-const refreshTime =
-
-  templeContent
-    .remoteRefreshMinutes
-
-  *
-
-  60
-
-  *
-
-  1000;
-
-
-setInterval(
-  () => {
-
-    loadAnnouncements();
-
-    loadRemoteFlyers();
-
-    loadWeeklySchedule();
-
-    loadSpecialEvents();
-
-    loadUpcomingEvents();
-
-    loadBGMPlaylist();
-
-  },
-
-  refreshTime
-);
-
-
-setInterval(
-  () => {
-
-    renderTodaySchedule();
-
-    renderTomorrowSchedule();
-
-  },
-
-  60 *
-  1000
+document.addEventListener(
+  "DOMContentLoaded",
+  initializeTempleTV
 );
