@@ -43,7 +43,7 @@ const templeContent = {
     "images/flyer2.jpg"
   ],
 
-  flyerDuration: 10,
+  flyerDuration: 15,
 
 
   // =======================================================
