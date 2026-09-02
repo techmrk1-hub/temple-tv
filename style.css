@@ -1,43 +1,16 @@
-/* ==========================================================
-   CHINMAYA SARASWATI ASHRAM - DEVI TEMPLE
-   DIGITAL SIGNAGE
-========================================================== */
-
-
-/* ==========================================================
-   DESIGN SYSTEM
-========================================================== */
-
 :root {
-  --maroon: #74190f;
-  --maroon-dark: #48100b;
-  --maroon-soft: #8d2317;
-
-  --gold: #d4a33c;
-  --gold-soft: #ecd58f;
-
-  --ivory: #fbf8f0;
-  --cream: #f4eedf;
-
-  --ink: #27211e;
-  --muted: #756861;
-
-  --line: #dfd5c2;
-
-  --radius: 10px;
-
-  --shadow:
-    0 5px 16px rgba(58, 39, 27, 0.08);
+  --maroon: #6a130d;
+  --maroon-dark: #4d0e09;
+  --gold: #c8942f;
+  --gold-soft: #e1c27a;
+  --cream: #f8f1e3;
+  --paper: #fffdf8;
+  --text: #27211d;
+  --muted: #766a60;
+  --line: #dfd1b7;
 }
 
-
-/* ==========================================================
-   RESET
-========================================================== */
-
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
@@ -45,47 +18,16 @@ html,
 body {
   width: 100%;
   height: 100%;
+  margin: 0;
   overflow: hidden;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f7f1e6;
+  color: var(--text);
 }
 
 body {
-  background: var(--cream);
-  color: var(--ink);
-
-  font-family:
-    "Segoe UI",
-    Arial,
-    Helvetica,
-    sans-serif;
-
-  -webkit-font-smoothing: antialiased;
-}
-
-
-/* ==========================================================
-   TV SCREEN
-========================================================== */
-
-.tv-screen {
-  width: 100vw;
-  height: 100vh;
-
-  display: grid;
-
-  grid-template-rows:
-    96px
-    minmax(0, 1fr)
-    46px
-    40px;
-
-  overflow: hidden;
-
-  background:
-    linear-gradient(
-      180deg,
-      #f8f4ea 0%,
-      #f3ecdc 100%
-    );
+  display: flex;
+  flex-direction: column;
 }
 
 
@@ -93,288 +35,219 @@ body {
    HEADER
 ========================================================== */
 
-.top-header {
+.header {
+  flex: 0 0 auto;
+  min-height: 108px;
+
   display: grid;
-
-  grid-template-columns:
-    100px
-    minmax(0, 1fr)
-    220px;
-
+  grid-template-columns: 150px 1fr 220px;
   align-items: center;
 
-  padding:
-    8px
-    20px;
+  padding: 8px 22px;
 
-  background: var(--maroon);
-
-  border-bottom:
-    3px solid var(--gold);
-
-  color: white;
-}
-
-
-.brand-zone {
-  display: contents;
-}
-
-
-.temple-logo {
-  grid-column: 1;
-
-  width: 66px;
-  height: 66px;
-
-  justify-self: center;
-  align-self: center;
-
-  object-fit: contain;
-
-  padding: 4px;
-
-  background: white;
-
-  border-radius: 8px;
-
-  box-shadow:
-    0 2px 6px
-    rgba(0, 0, 0, 0.18);
-}
-
-
-.brand-copy {
-  grid-column: 2;
-
-  width: 100%;
-
-  text-align: center;
-
-  justify-self: center;
-  align-self: center;
-}
-
-
-.temple-name {
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size:
-    clamp(
-      31px,
-      2.25vw,
-      40px
+  background:
+    linear-gradient(
+      90deg,
+      var(--maroon-dark),
+      var(--maroon),
+      var(--maroon-dark)
     );
 
-  font-weight: 700;
+  border-bottom: 3px solid var(--gold);
 
-  line-height: 1;
-
-  color: #ffffff;
-
-  white-space: nowrap;
+  color: #fff;
 }
 
-
-.temple-meta {
+.header-logo {
   display: flex;
-
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+}
 
-  gap: 12px;
+.header-logo img {
+  max-width: 115px;
+  max-height: 88px;
+  object-fit: contain;
+}
 
-  margin-top: 8px;
+.header-title-wrap {
+  text-align: center;
+  padding: 0 10px;
+}
 
-  color: #f7d877;
+.header-title {
+  font-family: Georgia, "Times New Roman", serif;
 
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size:
-    clamp(
-      17px,
-      1.15vw,
-      21px
-    );
-
+  font-size: clamp(28px, 2vw, 40px);
   font-weight: 700;
 
-  white-space: nowrap;
+  color: #f7d77a;
+  line-height: 1.05;
 }
 
+.header-subtitle {
+  margin-top: 3px;
 
-.temple-meta span:first-child {
-  font-weight: 800;
-  color: #ffd86b;
+  font-size: clamp(14px, 1vw, 19px);
+  font-weight: 600;
+
+  color: #fff3d0;
 }
 
-
-.meta-dot {
-  color:
-    rgba(
-      255,
-      255,
-      255,
-      0.6
-    );
-}
-
-
-/* ==========================================================
-   CLOCK
-========================================================== */
-
-.time-zone {
-  grid-column: 3;
-
-  justify-self: end;
-
+.header-clock {
   text-align: right;
 }
 
-
-.clock {
-  font-family:
-    "Trebuchet MS",
-    "Segoe UI",
-    Arial,
-    sans-serif;
-
-  color: #ffdf74;
-
-  font-size:
-    clamp(
-      28px,
-      1.9vw,
-      36px
-    );
-
-  font-weight: 800;
-
-  line-height: 1;
-
-  white-space: nowrap;
+.clock-time {
+  font-size: clamp(26px, 2vw, 38px);
+  font-weight: 700;
+  color: #fff;
 }
 
-
-.header-date {
-  margin-top: 6px;
-
-  font-size:
-    clamp(
-      12px,
-      0.8vw,
-      14px
-    );
-
-  font-weight: 700;
-
-  color: white;
-
-  white-space: nowrap;
+.clock-date {
+  margin-top: 2px;
+  font-size: clamp(14px, 1vw, 18px);
+  color: #f6e5c8;
 }
 
 
 /* ==========================================================
-   MAIN CONTENT
+   MAIN LAYOUT
 ========================================================== */
 
-.content-grid {
+.main-area {
+  flex: 1 1 auto;
+
   min-height: 0;
 
   display: grid;
 
   grid-template-columns:
     minmax(0, 1fr)
-    clamp(
-      300px,
-      20vw,
-      350px
-    );
+    minmax(300px, 360px);
 
-  gap: 14px;
+  gap: 16px;
 
-  padding:
-    14px
-    16px;
-
-  overflow: hidden;
+  padding: 14px 16px 10px;
 }
 
 
 /* ==========================================================
-   FLYER
+   FLYER PANEL
 ========================================================== */
 
 .feature-panel {
+  min-width: 0;
   min-height: 0;
 
-  display: flex;
+  position: relative;
 
+  display: flex;
   align-items: center;
   justify-content: center;
 
   overflow: hidden;
 
-  background: white;
-
-  border:
-    1px solid
-    rgba(
-      71,
-      51,
-      38,
-      0.12
+  background:
+    linear-gradient(
+      180deg,
+      #fffefb,
+      #f5eddf
     );
 
-  border-radius:
-    var(--radius);
+  border: 1px solid #d9c8aa;
+  border-radius: 12px;
 
   box-shadow:
-    var(--shadow);
+    0 5px 15px
+    rgba(70, 45, 20, 0.14);
 }
 
 
+/* ==========================================================
+   FLYER MORPH TRANSITION
+========================================================== */
+
 .feature-flyer {
-  width: auto;
-  height: auto;
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
 
   max-width: 100%;
   max-height: 100%;
+
+  width: auto;
+  height: auto;
 
   object-fit: contain;
 
   opacity: 0;
 
+  transform:
+    translate(-50%, -50%)
+    scale(1.045)
+    translateX(18px);
+
+  filter:
+    blur(7px)
+    brightness(1.04);
+
   transition:
-    opacity
-    0.45s
-    ease;
+    opacity 1.35s cubic-bezier(.4,0,.2,1),
+    transform 1.75s cubic-bezier(.22,1,.36,1),
+    filter 1.35s cubic-bezier(.4,0,.2,1);
+
+  will-change:
+    opacity,
+    transform,
+    filter;
 }
 
+
+/* Incoming flyer */
 
 .feature-flyer.flyer-visible {
   opacity: 1;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1)
+    translateX(0);
+
+  filter:
+    blur(0)
+    brightness(1);
 }
 
+
+/* Outgoing flyer */
+
+.feature-flyer.flyer-exit {
+  opacity: 0;
+
+  transform:
+    translate(-50%, -50%)
+    scale(0.98)
+    translateX(-18px);
+
+  filter:
+    blur(5px)
+    brightness(0.98);
+}
+
+
+/* Orientation helpers */
 
 .feature-flyer.flyer-landscape {
   width: 100%;
   height: auto;
 }
 
-
 .feature-flyer.flyer-portrait {
   width: auto;
   height: 100%;
 }
-
 
 .feature-flyer.flyer-square {
   width: auto;
@@ -383,191 +256,189 @@ body {
 
 
 /* ==========================================================
-   RIGHT PANEL
+   RIGHT INFORMATION RAIL
 ========================================================== */
 
 .info-rail {
   min-height: 0;
 
-  display: flex;
-
-  flex-direction: column;
-
   overflow: hidden;
 
-  padding:
-    10px
-    14px;
+  display: flex;
+  flex-direction: column;
 
   background:
-    #fffdf7;
+    linear-gradient(
+      180deg,
+      #fffdf7,
+      #f7f0e5
+    );
 
   border:
-    1px solid #d8c6a1;
+    1px solid
+    #d9c8aa;
 
-  border-top:
-    4px solid var(--gold);
+  border-radius: 12px;
 
-  border-radius:
-    var(--radius);
+  padding: 10px 12px;
 
   box-shadow:
-    var(--shadow);
+    0 5px 15px
+    rgba(70,45,20,.10);
 }
 
-
 .rail-section {
+  flex: 0 0 auto;
   width: 100%;
 }
 
 
-.today-section {
-  flex:
-    1 1 auto;
-}
-
-
 /* ==========================================================
-   TODAY ORNAMENT
+   SCHEDULE ORNAMENT
 ========================================================== */
 
-.schedule-card {
-  padding:
-    2px
-    2px
-    6px;
-}
-
-
 .schedule-ornament {
-  display: flex;
+  width: 100%;
 
+  display: flex;
   align-items: center;
   justify-content: center;
 
-  height: 25px;
+  margin-bottom: 2px;
 }
 
+.schedule-ornament span {
+  position: relative;
+
+  width: 100px;
+  height: 10px;
+}
+
+.schedule-ornament span::before,
+.schedule-ornament span::after {
+  content: "";
+
+  position: absolute;
+  top: 4px;
+
+  width: 40px;
+  height: 1px;
+
+  background: var(--gold);
+}
 
 .schedule-ornament span::before {
-  content: "❧";
+  left: 0;
+}
 
-  display: block;
+.schedule-ornament span::after {
+  right: 0;
+}
 
-  transform:
-    rotate(-90deg);
-
-  color: #9b6d36;
-
-  font-family:
-    Georgia,
-    serif;
-
-  font-size: 31px;
+.schedule-ornament span {
+  background:
+    radial-gradient(
+      circle at center,
+      var(--gold) 0 4px,
+      transparent 5px
+    );
 }
 
 
 /* ==========================================================
-   TODAY HEADING
+   SCHEDULE HEADINGS
 ========================================================== */
 
 .schedule-heading {
-  text-align: center;
-
-  color: #57170f;
-
   font-family:
     Georgia,
     "Times New Roman",
     serif;
 
+  color: #57170f;
+
   font-size:
-    clamp(
-      20px,
-      1.25vw,
-      24px
-    );
+    clamp(18px, 1.1vw, 22px);
 
   font-weight: 700;
+
+  text-align: center;
+
+  letter-spacing: .015em;
 
   white-space: nowrap;
 }
 
+.schedule-heading-divider {
+  position: relative;
 
-.schedule-heading-divider,
-.tomorrow-heading-divider {
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  width: 86%;
-
-  height: 15px;
+  height: 12px;
 
   margin:
-    3px auto
-    10px;
+    2px 0
+    8px;
 }
 
-
 .schedule-heading-divider::before,
-.schedule-heading-divider::after,
-.tomorrow-heading-divider::before,
-.tomorrow-heading-divider::after {
+.schedule-heading-divider::after {
   content: "";
 
-  flex: 1;
+  position: absolute;
 
+  top: 5px;
+
+  width: calc(50% - 10px);
   height: 1px;
 
   background:
     linear-gradient(
       90deg,
       transparent,
-      #b99761
+      var(--gold)
     );
 }
 
-
-.schedule-heading-divider::after,
-.tomorrow-heading-divider::after {
-  background:
-    linear-gradient(
-      90deg,
-      #b99761,
-      transparent
-    );
+.schedule-heading-divider::before {
+  left: 0;
 }
 
-
-.divider-diamond {
-  width: 6px;
-  height: 6px;
-
-  margin:
-    0
-    6px;
-
-  background: #a67a3c;
+.schedule-heading-divider::after {
+  right: 0;
 
   transform:
+    scaleX(-1);
+}
+
+.divider-diamond {
+  position: absolute;
+
+  left: 50%;
+  top: 2px;
+
+  width: 7px;
+  height: 7px;
+
+  transform:
+    translateX(-50%)
     rotate(45deg);
+
+  background:
+    var(--gold);
 }
 
 
 /* ==========================================================
-   TODAY LIST
+   TODAY SCHEDULE
 ========================================================== */
 
 .schedule-list {
   display: flex;
-
   flex-direction: column;
 
-  gap: 14px;
-}
+  gap: 12px;
 
+  width: 100%;
+}
 
 .schedule-item {
   display: grid;
@@ -575,122 +446,81 @@ body {
   grid-template-columns:
     78px
     2px
-    minmax(0, 1fr);
+    minmax(0,1fr);
 
   column-gap: 8px;
 
   align-items: start;
 }
 
-
 .schedule-time {
   text-align: right;
 
-  color: #161616;
-
   font-size:
-    clamp(
-      15px,
-      1vw,
-      19px
-    );
+    clamp(15px,1vw,19px);
 
   font-weight: 800;
 
+  line-height: 1.15;
+
+  color: #161616;
+
   white-space: nowrap;
 }
-
 
 .schedule-separator {
   width: 2px;
 
   height: 100%;
-
   min-height: 43px;
 
   background:
     var(--gold);
+
+  border-radius: 2px;
 }
-
-
-.schedule-content {
-  min-width: 0;
-}
-
 
 .schedule-name {
-  color: #24201d;
-
   font-size:
-    clamp(
-      15px,
-      1vw,
-      19px
-    );
+    clamp(15px,1vw,19px);
 
   font-weight: 600;
 
   line-height: 1.16;
 
+  color: #24201d;
+
   overflow-wrap: anywhere;
 }
-
-
-.schedule-note {
-  margin-top: 4px;
-
-  color: var(--muted);
-
-  font-size:
-    12px;
-}
-
 
 .schedule-status {
   display: block;
 
   margin-top: 3px;
 
-  color: #70635b;
-
-  font-family:
-    Georgia,
-    serif;
-
   font-size:
-    14px;
+    clamp(12px,.8vw,14px);
 
-  font-weight: 600;
+  font-weight: 700;
+
+  color: #89786b;
 }
-
-
-.schedule-item.is-completed {
-  opacity: 0.72;
-}
-
-
-.schedule-item.is-current .schedule-time,
-.schedule-item.is-current .schedule-name {
-  color: var(--maroon);
-}
-
 
 .empty-schedule {
-  padding:
-    8px
-    4px;
+  padding: 8px 4px;
 
   text-align: center;
 
   color: var(--muted);
 
   font-size: 14px;
+
+  line-height: 1.3;
 }
 
 
 /* ==========================================================
-   TOMORROW'S SCHEDULE
-   MATCHES TODAY'S SCHEDULE
+   TOMORROW
 ========================================================== */
 
 .tomorrow-section {
@@ -707,9 +537,6 @@ body {
     #dfd1b7;
 }
 
-
-/* Same heading design as TODAY */
-
 .tomorrow-heading {
   color: #57170f;
 
@@ -719,27 +546,19 @@ body {
     serif;
 
   font-size:
-    clamp(
-      18px,
-      1.1vw,
-      22px
-    );
+    clamp(18px,1.1vw,22px);
 
   font-weight: 700;
 
   text-align: center;
 
-  letter-spacing: 0.015em;
+  letter-spacing: .015em;
 
   white-space: nowrap;
 }
 
-
-/* Tomorrow uses same list structure */
-
 .tomorrow-schedule-list {
   display: flex;
-
   flex-direction: column;
 
   gap: 12px;
@@ -747,41 +566,26 @@ body {
   width: 100%;
 }
 
-
-/* Tomorrow program row */
-
 .tomorrow-schedule-item {
   display: grid;
 
   grid-template-columns:
     78px
     2px
-    minmax(0, 1fr);
+    minmax(0,1fr);
 
   column-gap: 8px;
 
   align-items: start;
 }
 
-
-/* Tomorrow time */
-
 .tomorrow-time {
   text-align: right;
 
   color: #161616;
 
-  font-family:
-    "Segoe UI",
-    Arial,
-    sans-serif;
-
   font-size:
-    clamp(
-      15px,
-      1vw,
-      19px
-    );
+    clamp(15px,1vw,19px);
 
   font-weight: 800;
 
@@ -790,14 +594,10 @@ body {
   white-space: nowrap;
 }
 
-
-/* Gold separator */
-
 .tomorrow-separator {
   width: 2px;
 
   height: 100%;
-
   min-height: 43px;
 
   background:
@@ -806,23 +606,11 @@ body {
   border-radius: 2px;
 }
 
-
-/* Tomorrow program text */
-
 .tomorrow-name {
   color: #24201d;
 
-  font-family:
-    "Segoe UI",
-    Arial,
-    sans-serif;
-
   font-size:
-    clamp(
-      15px,
-      1vw,
-      19px
-    );
+    clamp(15px,1vw,19px);
 
   font-weight: 600;
 
@@ -831,32 +619,228 @@ body {
   overflow-wrap: anywhere;
 }
 
-
-/* Empty tomorrow message */
-
 .tomorrow-empty {
-  padding:
-    8px
-    4px;
+  padding: 8px 4px;
 
   text-align: center;
 
   color: var(--muted);
 
-  font-size:
-    14px;
+  font-size: 14px;
 
   line-height: 1.3;
 }
 
 
-/* Smaller adjustment on short screens */
+/* ==========================================================
+   COMMUNITY / WHATSAPP
+========================================================== */
+
+.community-section {
+  margin-top: auto;
+
+  padding-top: 10px;
+
+  border-top:
+    1px solid
+    var(--line);
+
+  text-align: center;
+}
+
+.community-title {
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  color: #57170f;
+
+  font-size:
+    clamp(17px,1vw,20px);
+
+  font-weight: 700;
+}
+
+.community-subtitle {
+  margin-top: 2px;
+
+  font-size:
+    13px;
+
+  color: var(--muted);
+}
+
+.community-qr {
+  margin-top: 5px;
+
+  display: flex;
+  justify-content: center;
+}
+
+.community-qr img {
+  width: 92px;
+  height: 92px;
+
+  object-fit: contain;
+
+  background: #fff;
+
+  padding: 4px;
+
+  border:
+    1px solid
+    #d8c9ae;
+
+  border-radius: 6px;
+}
+
+
+/* ==========================================================
+   TICKERS
+========================================================== */
+
+.ticker-area {
+  flex: 0 0 auto;
+
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+}
+
+.ticker-row {
+  position: relative;
+
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+}
+
+.ticker-announcements {
+  background:
+    #69130d;
+
+  color: #fff;
+}
+
+.ticker-events {
+  background:
+    #e4c16e;
+
+  color:
+    #38150f;
+}
+
+.ticker-label {
+  position: relative;
+
+  z-index: 3;
+
+  flex: 0 0 auto;
+
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 14px;
+
+  font-weight: 800;
+
+  font-size: 14px;
+}
+
+.ticker-announcements
+.ticker-label {
+  background:
+    #4f0d09;
+
+  color:
+    #f8d36f;
+}
+
+.ticker-events
+.ticker-label {
+  background:
+    #6a130d;
+
+  color:
+    #fff3d0;
+}
+
+.ticker-window {
+  position: relative;
+
+  flex: 1 1 auto;
+
+  overflow: hidden;
+
+  height: 100%;
+}
+
+.ticker-track {
+  position: absolute;
+
+  top: 0;
+
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+
+  white-space: nowrap;
+
+  font-size:
+    clamp(14px,1vw,18px);
+
+  font-weight: 600;
+
+  animation:
+    tickerScroll
+    40s linear
+    infinite;
+}
+
+@keyframes tickerScroll {
+  from {
+    transform:
+      translateX(100%);
+  }
+
+  to {
+    transform:
+      translateX(-100%);
+  }
+}
+
+
+/* ==========================================================
+   LOW HEIGHT TVs / BROWSER SCALING
+========================================================== */
 
 @media (max-height: 850px) {
 
+  .header {
+    min-height: 92px;
+  }
+
+  .main-area {
+    padding-top: 9px;
+    gap: 11px;
+  }
+
+  .schedule-list {
+    gap: 8px;
+  }
+
   .tomorrow-section {
     margin-top: 6px;
-
     padding-top: 6px;
   }
 
@@ -866,336 +850,15 @@ body {
 
   .tomorrow-heading {
     font-size:
-      clamp(
-        16px,
-        1vw,
-        19px
-      );
+      clamp(16px,1vw,19px);
   }
 
-}/* ==========================================================
-   COMMUNITY
-========================================================== */
-
-.community-section {
-  flex:
-    0
-    0
-    auto;
-
-  text-align: center;
-}
-
-
-.community-divider {
-  width: 100%;
-  height: 1px;
-
-  margin:
-    9px
-    0
-    10px;
-
-  background:
-    #dfd1b7;
-}
-
-
-.section-eyebrow {
-  color:
-    var(--maroon);
-
-  font-weight: 800;
-}
-
-
-.community-heading {
-  margin-bottom: 7px;
-
-  font-family:
-    Georgia,
-    serif;
-
-  font-size:
-    clamp(
-      15px,
-      0.95vw,
-      18px
-    );
-}
-
-
-.community-qr {
-  width:
-    clamp(
-      82px,
-      6vw,
-      105px
-    );
-
-  height:
-    clamp(
-      82px,
-      6vw,
-      105px
-    );
-
-  object-fit: contain;
-}
-
-
-.community-copy {
-  margin-top: 5px;
-
-  color:
-    var(--muted);
-
-  font-size:
-    11px;
-
-  font-weight: 600;
-}
-
-
-/* ==========================================================
-   TICKERS
-========================================================== */
-
-.ticker-row {
-  display: grid;
-
-  grid-template-columns:
-    205px
-    minmax(0, 1fr);
-
-  overflow: hidden;
-}
-
-
-.ticker-label {
-  display: flex;
-
-  align-items: center;
-
-  padding:
-    0
-    18px;
-
-  background:
-    var(--gold);
-
-  color:
-    var(--maroon-dark);
-
-  font-size:
-    clamp(
-      14px,
-      0.95vw,
-      18px
-    );
-
-  font-weight: 800;
-
-  white-space: nowrap;
-}
-
-
-.ticker-viewport {
-  position: relative;
-
-  overflow: hidden;
-
-  display: flex;
-
-  align-items: center;
-}
-
-
-.ticker-track {
-  position: absolute;
-
-  left: 100%;
-
-  white-space: nowrap;
-
-  color: white;
-
-  font-size:
-    clamp(
-      15px,
-      1vw,
-      19px
-    );
-
-  font-weight: 600;
-
-  animation:
-    scroll-left
-    44s
-    linear
-    infinite;
-}
-
-
-.announcement-row {
-  background:
-    var(--maroon-dark);
-
-  border-top:
-    2px solid
-    var(--gold);
-}
-
-
-.upcoming-row {
-  background:
-    var(--maroon-soft);
-}
-
-
-.upcoming-label {
-  background:
-    #ead17c;
-}
-
-
-.upcoming-track {
-  color:
-    #fff4cf;
-
-  animation-duration:
-    50s;
-}
-
-
-@keyframes scroll-left {
-
-  0% {
-    transform:
-      translateX(0);
-  }
-
-  100% {
-    transform:
-      translateX(
-        calc(
-          -100% - 100vw
-        )
-      );
-  }
-
-}
-
-
-/* ==========================================================
-   1680 SCREEN
-========================================================== */
-
-@media (max-width: 1700px) {
-
-  .tv-screen {
-    grid-template-rows:
-      92px
-      minmax(0, 1fr)
-      43px
-      37px;
-  }
-
-
-  .top-header {
-    grid-template-columns:
-      90px
-      minmax(0, 1fr)
-      195px;
-  }
-
-
-  .temple-logo {
-    width: 62px;
-    height: 62px;
-  }
-
-
-  .content-grid {
-    grid-template-columns:
-      minmax(0, 1fr)
-      300px;
-
-    gap: 12px;
-
-    padding:
-      10px
-      12px;
-  }
-
-
-  .info-rail {
-    padding:
-      8px
-      10px;
-  }
-
-}
-
-
-/* ==========================================================
-   SHORT SCREEN
-========================================================== */
-
-@media (max-height: 850px) {
-
-  .tv-screen {
-    grid-template-rows:
-      86px
-      minmax(0, 1fr)
-      40px
-      35px;
-  }
-
-
-  .schedule-list {
-    gap: 8px;
-  }
-
-
-  .schedule-ornament {
-    height: 19px;
-  }
-
-
-  .schedule-ornament span::before {
-    font-size: 25px;
-  }
-
-
-  .schedule-heading-divider {
-    margin-bottom: 6px;
-  }
-
-
-  .tomorrow-divider {
-    margin:
-      5px
-      0;
-  }
-
-
-  .tomorrow-schedule-list {
-    gap: 4px;
-  }
-
-
-  .community-divider {
-    margin:
-      5px
-      0
-      6px;
-  }
-
-
-  .community-qr {
+  .community-qr img {
     width: 75px;
     height: 75px;
   }
 
+  .ticker-row {
+    height: 32px;
+  }
 }
