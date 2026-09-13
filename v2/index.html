@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#7b1813" />
+  <title>Chinmaya Saraswati Ashram - Temple TV V2</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app" class="signage-shell">
+    <header class="topbar">
+      <div class="brand-lockup">
+        <img id="temple-logo" class="temple-logo" src="../images/logo.png" alt="Chinmaya Saraswati Ashram logo" />
+        <div class="brand-copy">
+          <div id="temple-name" class="temple-name">CHINMAYA SARASWATI ASHRAM</div>
+          <div class="brand-subline">
+            <span id="temple-subtitle">DEVI TEMPLE</span>
+            <span class="dot">•</span>
+            <span id="temple-location">Orange, Connecticut</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="motto-block" aria-hidden="true">
+        <div>Knowledge&nbsp; • &nbsp;Devotion&nbsp; • &nbsp;Service</div>
+        <div class="motto-small">For a Better World</div>
+      </div>
+
+      <div class="clock-block">
+        <div id="header-date" class="header-date">--</div>
+        <div id="clock" class="clock">--:-- --</div>
+        <div id="connection-status" class="connection-status live">
+          <span class="status-dot"></span>
+          <span id="connection-label">LIVE</span>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-layout" class="main-layout">
+      <section class="stage-card" aria-live="polite">
+        <div id="scene-stage" class="scene-stage">
+          <div class="scene-loading">
+            <div class="loading-lotus">❈</div>
+            <div>Loading Temple TV…</div>
+          </div>
+        </div>
+        <div id="scene-progress" class="scene-progress" aria-hidden="true"></div>
+        <div id="scene-dots" class="scene-dots" aria-hidden="true"></div>
+      </section>
+
+      <aside id="info-rail" class="info-rail">
+        <section class="rail-card schedule-card">
+          <div class="rail-card-heading">
+            <span class="rail-icon">▣</span>
+            <span>TODAY'S SCHEDULE</span>
+            <span id="today-label" class="rail-date-label"></span>
+          </div>
+          <div id="today-schedule-list" class="schedule-list"></div>
+        </section>
+
+        <section id="tomorrow-card" class="rail-card schedule-card tomorrow-card">
+          <div class="rail-card-heading">
+            <span class="rail-icon">▣</span>
+            <span>TOMORROW'S SCHEDULE</span>
+            <span id="tomorrow-label" class="rail-date-label"></span>
+          </div>
+          <div id="tomorrow-schedule-list" class="schedule-list"></div>
+        </section>
+
+        <section id="community-card" class="rail-card community-card">
+          <div class="community-copy">
+            <div class="community-title">JOIN OUR COMMUNITY</div>
+            <div class="community-subtitle">Scan for temple updates, events and seva opportunities.</div>
+            <div class="community-foot">Events&nbsp; • &nbsp;Seva&nbsp; • &nbsp;Classes</div>
+            <div class="all-welcome">ALL ARE WELCOME</div>
+          </div>
+          <div class="qr-wrap">
+            <img id="community-qr" src="../images/whatsapp-qr.png" alt="Temple WhatsApp updates QR code" />
+            <div class="qr-caption">Stay connected</div>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="ticker-zone">
+      <div class="ticker-row announcements-row">
+        <div class="ticker-label">
+          <span class="ticker-icon">◆</span>
+          <span>ANNOUNCEMENTS</span>
+        </div>
+        <div class="ticker-window">
+          <div id="announcement-track" class="ticker-track"></div>
+        </div>
+      </div>
+
+      <div class="ticker-row upcoming-row">
+        <div class="ticker-label light-label">
+          <span class="ticker-icon">▦</span>
+          <span>UPCOMING EVENTS</span>
+        </div>
+        <div class="ticker-window light-window">
+          <div id="upcoming-track" class="ticker-track dark-text"></div>
+        </div>
+        <div class="footer-blessing">❈&nbsp; HARI OM</div>
+      </div>
+    </footer>
+
+    <div id="audio-help" class="audio-help hidden">Click once to enable background music</div>
+
+    <audio id="audio-a" preload="auto"></audio>
+    <audio id="audio-b" preload="auto"></audio>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
