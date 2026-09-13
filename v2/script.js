@@ -832,8 +832,19 @@
     const previous = state.currentSceneEl;
     els.sceneStage.appendChild(nextEl);
 
-    const takeover = scene.Type === "FEATURED_EVENT";
+    // TD-Bank-style scene choreography: informational scenes temporarily
+    // take over the full presentation canvas, while flyer/program scenes
+    // retain the persistent Today/Tomorrow/Community rail.
+    const takeoverTypes = new Set([
+      "SCHEDULE",
+      "COMMUNITY",
+      "DEVOTIONAL",
+      "FEATURED_EVENT",
+      "ANNOUNCEMENT"
+    ]);
+    const takeover = takeoverTypes.has(scene.Type);
     els.mainLayout.classList.toggle("takeover", takeover);
+    els.mainLayout.dataset.sceneType = scene.Type;
 
     if (immediate) {
       nextEl.classList.add("is-entered");
