@@ -480,6 +480,9 @@
   function renderRailSchedule(container, date, limit) {
     const rows = scheduleForDate(date).slice(0, limit);
     container.innerHTML = "";
+    container.classList.remove("has-items");
+    container.removeAttribute("data-count");
+    container.style.removeProperty("--schedule-count");
 
     if (!rows.length) {
       const empty = document.createElement("div");
@@ -488,6 +491,10 @@
       container.appendChild(empty);
       return;
     }
+
+    container.classList.add("has-items");
+    container.dataset.count = String(rows.length);
+    container.style.setProperty("--schedule-count", String(rows.length));
 
     rows.forEach(item => {
       const row = document.createElement("div");
@@ -644,6 +651,7 @@
     const t = upper(scene.Transition);
     if (t === "SLIDE") return "transition-slide";
     if (t === "ZOOM") return "transition-zoom";
+    if (t === "REVEAL") return "transition-reveal";
     if (t === "WIPE") return "transition-wipe";
     return "transition-fade";
   }
@@ -737,9 +745,23 @@
 
   function buildDevotionalScene(scene) {
     const root = makeEl("div", `scene devotional-scene ${transitionClass(scene)}`);
-    root.appendChild(makeEl("div", "devotional-symbol", "ॐ"));
-    root.appendChild(makeEl("h2", "devotional-title", scene.Title || "Hari Om"));
-    root.appendChild(makeEl("div", "devotional-subtitle", scene.Subtitle || "Knowledge • Devotion • Service"));
+
+    if (scene.ImageURL) {
+      root.classList.add("has-image");
+      const bg = document.createElement("img");
+      bg.className = "devotional-bg";
+      bg.src = scene.ImageURL;
+      bg.alt = "";
+      root.appendChild(bg);
+    }
+
+    const panel = makeEl("div", "devotional-panel");
+    panel.appendChild(makeEl("div", "devotional-eyebrow", "CHINMAYA SARASWATI ASHRAM"));
+    panel.appendChild(makeEl("div", "devotional-symbol", "ॐ"));
+    panel.appendChild(makeEl("h2", "devotional-title", scene.Title || "Hari Om"));
+    panel.appendChild(makeEl("div", "devotional-subtitle", scene.Subtitle || "Knowledge • Devotion • Service"));
+    panel.appendChild(makeEl("div", "devotional-line"));
+    root.appendChild(panel);
     return root;
   }
 
@@ -800,6 +822,10 @@
     state.sceneIndex = ((index % state.scenes.length) + state.scenes.length) % state.scenes.length;
     const scene = state.scenes[state.sceneIndex];
     const nextScene = state.scenes[(state.sceneIndex + 1) % state.scenes.length];
+
+    // Keep the current scene on screen until the next image is actually ready.
+    // This prevents white flashes or blank frames on slower network connections.
+    if (scene?.ImageURL) await preloadImage(scene.ImageURL);
     if (nextScene?.ImageURL) preloadImage(nextScene.ImageURL);
 
     const nextEl = buildSceneElement(scene);
