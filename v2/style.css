@@ -203,12 +203,20 @@ body {
 }
 
 .main-layout.takeover {
-  grid-template-columns: 1fr 0;
+  grid-template-columns: minmax(0, 1fr) 0;
+  gap: 0;
+}
+
+.main-layout.takeover .stage-card {
+  box-shadow: 0 12px 38px rgba(83, 49, 20, 0.13);
 }
 
 .main-layout.takeover .info-rail {
+  width: 0;
+  min-width: 0;
+  overflow: hidden;
   opacity: 0;
-  transform: translateX(24px);
+  transform: translateX(30px);
   pointer-events: none;
 }
 
@@ -783,7 +791,7 @@ body {
   min-width: 0;
   min-height: 0;
   display: grid;
-  grid-template-rows: minmax(0, 1.10fr) minmax(0, 1fr) minmax(160px, 0.70fr);
+  grid-template-rows: minmax(0, 0.93fr) minmax(0, 1.07fr) minmax(160px, 0.74fr);
   gap: 12px;
   transition:
     opacity var(--transition-ms) ease,
@@ -807,7 +815,7 @@ body {
   color: white;
   font-family: Georgia, "Times New Roman", serif;
   font-weight: 700;
-  font-size: clamp(17px, 1.4vw, 26px);
+  font-size: clamp(16px, 1.22vw, 23px);
   letter-spacing: 0.01em;
 }
 
@@ -826,6 +834,13 @@ body {
   opacity: 0.9;
 }
 
+.rail-card-heading > span:nth-child(2) {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .schedule-list {
   height: calc(100% - 50px);
   overflow: hidden;
@@ -836,6 +851,25 @@ body {
 .schedule-list.has-items {
   display: grid;
   grid-template-rows: repeat(var(--schedule-count, 1), minmax(0, 1fr));
+}
+
+/* One or two programs should sit naturally near the top rather than
+   being stretched into oversized rows. Three or more use the full card. */
+.schedule-list[data-count="1"] {
+  grid-template-rows: minmax(78px, 96px);
+  align-content: start;
+  padding-top: 16px;
+}
+
+.schedule-list[data-count="2"] {
+  grid-template-rows: repeat(2, minmax(66px, 84px));
+  align-content: start;
+  padding-top: 12px;
+}
+
+.schedule-list[data-count="1"] .schedule-item,
+.schedule-list[data-count="2"] .schedule-item {
+  height: auto;
 }
 
 .schedule-item {
@@ -851,6 +885,21 @@ body {
 
 .schedule-item:last-child {
   border-bottom: 0;
+}
+
+.schedule-list[data-count="3"] .schedule-item {
+  gap: 9px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.schedule-list[data-count="3"] .schedule-program {
+  font-size: clamp(12px, 0.96vw, 17px);
+  line-height: 1.10;
+}
+
+.schedule-list[data-count="3"] .schedule-time {
+  font-size: clamp(13px, 1vw, 18px);
 }
 
 .schedule-list[data-count="4"] .schedule-item,
@@ -1166,4 +1215,29 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* V2 Update 2: scene takeover choreography */
+.main-layout.takeover .scene-dots {
+  bottom: 18px;
+}
+
+.main-layout.takeover .schedule-scene,
+.main-layout.takeover .community-scene,
+.main-layout.takeover .devotional-scene,
+.main-layout.takeover .announcement-scene {
+  border-radius: 17px;
+}
+
+.main-layout.takeover .schedule-scene {
+  padding-left: clamp(54px, 4.5vw, 92px);
+  padding-right: clamp(54px, 4.5vw, 92px);
+}
+
+.main-layout.takeover .community-scene {
+  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.55fr);
+}
+
+.main-layout.takeover .devotional-panel {
+  box-shadow: 0 26px 80px rgba(85,49,18,0.12);
 }
