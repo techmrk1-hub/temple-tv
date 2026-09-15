@@ -54,7 +54,6 @@
     communityQr: document.getElementById("community-qr"),
     announcementTrack: document.getElementById("announcement-track"),
     upcomingTrack: document.getElementById("upcoming-track"),
-    audioHelp: document.getElementById("audio-help"),
     audioA: document.getElementById("audio-a"),
     audioB: document.getElementById("audio-b")
   };
@@ -663,7 +662,7 @@
       // Preserve the entire flyer while still filling the stage elegantly.
       // The same image is used as a softly blurred backdrop so portrait or
       // non-16:9 artwork never creates harsh empty bars.
-      wrap.style.setProperty("--hero-bg", `url("${scene.ImageURL.replace(/"/g, "\\"")}")`);
+      wrap.style.setProperty("--hero-bg", `url("${scene.ImageURL.replace(/"/g, '\\"')}")`);
     }
     const img = document.createElement("img");
     img.className = "hero-image";
@@ -1011,7 +1010,6 @@
     try {
       await incoming.play();
       state.audioBlocked = false;
-      els.audioHelp.classList.add("hidden");
       const target = state.settings.BgmVolume;
       const fadeMs = crossfade ? 1400 : 350;
       fadeAudio(incoming, 0, target, fadeMs);
@@ -1026,7 +1024,6 @@
     } catch (error) {
       console.warn("Temple TV V2: autoplay blocked", error);
       state.audioBlocked = true;
-      els.audioHelp.classList.remove("hidden");
     }
   }
 
