@@ -659,6 +659,12 @@
   function buildHeroScene(scene) {
     const root = makeEl("div", `scene hero-scene ${transitionClass(scene)}`);
     const wrap = makeEl("div", "hero-image-wrap");
+    if (scene.ImageURL) {
+      // Preserve the entire flyer while still filling the stage elegantly.
+      // The same image is used as a softly blurred backdrop so portrait or
+      // non-16:9 artwork never creates harsh empty bars.
+      wrap.style.setProperty("--hero-bg", `url("${scene.ImageURL.replace(/"/g, "\\"")}")`);
+    }
     const img = document.createElement("img");
     img.className = "hero-image";
     img.alt = scene.Title || "Temple flyer";
