@@ -1241,3 +1241,126 @@ body {
 .main-layout.takeover .devotional-panel {
   box-shadow: 0 26px 80px rgba(85,49,18,0.12);
 }
+
+/* =========================================================
+   V2 Update 3 - full-flyer preservation + cleaner rail polish
+   ========================================================= */
+
+/* Show the complete uploaded flyer instead of cropping its edges. */
+.hero-image-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1e6d5;
+}
+
+.hero-image-wrap::before {
+  content: "";
+  position: absolute;
+  inset: -28px;
+  background-image:
+    linear-gradient(rgba(62, 37, 20, 0.12), rgba(62, 37, 20, 0.12)),
+    var(--hero-bg, none);
+  background-size: cover;
+  background-position: center;
+  filter: blur(22px) saturate(0.86);
+  transform: scale(1.08);
+  opacity: 0.42;
+}
+
+.hero-image-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    rgba(255,249,238,0.16),
+    rgba(255,249,238,0.02) 22%,
+    rgba(255,249,238,0.02) 78%,
+    rgba(255,249,238,0.16));
+  pointer-events: none;
+}
+
+.hero-image {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  padding: 0;
+  animation: calmFlyerDrift 15s ease-in-out forwards;
+  filter: drop-shadow(0 8px 18px rgba(55, 33, 17, 0.14));
+}
+
+@keyframes calmFlyerDrift {
+  from { transform: scale(1.002); }
+  to   { transform: scale(1.018); }
+}
+
+/* A single schedule item becomes a purposeful compact feature card. */
+.schedule-list[data-count="1"] {
+  grid-template-rows: auto;
+  align-content: center;
+  padding: 18px 14px;
+}
+
+.schedule-list[data-count="1"] .schedule-item {
+  min-height: 116px;
+  height: auto;
+  grid-template-columns: minmax(94px, 27%) 1fr auto;
+  padding: 15px 12px;
+  border: 1px solid rgba(201,149,52,0.28);
+  border-radius: 13px;
+  background: linear-gradient(135deg, rgba(255,253,248,0.98), rgba(250,241,224,0.88));
+  box-shadow: 0 8px 24px rgba(84,50,21,0.07);
+}
+
+.schedule-list[data-count="1"] .schedule-time {
+  font-size: clamp(16px, 1.15vw, 22px);
+}
+
+.schedule-list[data-count="1"] .schedule-program {
+  font-size: clamp(15px, 1.10vw, 20px);
+  line-height: 1.18;
+}
+
+/* So an empty day still looks intentional instead of like a broken card. */
+.schedule-list:not(.has-items) {
+  position: relative;
+  background:
+    radial-gradient(circle at 50% 58%, rgba(201,149,52,0.08), transparent 34%),
+    rgba(255,253,248,0.90);
+}
+
+.schedule-list:not(.has-items)::before {
+  content: "ॐ";
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  color: rgba(201,149,52,0.10);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(72px, 7vw, 122px);
+}
+
+.schedule-list:not(.has-items) .no-programs {
+  position: relative;
+  z-index: 1;
+  padding-top: 76px;
+}
+
+/* Keep the browser autoplay notice away from the QR/community card. */
+.audio-help {
+  left: 50%;
+  right: auto;
+  bottom: 104px;
+  transform: translateX(-50%);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  background: rgba(91, 16, 13, 0.92);
+  white-space: nowrap;
+}
