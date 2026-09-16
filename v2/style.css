@@ -1364,3 +1364,51 @@ body {
   background: rgba(91, 16, 13, 0.92);
   white-space: nowrap;
 }
+
+/* =========================================================
+   V2 Update 5 - flyer clarity / no zoom
+   Keep every uploaded flyer sharp and fully visible.
+   ========================================================= */
+
+/* The flyer itself must remain completely static while displayed. */
+.hero-scene img.hero-image,
+.hero-image {
+  object-fit: contain !important;
+  object-position: center center !important;
+  transform: none !important;
+  animation: none !important;
+  filter: none !important;
+  backface-visibility: hidden;
+}
+
+/* Do not scale HERO_FLYER scenes, even when a scene row says ZOOM.
+   We still use opacity for a clean cross-fade. */
+.hero-scene.transition-zoom,
+.hero-scene.transition-zoom.is-entered,
+.hero-scene.transition-zoom.is-leaving {
+  transform: none !important;
+}
+
+.hero-scene.transition-zoom {
+  opacity: 0;
+}
+
+.hero-scene.transition-zoom.is-entered {
+  opacity: 1;
+}
+
+.hero-scene.transition-zoom.is-leaving {
+  opacity: 0;
+}
+
+/* Prevent the generic scene scale from slightly softening flyer text. */
+.hero-scene:not(.transition-slide):not(.transition-reveal):not(.transition-wipe),
+.hero-scene:not(.transition-slide):not(.transition-reveal):not(.transition-wipe).is-entered,
+.hero-scene:not(.transition-slide):not(.transition-reveal):not(.transition-wipe).is-leaving {
+  transform: none !important;
+}
+
+/* Background may remain softly filled, but never affects the foreground flyer. */
+.hero-image-wrap::before {
+  pointer-events: none;
+}
