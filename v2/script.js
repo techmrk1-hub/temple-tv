@@ -900,38 +900,21 @@
       .sort((a, b) => a.order - b.order || dateOnlyTime(a.date) - dateOnlyTime(b.date));
   }
 
-  function makeTickerCopy(items) {
-    const copy = makeEl("div", "ticker-copy");
-    items.forEach((item, index) => {
-      const span = makeEl("span", "", item);
-      copy.appendChild(span);
-      if (index !== items.length - 1) copy.appendChild(makeEl("span", "sep", "•"));
-    });
-    return copy;
-  }
+  // ==========================================================
+  // V2 UPDATE 7 - V1-STYLE TICKER BEHAVIOR
+  // Single text strip, fixed 40-second right-to-left scroll.
+  // This intentionally matches the original V1 signage behavior.
+  // ==========================================================
 
-  function setupTicker(track, items, pixelsPerSecond) {
-    track.innerHTML = "";
-    let safeItems = items.filter(Boolean);
+  function setupTicker(track, items) {
+    if (!track) return;
+
+    let safeItems = (items || []).filter(Boolean);
     if (!safeItems.length) safeItems = ["Hari Om"];
 
-    const baseChars = safeItems.join(" • ").length;
-    const repeatCount = baseChars < 80 ? Math.ceil(80 / Math.max(baseChars, 1)) : 1;
-    const expanded = [];
-    for (let i = 0; i < repeatCount; i += 1) expanded.push(...safeItems);
-
-    const copyA = makeTickerCopy(expanded);
-    const copyB = makeTickerCopy(expanded);
-    track.append(copyA, copyB);
-
-    requestAnimationFrame(() => {
-      const distance = copyA.getBoundingClientRect().width;
-      const seconds = clamp(distance / pixelsPerSecond, 14, 120);
-      track.style.setProperty("--ticker-duration", `${seconds}s`);
-      track.style.animation = "none";
-      void track.offsetWidth;
-      track.style.animation = `marquee ${seconds}s linear infinite`;
-    });
+    // V1 behavior: one continuous text line separated by bullets.
+    // No duplicated copy and no content-width-based speed calculation.
+    track.textContent = safeItems.join("     •     ");
   }
 
   function updateTickers() {
