@@ -602,28 +602,41 @@ function convertDriveImageURL(url) {
 
 
 function convertDriveAudioURL(url) {
-
-  const fileId =
-    getDriveFileId(
-      url
-    );
-
-
-  if (
-    !fileId
-  ) {
-
+  // Only convert Google Drive URLs; keep other audio hosts unchanged.
+  try {
+    const parsed = new URL(url);
+    if (!["drive.google.com", "drive.usercontent.google.com"].includes(parsed.hostname)) return url;
+    const fileId = getDriveFileId(url);
+    if (!fileId) return url;
+    const download = new URL("https://drive.google.com/uc");
+    download.searchParams.set("export", "download");
+    download.searchParams.set("id", fileId);
+    const resourceKey = parsed.searchParams.get("resourcekey");
+    if (resourceKey) download.searchParams.set("resourcekey", resourceKey);
+    return download.href;
+  } catch (_) {
     return url;
-
   }
-
-
-  return (
-    "https://drive.google.com/uc" +
-    `?export=download&id=${fileId}`
-  );
 }
 
+function showBGMHelp(message) {
+  const help = document.getElementById("bgm-help");
+  if (!help) return;
+  help.textContent = message;
+  help.hidden = !message;
+}
+
+async function tryPlayBGM() {
+  try {
+    await musicElement.play();
+    showBGMHelp("");
+  } catch (error) {
+    showBGMHelp(error.name === "NotAllowedError"
+      ? "Click here to enable background music"
+      : "Music could not play. Check the Drive file sharing and audio link; click to retry.");
+    console.warn("BGM playback:", error);
+  }
+}
 
 /* ==========================================================
    ESCAPE HTML
@@ -3194,6 +3207,7 @@ async function loadBGMPlaylist() {
           )
           .trim()
           .toLowerCase()
+          .replace(/\s+/g, "")
       );
 
 
@@ -3386,8 +3400,7 @@ async function loadBGMPlaylist() {
 
 
       if (
-        type ===
-        "SPECIAL"
+        (type === "SPECIAL" || type === "SCHEDULED")
       ) {
 
         specials.push(
@@ -3584,24 +3597,7 @@ function playCurrentBGMTrack(
       }
 
 
-      musicElement
-        .play()
-        .catch(
-          error => {
-
-            /*
-              Normal in ordinary browsers.
-              Kiosk Chrome should use:
-              --autoplay-policy=no-user-gesture-required
-            */
-
-            console.warn(
-              "BGM autoplay blocked:",
-              error.message
-            );
-
-          }
-        );
+      tryPlayBGM();
 
     };
 
@@ -3640,12 +3636,15 @@ function startDefaultBGM(
   resume = false
 ) {
 
-  if (
-    !defaultBGMPlaylist.length
-  ) {
-
+  if (!defaultBGMPlaylist.length) {
+    musicElement.pause();
+    musicElement.removeAttribute("src");
+    musicElement.load();
+    currentBGMPlaylist = [];
+    currentBGMMode = "NONE";
+    currentSpecialSignature = "";
+    showBGMHelp("");
     return;
-
   }
 
 
@@ -3891,6 +3890,10 @@ if (
     );
 
 
+  musicElement.addEventListener("error", () => {
+    showBGMHelp("Music could not load. Check that the Drive MP3 is shared with Anyone with the link. Click to retry.");
+  });
+
   const resumeAudio =
     () => {
 
@@ -3899,11 +3902,8 @@ if (
         currentBGMPlaylist.length
       ) {
 
-        musicElement
-          .play()
-          .catch(
-            () => {}
-          );
+        if (musicElement.error) musicElement.load();
+        tryPlayBGM();
 
       }
 
