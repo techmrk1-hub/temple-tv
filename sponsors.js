@@ -1,15 +1,16 @@
 /* ==========================================================
    CHINMAYA SARASWATI ASHRAM - DEVI TEMPLE
-   CONDITIONAL WEEKLY SEVA SPONSOR CARD
+   CONDITIONAL SEVA SPONSOR CARD
 
    Safe V1 add-on:
    - Existing header, schedules, flyers and tickers stay unchanged
-   - Sponsor heading uses the exact same typography as Today/Tomorrow
+   - Sponsor heading uses the same typography as Today/Tomorrow
    - Sponsor content uses the same schedule font family and sizes
    - Shows only when active sponsors exist in the current week
-   - Displays up to 3 sponsor cards at a time
-   - Additional sponsor cards rotate upward in groups of 3
-   - Community / QR card always remains available
+   - Shows approximately 3 sponsor rows at a time
+   - If more than 3 sponsors exist, scrolls upward continuously
+   - Uses the same slow-scroll behavior as Today/Tomorrow schedules
+   - Community / QR card always remains visible
 ========================================================== */
 
 (() => {
@@ -21,13 +22,19 @@
     "https://docs.google.com/spreadsheets/d/1rljGlqs80q6qdqddXd5Rh6BZE7fAEvG3OsHAny81t1s/gviz/tq?tqx=out:csv&gid=2026101101";
 
   const REFRESH_MS = 5 * 60 * 1000;
-  const ROTATE_MS = 7000;
-  const ITEMS_PER_PAGE = 3;
+  const MAX_VISIBLE_ROWS = 3;
+  const SCROLL_PIXELS_PER_SECOND = 8;
 
   let sponsors = [];
-  let pageIndex = 0;
-  let rotateTimer = null;
-  let animationBusy = false;
+
+  const scrollState = {
+    track: null,
+    viewport: null,
+    loopHeight: 0,
+    offset: 0,
+    lastTimestamp: null,
+    animationFrame: null
+  };
 
 
   function parseCSV(text) {
@@ -55,8 +62,10 @@
       }
       else if ((char === "\n" || char === "\r") && !inQuotes) {
         if (char === "\r" && next === "\n") i++;
+
         row.push(field.trim());
         field = "";
+
         if (row.some(value => value !== "")) rows.push(row);
         row = [];
       }
@@ -105,6 +114,7 @@
         Number(match[2]),
         12, 0, 0, 0
       );
+
       return Number.isNaN(date.getTime()) ? null : date;
     }
 
@@ -117,6 +127,7 @@
         Number(match[3]),
         12, 0, 0, 0
       );
+
       return Number.isNaN(date.getTime()) ? null : date;
     }
 
@@ -192,13 +203,7 @@
         display: none !important;
       }
 
-      /*
-        IMPORTANT:
-        Do not override .schedule-heading here.
-        The sponsor heading now uses the exact same existing
-        Georgia font, font size, weight and color as Today/Tomorrow.
-      */
-
+      /* Use the exact existing schedule heading typography. */
       .sponsor-section .schedule-ornament {
         height: 18px;
       }
@@ -211,32 +216,25 @@
       .sponsor-viewport {
         width: 100%;
         overflow: hidden;
+        position: relative;
         padding: 0 1px 1px;
       }
 
       .sponsor-list {
-        display: grid;
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
         gap: 5px;
         width: 100%;
-        transform: translateY(0);
-        opacity: 1;
-        transition: transform .48s ease, opacity .42s ease;
-        will-change: transform, opacity;
+        transform: translate3d(0, 0, 0);
+        will-change: transform;
       }
 
-      .sponsor-list.is-leaving {
-        transform: translateY(-24px);
-        opacity: 0;
-      }
-
-      .sponsor-list.is-entering {
-        transform: translateY(20px);
-        opacity: 0;
-        transition: none;
+      .sponsor-scroll-clone {
+        pointer-events: none;
       }
 
       .sponsor-item {
+        flex: 0 0 auto;
         border: 1px solid #ead9b7;
         border-left: 3px solid var(--gold);
         border-radius: 6px;
@@ -251,7 +249,7 @@
         gap: 8px;
       }
 
-      /* Same size/family as schedule program names */
+      /* Same font and size as schedule program names. */
       .sponsor-type,
       .sponsor-deity,
       .sponsor-name {
@@ -269,15 +267,12 @@
         text-transform: uppercase;
       }
 
-      .sponsor-deity {
-        font-weight: 600;
-      }
-
+      .sponsor-deity,
       .sponsor-name {
         font-weight: 600;
       }
 
-      /* Same size/family as Today/Tomorrow time */
+      /* Same font and size as Today/Tomorrow time. */
       .sponsor-date {
         flex: 0 0 auto;
         font-family: "Segoe UI", Arial, sans-serif;
@@ -303,7 +298,7 @@
         color: var(--gold);
       }
 
-      /* Same size/family as the schedule status line */
+      /* Same font family/size as schedule status text. */
       .sponsor-by,
       .sponsor-details {
         font-family: "Segoe UI", Arial, sans-serif;
@@ -319,23 +314,9 @@
         color: #6d5f55;
       }
 
-      .sponsor-pager {
-        display: flex;
-        justify-content: center;
-        gap: 5px;
-        margin-top: 3px;
-        min-height: 5px;
-      }
-
-      .sponsor-dot {
-        width: 5px;
-        height: 5px;
-        border-radius: 50%;
-        background: #d8c8aa;
-      }
-
-      .sponsor-dot.is-active {
-        background: var(--gold);
+      /* Keep QR/community visible during sponsor weeks. */
+      .community-section[hidden] {
+        display: block !important;
       }
 
       @media (max-height: 850px) {
@@ -378,18 +359,16 @@
       </div>
 
       <div class="schedule-heading">
-        THIS WEEK'S SEVA SPONSORS
+        SEVA SPONSORS
       </div>
 
       <div class="schedule-heading-divider">
         <span class="divider-diamond"></span>
       </div>
 
-      <div class="sponsor-viewport">
+      <div id="sponsor-viewport" class="sponsor-viewport">
         <div id="weekly-sponsor-list" class="sponsor-list"></div>
       </div>
-
-      <div id="weekly-sponsor-pager" class="sponsor-pager" aria-hidden="true"></div>
     `;
 
     rail.insertBefore(card, community);
@@ -427,93 +406,141 @@
   }
 
 
-  function renderSponsorPage(animate = false) {
+  function stopSponsorScroll() {
+    if (scrollState.animationFrame) {
+      cancelAnimationFrame(scrollState.animationFrame);
+      scrollState.animationFrame = null;
+    }
+
+    scrollState.track = null;
+    scrollState.viewport = null;
+    scrollState.loopHeight = 0;
+    scrollState.offset = 0;
+    scrollState.lastTimestamp = null;
+  }
+
+
+  function buildSponsorScroll() {
+    stopSponsorScroll();
+
+    const viewport = document.getElementById("sponsor-viewport");
+    const list = document.getElementById("weekly-sponsor-list");
+
+    if (!viewport || !list) return;
+
+    viewport.style.height = "";
+    viewport.style.maxHeight = "";
+
+    const realItems = Array.from(list.children)
+      .filter(child => child.classList.contains("sponsor-item") &&
+        !child.classList.contains("sponsor-scroll-clone"));
+
+    if (!realItems.length) return;
+
+    const computed = getComputedStyle(list);
+    const parsedGap = parseFloat(computed.rowGap || computed.gap || "0");
+    const gap = Number.isFinite(parsedGap) ? parsedGap : 0;
+
+    const visibleItems = realItems.slice(0, MAX_VISIBLE_ROWS);
+
+    const viewportHeight =
+      visibleItems.reduce(
+        (total, item) => total + item.getBoundingClientRect().height,
+        0
+      )
+      +
+      gap * Math.max(0, visibleItems.length - 1);
+
+    if (viewportHeight > 0) {
+      const height = `${Math.ceil(viewportHeight)}px`;
+      viewport.style.height = height;
+      viewport.style.maxHeight = height;
+    }
+
+    if (realItems.length <= MAX_VISIBLE_ROWS) {
+      list.style.transform = "translate3d(0, 0, 0)";
+      return;
+    }
+
+    /* Duplicate the whole sponsor set for a seamless slow loop. */
+    realItems.forEach(item => {
+      const clone = item.cloneNode(true);
+      clone.classList.add("sponsor-scroll-clone");
+      clone.setAttribute("aria-hidden", "true");
+      list.appendChild(clone);
+    });
+
+    const firstClone = list.children[realItems.length];
+
+    scrollState.track = list;
+    scrollState.viewport = viewport;
+    scrollState.loopHeight = firstClone ? firstClone.offsetTop : 0;
+    scrollState.offset = 0;
+    scrollState.lastTimestamp = null;
+
+    const animate = timestamp => {
+      if (!scrollState.track || !scrollState.track.isConnected) {
+        scrollState.animationFrame = null;
+        return;
+      }
+
+      if (scrollState.lastTimestamp === null) {
+        scrollState.lastTimestamp = timestamp;
+      }
+
+      const elapsedSeconds =
+        Math.min(100, timestamp - scrollState.lastTimestamp) / 1000;
+
+      scrollState.lastTimestamp = timestamp;
+
+      scrollState.offset +=
+        SCROLL_PIXELS_PER_SECOND * elapsedSeconds;
+
+      if (
+        scrollState.loopHeight > 0 &&
+        scrollState.offset >= scrollState.loopHeight
+      ) {
+        scrollState.offset =
+          scrollState.offset % scrollState.loopHeight;
+      }
+
+      scrollState.track.style.transform =
+        `translate3d(0, -${scrollState.offset.toFixed(2)}px, 0)`;
+
+      scrollState.animationFrame = requestAnimationFrame(animate);
+    };
+
+    scrollState.animationFrame = requestAnimationFrame(animate);
+  }
+
+
+  function renderSponsors() {
     const card = ensureCard();
     const list = document.getElementById("weekly-sponsor-list");
-    const pager = document.getElementById("weekly-sponsor-pager");
     const community = document.querySelector(".community-section");
 
-    if (!card || !list || !pager) return;
+    if (!card || !list) return;
 
-    /* QR/community must remain visible. */
+    /* QR/community must always remain visible. */
     if (community) {
       community.hidden = false;
       community.removeAttribute("hidden");
     }
 
+    stopSponsorScroll();
+
     if (!sponsors.length) {
       card.hidden = true;
       list.innerHTML = "";
-      pager.innerHTML = "";
       return;
     }
 
     card.hidden = false;
+    list.innerHTML = sponsors.map(sponsorItemHTML).join("");
 
-    const pageCount = Math.ceil(sponsors.length / ITEMS_PER_PAGE);
-    if (pageIndex >= pageCount) pageIndex = 0;
-
-    const start = pageIndex * ITEMS_PER_PAGE;
-    const visible = sponsors.slice(start, start + ITEMS_PER_PAGE);
-
-    const applyContent = () => {
-      list.innerHTML = visible.map(sponsorItemHTML).join("");
-
-      pager.innerHTML = pageCount > 1
-        ? Array.from({ length: pageCount }, (_, index) =>
-            `<span class="sponsor-dot${index === pageIndex ? " is-active" : ""}"></span>`
-          ).join("")
-        : "";
-    };
-
-    if (!animate) {
-      list.classList.remove("is-leaving", "is-entering");
-      applyContent();
-      return;
-    }
-
-    if (animationBusy) return;
-    animationBusy = true;
-
-    list.classList.remove("is-entering");
-    list.classList.add("is-leaving");
-
-    setTimeout(() => {
-      applyContent();
-
-      list.classList.remove("is-leaving");
-      list.classList.add("is-entering");
-
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          list.style.transition = "transform .48s ease, opacity .42s ease";
-          list.classList.remove("is-entering");
-        });
-      });
-
-      setTimeout(() => {
-        list.style.transition = "";
-        animationBusy = false;
-      }, 520);
-
-    }, 420);
-  }
-
-
-  function restartRotation() {
-    if (rotateTimer) {
-      clearInterval(rotateTimer);
-      rotateTimer = null;
-    }
-
-    const pageCount = Math.ceil(sponsors.length / ITEMS_PER_PAGE);
-    if (pageCount <= 1) return;
-
-    rotateTimer = setInterval(() => {
-      if (animationBusy) return;
-      pageIndex = (pageIndex + 1) % pageCount;
-      renderSponsorPage(true);
-    }, ROTATE_MS);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(buildSponsorScroll);
+    });
   }
 
 
@@ -557,9 +584,7 @@
 
       if (rows.length < 2) {
         sponsors = [];
-        pageIndex = 0;
-        renderSponsorPage(false);
-        restartRotation();
+        renderSponsors();
         return;
       }
 
@@ -600,10 +625,19 @@
         loaded.push({
           date,
           sevaType,
-          deity: deityIndex >= 0 ? String(row[deityIndex] || "").trim() : "",
+          deity:
+            deityIndex >= 0
+              ? String(row[deityIndex] || "").trim()
+              : "",
           sponsorName,
-          details: detailsIndex >= 0 ? String(row[detailsIndex] || "").trim() : "",
-          order: orderIndex >= 0 ? (parseInt(row[orderIndex], 10) || 999) : 999,
+          details:
+            detailsIndex >= 0
+              ? String(row[detailsIndex] || "").trim()
+              : "",
+          order:
+            orderIndex >= 0
+              ? (parseInt(row[orderIndex], 10) || 999)
+              : 999,
           rowOrder: i
         });
       }
@@ -615,26 +649,43 @@
       });
 
       sponsors = loaded;
-      pageIndex = 0;
-
-      renderSponsorPage(false);
-      restartRotation();
+      renderSponsors();
     }
     catch (error) {
       console.warn("Sponsors:", error);
 
       sponsors = [];
-      pageIndex = 0;
-
-      renderSponsorPage(false);
-      restartRotation();
+      renderSponsors();
     }
+  }
+
+
+  function keepCommunityVisible() {
+    const community = document.querySelector(".community-section");
+    if (!community) return;
+
+    const reveal = () => {
+      if (community.hidden) community.hidden = false;
+      if (community.hasAttribute("hidden")) {
+        community.removeAttribute("hidden");
+      }
+    };
+
+    reveal();
+
+    const observer = new MutationObserver(reveal);
+
+    observer.observe(community, {
+      attributes: true,
+      attributeFilter: ["hidden"]
+    });
   }
 
 
   function start() {
     ensureStyles();
     ensureCard();
+    keepCommunityVisible();
     loadSponsors();
     setInterval(loadSponsors, REFRESH_MS);
   }
