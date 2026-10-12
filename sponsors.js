@@ -3,11 +3,13 @@
    CONDITIONAL WEEKLY SEVA SPONSOR CARD
 
    Safe V1 add-on:
-   - Existing header, fonts, schedules, flyers and tickers stay unchanged
+   - Existing header, schedules, flyers and tickers stay unchanged
+   - Sponsor heading uses the exact same typography as Today/Tomorrow
+   - Sponsor content uses the same schedule font family and sizes
    - Shows only when active sponsors exist in the current week
    - Displays up to 3 sponsor cards at a time
    - Additional sponsor cards rotate upward in groups of 3
-   - Community QR returns automatically when no sponsor card is needed
+   - Community / QR card always remains available
 ========================================================== */
 
 (() => {
@@ -29,14 +31,12 @@
 
 
   function parseCSV(text) {
-
     const rows = [];
     let row = [];
     let field = "";
     let inQuotes = false;
 
     for (let i = 0; i < text.length; i++) {
-
       const char = text[i];
       const next = text[i + 1];
 
@@ -54,12 +54,9 @@
         field = "";
       }
       else if ((char === "\n" || char === "\r") && !inQuotes) {
-
         if (char === "\r" && next === "\n") i++;
-
         row.push(field.trim());
         field = "";
-
         if (row.some(value => value !== "")) rows.push(row);
         row = [];
       }
@@ -96,7 +93,6 @@
 
 
   function parseLocalDate(value) {
-
     const text = String(value || "").trim();
     if (!text) return null;
 
@@ -130,7 +126,6 @@
 
 
   function getCurrentWeekRange() {
-
     const now = new Date();
 
     const start = new Date(
@@ -150,7 +145,6 @@
 
 
   function deityShouldDisplay(value) {
-
     const deity = String(value || "").trim();
     if (!deity) return false;
 
@@ -180,7 +174,6 @@
 
 
   function ensureStyles() {
-
     if (document.getElementById("temple-sponsor-card-styles")) return;
 
     const style = document.createElement("style");
@@ -189,7 +182,7 @@
     style.textContent = `
       .sponsor-section {
         flex: 0 0 auto;
-        margin-top: auto;
+        margin-top: 7px;
         padding-top: 6px;
         border-top: 1px solid var(--line);
         overflow: hidden;
@@ -199,36 +192,20 @@
         display: none !important;
       }
 
+      /*
+        IMPORTANT:
+        Do not override .schedule-heading here.
+        The sponsor heading now uses the exact same existing
+        Georgia font, font size, weight and color as Today/Tomorrow.
+      */
+
       .sponsor-section .schedule-ornament {
-        height: 12px;
-      }
-
-      .sponsor-section .schedule-ornament span {
-        transform: scale(.82);
-        transform-origin: center;
-      }
-
-      .sponsor-section .schedule-heading {
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(14px, .9vw, 17px);
-        line-height: 1;
-        white-space: nowrap;
+        height: 18px;
       }
 
       .sponsor-section .schedule-heading-divider {
-        height: 10px;
-        margin: 0 0 4px;
-      }
-
-      .sponsor-section .schedule-heading-divider::before,
-      .sponsor-section .schedule-heading-divider::after {
-        top: 4px;
-      }
-
-      .sponsor-section .divider-diamond {
-        top: 1px;
-        width: 6px;
-        height: 6px;
+        height: 14px;
+        margin: 1px 0 7px;
       }
 
       .sponsor-viewport {
@@ -240,7 +217,7 @@
       .sponsor-list {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 4px;
+        gap: 5px;
         width: 100%;
         transform: translateY(0);
         opacity: 1;
@@ -260,11 +237,10 @@
       }
 
       .sponsor-item {
-        min-height: 51px;
         border: 1px solid #ead9b7;
         border-left: 3px solid var(--gold);
         border-radius: 6px;
-        padding: 4px 7px 5px;
+        padding: 5px 7px 6px;
         background: linear-gradient(90deg, #fffaf0, #fffdf8);
       }
 
@@ -272,44 +248,53 @@
         display: flex;
         align-items: baseline;
         justify-content: space-between;
-        gap: 6px;
+        gap: 8px;
       }
 
-      .sponsor-type {
+      /* Same size/family as schedule program names */
+      .sponsor-type,
+      .sponsor-deity,
+      .sponsor-name {
         min-width: 0;
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(11px, .72vw, 14px);
-        line-height: 1.05;
-        font-weight: 700;
-        color: #65150e;
-        text-transform: uppercase;
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-size: clamp(14px, .95vw, 18px);
+        line-height: 1.16;
+        color: #25211e;
         overflow-wrap: anywhere;
       }
 
+      .sponsor-type {
+        font-weight: 600;
+        color: #65150e;
+        text-transform: uppercase;
+      }
+
+      .sponsor-deity {
+        font-weight: 600;
+      }
+
+      .sponsor-name {
+        font-weight: 600;
+      }
+
+      /* Same size/family as Today/Tomorrow time */
       .sponsor-date {
         flex: 0 0 auto;
-        font-size: clamp(9px, .54vw, 11px);
-        line-height: 1;
-        font-weight: 700;
-        color: #8a6c33;
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-size: clamp(14px, .95vw, 18px);
+        line-height: 1.15;
+        font-weight: 800;
+        color: #171717;
         white-space: nowrap;
       }
 
       .sponsor-info-line {
         display: flex;
         align-items: baseline;
+        flex-wrap: wrap;
         gap: 5px;
         margin-top: 3px;
         min-width: 0;
-      }
-
-      .sponsor-deity {
-        min-width: 0;
-        font-size: clamp(10px, .64vw, 12px);
-        line-height: 1.05;
-        font-weight: 600;
-        color: #25211e;
-        overflow-wrap: anywhere;
       }
 
       .sponsor-deity::after {
@@ -318,29 +303,20 @@
         color: var(--gold);
       }
 
-      .sponsor-by {
-        flex: 0 0 auto;
-        font-size: clamp(8px, .5vw, 10px);
-        line-height: 1;
-        font-weight: 600;
+      /* Same size/family as the schedule status line */
+      .sponsor-by,
+      .sponsor-details {
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-size: clamp(11px, .75vw, 13px);
+        line-height: 1.1;
+        font-weight: 700;
         color: #887a70;
       }
 
-      .sponsor-name {
-        min-width: 0;
-        font-size: clamp(10px, .65vw, 13px);
-        line-height: 1.08;
-        font-weight: 700;
-        color: #25211e;
-        overflow-wrap: anywhere;
-      }
-
       .sponsor-details {
-        margin-top: 2px;
-        font-size: clamp(8px, .5vw, 10px);
-        line-height: 1.05;
+        margin-top: 3px;
+        font-weight: 600;
         color: #6d5f55;
-        overflow-wrap: anywhere;
       }
 
       .sponsor-pager {
@@ -364,28 +340,16 @@
 
       @media (max-height: 850px) {
         .sponsor-section {
-          padding-top: 3px;
-        }
-
-        .sponsor-section .schedule-ornament {
-          height: 8px;
-        }
-
-        .sponsor-section .schedule-heading-divider {
-          margin-bottom: 2px;
+          margin-top: 5px;
+          padding-top: 4px;
         }
 
         .sponsor-list {
-          gap: 3px;
+          gap: 4px;
         }
 
         .sponsor-item {
-          min-height: 44px;
-          padding: 3px 5px 4px;
-        }
-
-        .sponsor-info-line {
-          margin-top: 2px;
+          padding: 4px 6px 5px;
         }
       }
     `;
@@ -395,7 +359,6 @@
 
 
   function ensureCard() {
-
     let card = document.getElementById("weekly-sponsor-section");
     if (card) return card;
 
@@ -435,7 +398,6 @@
 
 
   function sponsorItemHTML(item) {
-
     const showDeity = deityShouldDisplay(item.deity);
 
     const deity = showDeity
@@ -466,7 +428,6 @@
 
 
   function renderSponsorPage(animate = false) {
-
     const card = ensureCard();
     const list = document.getElementById("weekly-sponsor-list");
     const pager = document.getElementById("weekly-sponsor-pager");
@@ -474,22 +435,20 @@
 
     if (!card || !list || !pager) return;
 
+    /* QR/community must remain visible. */
+    if (community) {
+      community.hidden = false;
+      community.removeAttribute("hidden");
+    }
+
     if (!sponsors.length) {
       card.hidden = true;
       list.innerHTML = "";
       pager.innerHTML = "";
-      if (community) community.hidden = false;
       return;
     }
 
     card.hidden = false;
-
-    /*
-      On sponsor weeks this compact card uses the bottom rail slot.
-      This prevents the right column from becoming overcrowded.
-      The community card automatically returns when no sponsors exist.
-    */
-    if (community) community.hidden = true;
 
     const pageCount = Math.ceil(sponsors.length / ITEMS_PER_PAGE);
     if (pageIndex >= pageCount) pageIndex = 0;
@@ -520,7 +479,6 @@
     list.classList.add("is-leaving");
 
     setTimeout(() => {
-
       applyContent();
 
       list.classList.remove("is-leaving");
@@ -543,7 +501,6 @@
 
 
   function restartRotation() {
-
     if (rotateTimer) {
       clearInterval(rotateTimer);
       rotateTimer = null;
@@ -561,14 +518,11 @@
 
 
   async function fetchRows() {
-
     const urls = [PUBLISHED_SPONSOR_CSV, GVIZ_SPONSOR_CSV];
     let lastError = null;
 
     for (const url of urls) {
-
       try {
-
         const response = await fetch(
           url + (url.includes("?") ? "&" : "?") + "_=" + Date.now(),
           { cache: "no-store" }
@@ -598,9 +552,7 @@
 
 
   async function loadSponsors() {
-
     try {
-
       const rows = await fetchRows();
 
       if (rows.length < 2) {
@@ -629,7 +581,6 @@
       const loaded = [];
 
       for (let i = 1; i < rows.length; i++) {
-
         const row = rows[i];
 
         const active = activeIndex >= 0
@@ -670,7 +621,6 @@
       restartRotation();
     }
     catch (error) {
-
       console.warn("Sponsors:", error);
 
       sponsors = [];
