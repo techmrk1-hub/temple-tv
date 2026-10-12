@@ -2,11 +2,12 @@
    CHINMAYA SARASWATI ASHRAM - DEVI TEMPLE
    CONDITIONAL WEEKLY SEVA SPONSOR CARD
 
-   Safe add-on for V1:
-   - Does not modify existing schedule rendering
-   - Does not change existing fonts or layout styles
-   - Card appears only when active sponsor rows exist
-     in the current Sunday-Saturday week
+   Safe V1 add-on:
+   - Existing header, fonts, schedules, flyers and tickers stay unchanged
+   - Shows only when active sponsors exist in the current week
+   - Displays up to 3 sponsor cards at a time
+   - Additional sponsor cards rotate upward in groups of 3
+   - Community QR returns automatically when no sponsor card is needed
 ========================================================== */
 
 (() => {
@@ -18,12 +19,13 @@
     "https://docs.google.com/spreadsheets/d/1rljGlqs80q6qdqddXd5Rh6BZE7fAEvG3OsHAny81t1s/gviz/tq?tqx=out:csv&gid=2026101101";
 
   const REFRESH_MS = 5 * 60 * 1000;
-  const ROTATE_MS = 8000;
-  const ITEMS_PER_PAGE = 2;
+  const ROTATE_MS = 7000;
+  const ITEMS_PER_PAGE = 3;
 
   let sponsors = [];
   let pageIndex = 0;
   let rotateTimer = null;
+  let animationBusy = false;
 
 
   function parseCSV(text) {
@@ -39,7 +41,6 @@
       const next = text[i + 1];
 
       if (char === '"') {
-
         if (inQuotes && next === '"') {
           field += '"';
           i++;
@@ -47,7 +48,6 @@
         else {
           inQuotes = !inQuotes;
         }
-
       }
       else if (char === "," && !inQuotes) {
         row.push(field.trim());
@@ -62,7 +62,6 @@
 
         if (row.some(value => value !== "")) rows.push(row);
         row = [];
-
       }
       else {
         field += char;
@@ -79,7 +78,6 @@
 
 
   function escapeHTML(value) {
-
     return String(value || "")
       .replaceAll("&", "&amp;")
       .replaceAll("<", "&lt;")
@@ -109,10 +107,7 @@
         Number(match[3]),
         Number(match[1]) - 1,
         Number(match[2]),
-        12,
-        0,
-        0,
-        0
+        12, 0, 0, 0
       );
       return Number.isNaN(date.getTime()) ? null : date;
     }
@@ -124,10 +119,7 @@
         Number(match[1]),
         Number(match[2]) - 1,
         Number(match[3]),
-        12,
-        0,
-        0,
-        0
+        12, 0, 0, 0
       );
       return Number.isNaN(date.getTime()) ? null : date;
     }
@@ -145,10 +137,7 @@
       now.getFullYear(),
       now.getMonth(),
       now.getDate(),
-      0,
-      0,
-      0,
-      0
+      0, 0, 0, 0
     );
 
     start.setDate(start.getDate() - start.getDay());
@@ -179,7 +168,6 @@
 
 
   function formatSponsorDate(date) {
-
     return date.toLocaleDateString(
       "en-US",
       {
@@ -200,27 +188,83 @@
 
     style.textContent = `
       .sponsor-section {
-        margin-top: 9px;
-        padding-top: 8px;
+        flex: 0 0 auto;
+        margin-top: auto;
+        padding-top: 6px;
         border-top: 1px solid var(--line);
+        overflow: hidden;
       }
 
       .sponsor-section[hidden] {
         display: none !important;
       }
 
-      .sponsor-list {
-        display: flex;
-        flex-direction: column;
-        gap: 7px;
+      .sponsor-section .schedule-ornament {
+        height: 12px;
+      }
+
+      .sponsor-section .schedule-ornament span {
+        transform: scale(.82);
+        transform-origin: center;
+      }
+
+      .sponsor-section .schedule-heading {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(14px, .9vw, 17px);
+        line-height: 1;
+        white-space: nowrap;
+      }
+
+      .sponsor-section .schedule-heading-divider {
+        height: 10px;
+        margin: 0 0 4px;
+      }
+
+      .sponsor-section .schedule-heading-divider::before,
+      .sponsor-section .schedule-heading-divider::after {
+        top: 4px;
+      }
+
+      .sponsor-section .divider-diamond {
+        top: 1px;
+        width: 6px;
+        height: 6px;
+      }
+
+      .sponsor-viewport {
         width: 100%;
+        overflow: hidden;
+        padding: 0 1px 1px;
+      }
+
+      .sponsor-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 4px;
+        width: 100%;
+        transform: translateY(0);
+        opacity: 1;
+        transition: transform .48s ease, opacity .42s ease;
+        will-change: transform, opacity;
+      }
+
+      .sponsor-list.is-leaving {
+        transform: translateY(-24px);
+        opacity: 0;
+      }
+
+      .sponsor-list.is-entering {
+        transform: translateY(20px);
+        opacity: 0;
+        transition: none;
       }
 
       .sponsor-item {
+        min-height: 51px;
         border: 1px solid #ead9b7;
         border-left: 3px solid var(--gold);
-        border-radius: 7px;
-        padding: 6px 8px;
+        border-radius: 6px;
+        padding: 4px 7px 5px;
         background: linear-gradient(90deg, #fffaf0, #fffdf8);
       }
 
@@ -228,14 +272,14 @@
         display: flex;
         align-items: baseline;
         justify-content: space-between;
-        gap: 7px;
+        gap: 6px;
       }
 
       .sponsor-type {
         min-width: 0;
         font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(12px, .78vw, 15px);
-        line-height: 1.08;
+        font-size: clamp(11px, .72vw, 14px);
+        line-height: 1.05;
         font-weight: 700;
         color: #65150e;
         text-transform: uppercase;
@@ -244,43 +288,57 @@
 
       .sponsor-date {
         flex: 0 0 auto;
-        font-size: clamp(10px, .62vw, 12px);
-        line-height: 1.1;
+        font-size: clamp(9px, .54vw, 11px);
+        line-height: 1;
         font-weight: 700;
         color: #8a6c33;
         white-space: nowrap;
       }
 
-      .sponsor-deity {
+      .sponsor-info-line {
+        display: flex;
+        align-items: baseline;
+        gap: 5px;
         margin-top: 3px;
-        font-size: clamp(12px, .76vw, 14px);
-        line-height: 1.12;
+        min-width: 0;
+      }
+
+      .sponsor-deity {
+        min-width: 0;
+        font-size: clamp(10px, .64vw, 12px);
+        line-height: 1.05;
         font-weight: 600;
         color: #25211e;
         overflow-wrap: anywhere;
       }
 
+      .sponsor-deity::after {
+        content: "•";
+        margin-left: 5px;
+        color: var(--gold);
+      }
+
       .sponsor-by {
-        margin-top: 4px;
-        font-size: clamp(9px, .58vw, 11px);
+        flex: 0 0 auto;
+        font-size: clamp(8px, .5vw, 10px);
         line-height: 1;
         font-weight: 600;
         color: #887a70;
       }
 
       .sponsor-name {
-        margin-top: 2px;
-        font-size: clamp(12px, .78vw, 15px);
-        line-height: 1.12;
+        min-width: 0;
+        font-size: clamp(10px, .65vw, 13px);
+        line-height: 1.08;
         font-weight: 700;
         color: #25211e;
         overflow-wrap: anywhere;
       }
 
       .sponsor-details {
-        margin-top: 3px;
-        font-size: clamp(9px, .58vw, 11px);
-        line-height: 1.1;
+        margin-top: 2px;
+        font-size: clamp(8px, .5vw, 10px);
+        line-height: 1.05;
         color: #6d5f55;
         overflow-wrap: anywhere;
       }
@@ -289,7 +347,8 @@
         display: flex;
         justify-content: center;
         gap: 5px;
-        margin-top: 5px;
+        margin-top: 3px;
+        min-height: 5px;
       }
 
       .sponsor-dot {
@@ -305,16 +364,28 @@
 
       @media (max-height: 850px) {
         .sponsor-section {
-          margin-top: 5px;
-          padding-top: 5px;
+          padding-top: 3px;
+        }
+
+        .sponsor-section .schedule-ornament {
+          height: 8px;
+        }
+
+        .sponsor-section .schedule-heading-divider {
+          margin-bottom: 2px;
         }
 
         .sponsor-list {
-          gap: 5px;
+          gap: 3px;
         }
 
         .sponsor-item {
-          padding: 4px 6px;
+          min-height: 44px;
+          padding: 3px 5px 4px;
+        }
+
+        .sponsor-info-line {
+          margin-top: 2px;
         }
       }
     `;
@@ -351,7 +422,10 @@
         <span class="divider-diamond"></span>
       </div>
 
-      <div id="weekly-sponsor-list" class="sponsor-list"></div>
+      <div class="sponsor-viewport">
+        <div id="weekly-sponsor-list" class="sponsor-list"></div>
+      </div>
+
       <div id="weekly-sponsor-pager" class="sponsor-pager" aria-hidden="true"></div>
     `;
 
@@ -360,11 +434,43 @@
   }
 
 
-  function renderSponsorPage() {
+  function sponsorItemHTML(item) {
+
+    const showDeity = deityShouldDisplay(item.deity);
+
+    const deity = showDeity
+      ? `<span class="sponsor-deity">${escapeHTML(item.deity)}</span>`
+      : "";
+
+    const details = item.details
+      ? `<div class="sponsor-details">${escapeHTML(item.details)}</div>`
+      : "";
+
+    return `
+      <article class="sponsor-item">
+        <div class="sponsor-topline">
+          <div class="sponsor-type">${escapeHTML(item.sevaType)}</div>
+          <div class="sponsor-date">${escapeHTML(formatSponsorDate(item.date))}</div>
+        </div>
+
+        <div class="sponsor-info-line">
+          ${deity}
+          <span class="sponsor-by">Sponsored by</span>
+          <span class="sponsor-name">${escapeHTML(item.sponsorName)}</span>
+        </div>
+
+        ${details}
+      </article>
+    `;
+  }
+
+
+  function renderSponsorPage(animate = false) {
 
     const card = ensureCard();
     const list = document.getElementById("weekly-sponsor-list");
     const pager = document.getElementById("weekly-sponsor-pager");
+    const community = document.querySelector(".community-section");
 
     if (!card || !list || !pager) return;
 
@@ -372,52 +478,67 @@
       card.hidden = true;
       list.innerHTML = "";
       pager.innerHTML = "";
+      if (community) community.hidden = false;
       return;
     }
 
     card.hidden = false;
 
-    const pageCount = Math.ceil(sponsors.length / ITEMS_PER_PAGE);
+    /*
+      On sponsor weeks this compact card uses the bottom rail slot.
+      This prevents the right column from becoming overcrowded.
+      The community card automatically returns when no sponsors exist.
+    */
+    if (community) community.hidden = true;
 
+    const pageCount = Math.ceil(sponsors.length / ITEMS_PER_PAGE);
     if (pageIndex >= pageCount) pageIndex = 0;
 
     const start = pageIndex * ITEMS_PER_PAGE;
     const visible = sponsors.slice(start, start + ITEMS_PER_PAGE);
 
-    list.innerHTML = visible
-      .map(item => {
+    const applyContent = () => {
+      list.innerHTML = visible.map(sponsorItemHTML).join("");
 
-        const deityLine = deityShouldDisplay(item.deity)
-          ? `<div class="sponsor-deity">${escapeHTML(item.deity)}</div>`
-          : "";
+      pager.innerHTML = pageCount > 1
+        ? Array.from({ length: pageCount }, (_, index) =>
+            `<span class="sponsor-dot${index === pageIndex ? " is-active" : ""}"></span>`
+          ).join("")
+        : "";
+    };
 
-        const detailsLine = item.details
-          ? `<div class="sponsor-details">${escapeHTML(item.details)}</div>`
-          : "";
+    if (!animate) {
+      list.classList.remove("is-leaving", "is-entering");
+      applyContent();
+      return;
+    }
 
-        return `
-          <article class="sponsor-item">
-            <div class="sponsor-topline">
-              <div class="sponsor-type">${escapeHTML(item.sevaType)}</div>
-              <div class="sponsor-date">${escapeHTML(formatSponsorDate(item.date))}</div>
-            </div>
+    if (animationBusy) return;
+    animationBusy = true;
 
-            ${deityLine}
+    list.classList.remove("is-entering");
+    list.classList.add("is-leaving");
 
-            <div class="sponsor-by">Sponsored by</div>
-            <div class="sponsor-name">${escapeHTML(item.sponsorName)}</div>
+    setTimeout(() => {
 
-            ${detailsLine}
-          </article>
-        `;
-      })
-      .join("");
+      applyContent();
 
-    pager.innerHTML = pageCount > 1
-      ? Array.from({ length: pageCount }, (_, index) =>
-          `<span class="sponsor-dot${index === pageIndex ? " is-active" : ""}"></span>`
-        ).join("")
-      : "";
+      list.classList.remove("is-leaving");
+      list.classList.add("is-entering");
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          list.style.transition = "transform .48s ease, opacity .42s ease";
+          list.classList.remove("is-entering");
+        });
+      });
+
+      setTimeout(() => {
+        list.style.transition = "";
+        animationBusy = false;
+      }, 520);
+
+    }, 420);
   }
 
 
@@ -429,23 +550,19 @@
     }
 
     const pageCount = Math.ceil(sponsors.length / ITEMS_PER_PAGE);
-
     if (pageCount <= 1) return;
 
     rotateTimer = setInterval(() => {
+      if (animationBusy) return;
       pageIndex = (pageIndex + 1) % pageCount;
-      renderSponsorPage();
+      renderSponsorPage(true);
     }, ROTATE_MS);
   }
 
 
   async function fetchRows() {
 
-    const urls = [
-      PUBLISHED_SPONSOR_CSV,
-      GVIZ_SPONSOR_CSV
-    ];
-
+    const urls = [PUBLISHED_SPONSOR_CSV, GVIZ_SPONSOR_CSV];
     let lastError = null;
 
     for (const url of urls) {
@@ -469,7 +586,6 @@
 
         const rows = parseCSV(text);
         if (rows.length) return rows;
-
       }
       catch (error) {
         lastError = error;
@@ -490,7 +606,7 @@
       if (rows.length < 2) {
         sponsors = [];
         pageIndex = 0;
-        renderSponsorPage();
+        renderSponsorPage(false);
         restartRotation();
         return;
       }
@@ -550,9 +666,8 @@
       sponsors = loaded;
       pageIndex = 0;
 
-      renderSponsorPage();
+      renderSponsorPage(false);
       restartRotation();
-
     }
     catch (error) {
 
@@ -561,7 +676,7 @@
       sponsors = [];
       pageIndex = 0;
 
-      renderSponsorPage();
+      renderSponsorPage(false);
       restartRotation();
     }
   }
