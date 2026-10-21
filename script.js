@@ -3625,6 +3625,33 @@ async function loadBGMPlaylist() {
     );
 
 
+    const specialWindows = {};
+
+    specials.forEach(track => {
+      const key = track.weekday || "ALL";
+      if (!specialWindows[key]) {
+        specialWindows[key] = { startTime: "", endTime: "" };
+      }
+      if (track.startTime && !specialWindows[key].startTime) {
+        specialWindows[key].startTime = track.startTime;
+      }
+      if (track.endTime && !specialWindows[key].endTime) {
+        specialWindows[key].endTime = track.endTime;
+      }
+    });
+
+    specials.forEach(track => {
+      const groupWindow = specialWindows[track.weekday || "ALL"];
+      if (!groupWindow) return;
+      if (!track.startTime && groupWindow.startTime) {
+        track.startTime = groupWindow.startTime;
+      }
+      if (!track.endTime && groupWindow.endTime) {
+        track.endTime = groupWindow.endTime;
+      }
+    });
+
+
     specials.sort(
       (
         a,
