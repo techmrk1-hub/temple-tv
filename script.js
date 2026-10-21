@@ -37,6 +37,8 @@ let savedDefaultIndex = 0;
 let savedDefaultTime = 0;
 
 let bgmMirrorMap = {};
+let bgmAutoplayRetryTimer = null;
+let bgmAutoplayBlockedLogged = false;
 
 
 /* ==========================================================
@@ -745,14 +747,45 @@ function showBGMHelp(message) {
   }
 }
 
+function scheduleBGMAutoplayRetry() {
+  if (bgmAutoplayRetryTimer) return;
+
+  bgmAutoplayRetryTimer = setInterval(() => {
+    if (
+      musicElement &&
+      musicElement.paused &&
+      currentBGMPlaylist.length &&
+      !musicElement.error
+    ) {
+      tryPlayBGM();
+    }
+  }, 5000);
+}
+
+
 async function tryPlayBGM() {
+  if (!musicElement || !currentBGMPlaylist.length) return;
+
   try {
+    musicElement.autoplay = true;
     await musicElement.play();
+    bgmAutoplayBlockedLogged = false;
     showBGMHelp("");
   } catch (error) {
-    showBGMHelp(error.name === "NotAllowedError"
-      ? "Click here to enable background music"
-      : "Music could not play. Check the Drive file sharing and audio link; click to retry.");
+    showBGMHelp("");
+
+    if (error && error.name === "NotAllowedError") {
+      if (!bgmAutoplayBlockedLogged) {
+        console.warn(
+          "BGM autoplay is being blocked by the browser policy. " +
+          "Temple TV will keep retrying automatically."
+        );
+        bgmAutoplayBlockedLogged = true;
+      }
+      scheduleBGMAutoplayRetry();
+      return;
+    }
+
     console.warn("BGM playback:", error);
   }
 }
@@ -4245,6 +4278,18 @@ if (
       "keydown",
       resumeAudio
     );
+
+
+  musicElement.addEventListener("canplay", tryPlayBGM);
+  musicElement.addEventListener("loadeddata", tryPlayBGM);
+
+  window.addEventListener("focus", tryPlayBGM);
+
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) tryPlayBGM();
+  });
+
+  scheduleBGMAutoplayRetry();
 
 }
 
