@@ -717,10 +717,19 @@ function convertDriveAudioURL(url) {
 }
 
 function showBGMHelp(message) {
+  /*
+    Keep Temple TV signage visually clean.
+    Audio diagnostics stay in the browser Console only.
+  */
   const help = document.getElementById("bgm-help");
-  if (!help) return;
-  help.textContent = message;
-  help.hidden = !message;
+  if (help) {
+    help.textContent = "";
+    help.hidden = true;
+  }
+
+  if (message) {
+    console.warn("BGM:", message);
+  }
 }
 
 async function tryPlayBGM() {
