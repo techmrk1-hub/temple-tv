@@ -72,7 +72,11 @@ def direct_url(url: str) -> str:
 def download_drive(url: str, destination: Path) -> None:
     import gdown
 
-    result = gdown.download(url=url, output=str(destination), quiet=False, fuzzy=True)
+    fid = drive_file_id(url)
+    if not fid:
+        raise RuntimeError("Could not extract Google Drive file ID")
+
+    result = gdown.download(id=fid, output=str(destination), quiet=False)
     if not result or not destination.exists() or destination.stat().st_size < 1024:
         raise RuntimeError("Google Drive download failed")
 
