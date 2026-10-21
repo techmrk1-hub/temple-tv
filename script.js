@@ -3253,20 +3253,19 @@ function timeWindowMatches(
     return true;
   }
 
-  /* If only one side of the time window is filled, treat it as invalid. */
-  if (!startText || !endText) {
-    return false;
-  }
-
+  /*
+    Start Time only = active from that time until midnight.
+    End Time only = active from midnight until that time.
+  */
   const start =
-    parseTimeToMinutes(
-      startText
-    );
+    startText
+      ? parseTimeToMinutes(startText)
+      : 0;
 
   const end =
-    parseTimeToMinutes(
-      endText
-    );
+    endText
+      ? parseTimeToMinutes(endText)
+      : 24 * 60;
 
 
   if (
