@@ -601,22 +601,119 @@ function convertDriveImageURL(url) {
 }
 
 
-function convertDriveAudioURL(url) {
-  // Only convert Google Drive URLs; keep other audio hosts unchanged.
-  try {
-    const parsed = new URL(url);
-    if (!["drive.google.com", "drive.usercontent.google.com"].includes(parsed.hostname)) return url;
-    const fileId = getDriveFileId(url);
-    if (!fileId) return url;
-    const download = new URL("https://drive.google.com/uc");
-    download.searchParams.set("export", "download");
-    download.searchParams.set("id", fileId);
-    const resourceKey = parsed.searchParams.get("resourcekey");
-    if (resourceKey) download.searchParams.set("resourcekey", resourceKey);
-    return download.href;
-  } catch (_) {
-    return url;
+function getAudioURLCandidates(url) {
+
+  const original = String(url || "").trim();
+
+  if (!original) {
+    return [];
   }
+
+  const candidates = [];
+
+  const add = value => {
+    const cleaned = String(value || "").trim();
+    if (cleaned && !candidates.includes(cleaned)) {
+      candidates.push(cleaned);
+    }
+  };
+
+  try {
+
+    const parsed = new URL(original);
+    const host = parsed.hostname.toLowerCase();
+
+    /* Google Drive share links -> try multiple direct-download forms. */
+    if (
+      host === "drive.google.com" ||
+      host === "drive.usercontent.google.com" ||
+      host === "docs.google.com"
+    ) {
+
+      const fileId = getDriveFileId(original);
+
+      if (fileId) {
+
+        const resourceKey =
+          parsed.searchParams.get("resourcekey") ||
+          parsed.searchParams.get("resourceKey") ||
+          "";
+
+        const userContent = new URL(
+          "https://drive.usercontent.google.com/download"
+        );
+
+        userContent.searchParams.set("id", fileId);
+        userContent.searchParams.set("export", "download");
+        userContent.searchParams.set("confirm", "t");
+
+        if (resourceKey) {
+          userContent.searchParams.set("resourcekey", resourceKey);
+        }
+
+        add(userContent.href);
+
+        const uc = new URL("https://drive.google.com/uc");
+        uc.searchParams.set("export", "download");
+        uc.searchParams.set("id", fileId);
+
+        if (resourceKey) {
+          uc.searchParams.set("resourcekey", resourceKey);
+        }
+
+        add(uc.href);
+      }
+
+      /* Keep the original as a final fallback. */
+      add(original);
+      return candidates;
+    }
+
+    /* Dropbox share links -> raw media form. */
+    if (host === "www.dropbox.com" || host === "dropbox.com") {
+      const raw = new URL(original);
+      raw.searchParams.delete("dl");
+      raw.searchParams.set("raw", "1");
+      add(raw.href);
+      add(original);
+      return candidates;
+    }
+
+    /* GitHub blob links -> raw.githubusercontent.com media URL. */
+    if (host === "github.com") {
+      const match = parsed.pathname.match(
+        /^\/([^/]+)\/([^/]+)\/blob\/([^/]+)\/(.+)$/
+      );
+
+      if (match) {
+        add(
+          "https://raw.githubusercontent.com/" +
+          match[1] + "/" +
+          match[2] + "/" +
+          match[3] + "/" +
+          match[4]
+        );
+      }
+
+      add(original);
+      return candidates;
+    }
+
+    /* Direct MP3/M4A/WAV/OGG/AAC URLs and other hosts stay as entered. */
+    add(original);
+    return candidates;
+
+  }
+  catch (_) {
+    add(original);
+    return candidates;
+  }
+}
+
+
+function convertDriveAudioURL(url) {
+  const candidates = getAudioURLCandidates(url);
+  return candidates.length ? candidates[0] : url;
 }
 
 function showBGMHelp(message) {
@@ -3318,13 +3415,28 @@ async function loadBGMPlaylist() {
       }
 
 
+      const audioCandidates =
+        getAudioURLCandidates(
+          original
+        );
+
+
       const track =
         {
 
+          originalUrl:
+            original,
+
+          candidates:
+            audioCandidates,
+
+          candidateIndex:
+            0,
+
           url:
-            convertDriveAudioURL(
-              original
-            ),
+            audioCandidates.length
+              ? audioCandidates[0]
+              : original,
 
           order:
             orderIndex >= 0
@@ -3555,6 +3667,24 @@ function playCurrentBGMTrack(
 
   musicElement.pause();
 
+
+  if (!Array.isArray(track.candidates) || !track.candidates.length) {
+    track.candidates = getAudioURLCandidates(track.originalUrl || track.url);
+  }
+
+  if (!track.candidates.length) {
+    track.candidates = [track.url];
+  }
+
+  if (
+    typeof track.candidateIndex !== "number" ||
+    track.candidateIndex < 0 ||
+    track.candidateIndex >= track.candidates.length
+  ) {
+    track.candidateIndex = 0;
+  }
+
+  track.url = track.candidates[track.candidateIndex];
 
   musicElement.src =
     track.url;
@@ -3891,7 +4021,39 @@ if (
 
 
   musicElement.addEventListener("error", () => {
-    showBGMHelp("Music could not load. Check that the Drive MP3 is shared with Anyone with the link. Click to retry.");
+
+    const track =
+      currentBGMPlaylist[
+        currentBGMIndex
+      ];
+
+    if (
+      track &&
+      Array.isArray(track.candidates) &&
+      track.candidateIndex + 1 < track.candidates.length
+    ) {
+
+      track.candidateIndex += 1;
+      track.url = track.candidates[track.candidateIndex];
+
+      console.warn(
+        "BGM source failed; trying alternate audio URL:",
+        track.url
+      );
+
+      musicElement.src = track.url;
+      musicElement.load();
+      tryPlayBGM();
+      return;
+    }
+
+    console.warn(
+      "BGM could not load from any available URL candidate.",
+      track ? (track.originalUrl || track.url) : ""
+    );
+
+    /* Keep the TV clean: no visible error message on the signage. */
+    showBGMHelp("");
   });
 
   const resumeAudio =
