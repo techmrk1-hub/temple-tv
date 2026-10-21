@@ -50,4 +50,5 @@ jobs:
             exit 0
           fi
           git commit -m "Sync BGM audio from Google Sheet"
-          git push
+          git pull --rebase origin main
+          git push origin HEAD:main
