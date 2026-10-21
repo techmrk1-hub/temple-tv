@@ -36,6 +36,8 @@ let currentSpecialSignature = "";
 let savedDefaultIndex = 0;
 let savedDefaultTime = 0;
 
+let bgmMirrorMap = {};
+
 
 /* ==========================================================
    ELEMENTS
@@ -619,6 +621,17 @@ function getAudioURLCandidates(url) {
   };
 
   try {
+
+    const mirrored =
+      bgmMirrorMap &&
+      bgmMirrorMap[original] &&
+      bgmMirrorMap[original].path
+        ? bgmMirrorMap[original].path
+        : "";
+
+    if (mirrored) {
+      add(mirrored);
+    }
 
     const parsed = new URL(original);
     const host = parsed.hostname.toLowerCase();
@@ -3279,12 +3292,55 @@ function timeWindowMatches(
 
 
 /* ==========================================================
+   BGM MIRROR MAP
+========================================================== */
+
+async function loadBGMMirrorMap() {
+
+  try {
+
+    const response =
+      await fetch(
+        addCacheBuster(
+          "music/remote/bgm-map.json"
+        ),
+        {
+          cache: "no-store"
+        }
+      );
+
+    if (!response.ok) {
+      bgmMirrorMap = {};
+      return;
+    }
+
+    const data =
+      await response.json();
+
+    bgmMirrorMap =
+      data &&
+      data.tracks &&
+      typeof data.tracks === "object"
+        ? data.tracks
+        : {};
+
+  }
+  catch (error) {
+    bgmMirrorMap = {};
+    console.warn("BGM mirror map:", error);
+  }
+}
+
+
+/* ==========================================================
    LOAD BGM
 ========================================================== */
 
 async function loadBGMPlaylist() {
 
   try {
+
+    await loadBGMMirrorMap();
 
     const rows =
       await fetchCSV(
@@ -3567,6 +3623,57 @@ async function loadBGMPlaylist() {
 
     specialBGMTracks =
       specials;
+
+
+    if (
+      currentBGMMode === "DEFAULT" &&
+      defaultBGMPlaylist.length &&
+      musicElement
+    ) {
+
+      const safeIndex =
+        Math.min(
+          currentBGMIndex,
+          defaultBGMPlaylist.length - 1
+        );
+
+      const refreshedTrack =
+        defaultBGMPlaylist[safeIndex];
+
+      const preferredURL =
+        refreshedTrack &&
+        refreshedTrack.candidates &&
+        refreshedTrack.candidates.length
+          ? new URL(
+              refreshedTrack.candidates[0],
+              window.location.href
+            ).href
+          : "";
+
+      const currentURL =
+        musicElement.currentSrc ||
+        musicElement.src ||
+        "";
+
+      if (
+        musicElement.error ||
+        musicElement.paused ||
+        (
+          preferredURL &&
+          currentURL !== preferredURL
+        )
+      ) {
+
+        currentBGMPlaylist =
+          defaultBGMPlaylist;
+
+        currentBGMIndex =
+          safeIndex;
+
+        playCurrentBGMTrack();
+        return;
+      }
+    }
 
 
     evaluateBGMSchedule();
