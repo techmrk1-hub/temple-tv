@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "source": "BGM Google Sheet",
+  "tracks": {
+    "https://drive.google.com/file/d/1O7-W19D9UncrUbEsTxf9CbZ_viUBAmqN/view?usp=sharing": {
+      "path": "music/remote/drive-1O7-W19D9UncrUbEsTxf9CbZ_viUBAmqN.mp3",
+      "key": "drive-1O7-W19D9UncrUbEsTxf9CbZ_viUBAmqN"
+    }
+  },
+  "failures": []
+}
