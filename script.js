@@ -3239,14 +3239,33 @@ function timeWindowMatches(
   date
 ) {
 
+  const startText =
+    String(startValue || "").trim();
+
+  const endText =
+    String(endValue || "").trim();
+
+  /*
+    For a day-specific SPECIAL/SCHEDULED track, blank Start Time
+    and End Time means the track is active for the entire matching day.
+  */
+  if (!startText && !endText) {
+    return true;
+  }
+
+  /* If only one side of the time window is filled, treat it as invalid. */
+  if (!startText || !endText) {
+    return false;
+  }
+
   const start =
     parseTimeToMinutes(
-      startValue
+      startText
     );
 
   const end =
     parseTimeToMinutes(
-      endValue
+      endText
     );
 
 
