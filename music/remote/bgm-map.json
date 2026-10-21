@@ -2,9 +2,25 @@
   "version": 1,
   "source": "BGM Google Sheet",
   "tracks": {
+    "https://drive.google.com/file/d/1HWlo4FopPlUSGWWlPchRCNKEZApVOPv0/view?usp=sharing": {
+      "path": "music/remote/drive-1HWlo4FopPlUSGWWlPchRCNKEZApVOPv0.mp3",
+      "key": "drive-1HWlo4FopPlUSGWWlPchRCNKEZApVOPv0"
+    },
     "https://drive.google.com/file/d/1O7-W19D9UncrUbEsTxf9CbZ_viUBAmqN/view?usp=sharing": {
       "path": "music/remote/drive-1O7-W19D9UncrUbEsTxf9CbZ_viUBAmqN.mp3",
       "key": "drive-1O7-W19D9UncrUbEsTxf9CbZ_viUBAmqN"
+    },
+    "https://drive.google.com/file/d/1C0wfvCG2NMIRtlOKSqnzkf-TQ3--RM2N/view?usp=sharing": {
+      "path": "music/remote/drive-1C0wfvCG2NMIRtlOKSqnzkf-TQ3--RM2N.mp3",
+      "key": "drive-1C0wfvCG2NMIRtlOKSqnzkf-TQ3--RM2N"
+    },
+    "https://drive.google.com/file/d/1sVn-LzUjsL-fesb3adwchkSyXQlQgYcA/view?usp=sharing": {
+      "path": "music/remote/drive-1sVn-LzUjsL-fesb3adwchkSyXQlQgYcA.mp3",
+      "key": "drive-1sVn-LzUjsL-fesb3adwchkSyXQlQgYcA"
+    },
+    "https://drive.google.com/file/d/1T8_CbnJriiRlB-745n3lK9QSYMk-6ovL/view?usp=sharing": {
+      "path": "music/remote/drive-1T8_CbnJriiRlB-745n3lK9QSYMk-6ovL.mp3",
+      "key": "drive-1T8_CbnJriiRlB-745n3lK9QSYMk-6ovL"
     }
   },
   "failures": []
