@@ -29,7 +29,7 @@ const templeContent = {
 
   remoteRefreshMinutes: 5,
 
-  bgmScheduleCheckSeconds: 15,
+  bgmScheduleCheckSeconds: 5,
 
   bgmVolume: 0.30,
 
