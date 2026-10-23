@@ -25,6 +25,7 @@ let flyerChanging = false;
 
 let defaultBGMPlaylist = [];
 let specialBGMTracks = [];
+let noBGMWindows = [];
 
 let currentBGMMode = "NONE";
 
@@ -35,6 +36,8 @@ let currentSpecialSignature = "";
 
 let savedDefaultIndex = 0;
 let savedDefaultTime = 0;
+
+let savedNoBGMState = null;
 
 let bgmMirrorMap = {};
 let bgmAutoplayRetryTimer = null;
@@ -753,6 +756,7 @@ function scheduleBGMAutoplayRetry() {
   bgmAutoplayRetryTimer = setInterval(() => {
     if (
       musicElement &&
+      currentBGMMode !== "NO_BGM" &&
       musicElement.paused &&
       currentBGMPlaylist.length &&
       !musicElement.error
@@ -764,7 +768,11 @@ function scheduleBGMAutoplayRetry() {
 
 
 async function tryPlayBGM() {
-  if (!musicElement || !currentBGMPlaylist.length) return;
+  if (
+    !musicElement ||
+    !currentBGMPlaylist.length ||
+    currentBGMMode === "NO_BGM"
+  ) return;
 
   try {
     musicElement.autoplay = true;
@@ -1370,6 +1378,65 @@ async function loadRemoteFlyers() {
 
         continue;
 
+      }
+
+
+      const rowType =
+        typeIndex >= 0
+          ?
+          String(
+            row[
+              typeIndex
+            ] ||
+            "DEFAULT"
+          )
+          .trim()
+          .toUpperCase()
+          :
+          "DEFAULT";
+
+
+      if (
+        rowType === "NO BGM" ||
+        rowType === "NOBGM" ||
+        rowType === "NO_BGM" ||
+        rowType === "MUTE" ||
+        rowType === "SILENT"
+      ) {
+
+        const silenceStart =
+          startIndex >= 0
+            ? String(row[startIndex] || "").trim()
+            : "";
+
+        const silenceEnd =
+          endIndex >= 0
+            ? String(row[endIndex] || "").trim()
+            : "";
+
+        /*
+          NO BGM rows require both times. This prevents an accidental
+          all-day mute if a time cell is left blank.
+        */
+        if (!silenceStart || !silenceEnd) {
+          console.warn("NO BGM row ignored: Start Time and End Time are both required.");
+          continue;
+        }
+
+        silenceWindows.push({
+          weekday:
+            weekdayIndex >= 0
+              ? String(row[weekdayIndex] || "ALL").trim().toUpperCase()
+              : "ALL",
+          startTime: silenceStart,
+          endTime: silenceEnd,
+          order:
+            orderIndex >= 0
+              ? (parseInt(row[orderIndex], 10) || 999)
+              : 999
+        });
+
+        continue;
       }
 
 
@@ -3476,6 +3543,9 @@ async function loadBGMPlaylist() {
     const specials =
       [];
 
+    const silenceWindows =
+      [];
+
 
     for (
       let i = 1;
@@ -3701,6 +3771,11 @@ async function loadBGMPlaylist() {
 
     specialBGMTracks =
       specials;
+
+
+    noBGMWindows =
+      silenceWindows
+        .sort((a, b) => a.order - b.order);
 
 
     if (
@@ -4071,10 +4146,191 @@ function startSpecialBGM(
 
 
 /* ==========================================================
+   NO BGM / PUJA SILENCE WINDOW
+========================================================== */
+
+function getActiveNoBGMWindow() {
+
+  const now =
+    new Date();
+
+
+  return noBGMWindows.find(
+    window =>
+      weekdayMatches(
+        window.weekday,
+        now
+      )
+      &&
+      timeWindowMatches(
+        window.startTime,
+        window.endTime,
+        now
+      )
+  ) || null;
+}
+
+
+function startNoBGM() {
+
+  if (
+    currentBGMMode ===
+    "NO_BGM"
+  ) {
+    return;
+  }
+
+
+  savedNoBGMState = {
+    mode: currentBGMMode,
+    index: currentBGMIndex,
+    time:
+      musicElement
+        ? (musicElement.currentTime || 0)
+        : 0,
+    specialSignature: currentSpecialSignature
+  };
+
+
+  if (musicElement) {
+    musicElement.pause();
+  }
+
+
+  currentBGMMode =
+    "NO_BGM";
+}
+
+
+function resumeAfterNoBGM() {
+
+  const saved =
+    savedNoBGMState;
+
+  savedNoBGMState =
+    null;
+
+
+  const special =
+    getActiveSpecialPlaylist();
+
+  const specialSignature =
+    makeSpecialSignature(
+      special
+    );
+
+
+  if (
+    saved &&
+    saved.mode === "SPECIAL" &&
+    special.length &&
+    saved.specialSignature === specialSignature
+  ) {
+
+    currentBGMMode =
+      "SPECIAL";
+
+    currentSpecialSignature =
+      specialSignature;
+
+    currentBGMPlaylist =
+      special;
+
+    currentBGMIndex =
+      Math.min(
+        saved.index || 0,
+        currentBGMPlaylist.length - 1
+      );
+
+    playCurrentBGMTrack(
+      saved.time || 0
+    );
+
+    return;
+  }
+
+
+  if (
+    saved &&
+    saved.mode === "DEFAULT" &&
+    !special.length &&
+    defaultBGMPlaylist.length
+  ) {
+
+    currentBGMMode =
+      "DEFAULT";
+
+    currentSpecialSignature =
+      "";
+
+    currentBGMPlaylist =
+      defaultBGMPlaylist;
+
+    currentBGMIndex =
+      Math.min(
+        saved.index || 0,
+        currentBGMPlaylist.length - 1
+      );
+
+    playCurrentBGMTrack(
+      saved.time || 0
+    );
+
+    return;
+  }
+
+
+  if (special.length) {
+    currentSpecialSignature =
+      specialSignature;
+    startSpecialBGM(
+      special
+    );
+    return;
+  }
+
+
+  if (defaultBGMPlaylist.length) {
+    startDefaultBGM();
+    return;
+  }
+
+
+  currentBGMMode =
+    "NONE";
+  currentBGMPlaylist =
+    [];
+  currentBGMIndex =
+    0;
+  currentSpecialSignature =
+    "";
+}
+
+
+/* ==========================================================
    BGM SCHEDULE
 ========================================================== */
 
 function evaluateBGMSchedule() {
+
+  const silenceWindow =
+    getActiveNoBGMWindow();
+
+
+  if (silenceWindow) {
+    startNoBGM();
+    return;
+  }
+
+
+  if (
+    currentBGMMode ===
+    "NO_BGM"
+  ) {
+    resumeAfterNoBGM();
+    return;
+  }
+
 
   const special =
     getActiveSpecialPlaylist();
@@ -4254,6 +4510,7 @@ if (
     () => {
 
       if (
+        currentBGMMode !== "NO_BGM" &&
         musicElement.paused &&
         currentBGMPlaylist.length
       ) {
