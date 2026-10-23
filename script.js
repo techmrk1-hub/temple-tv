@@ -1381,65 +1381,6 @@ async function loadRemoteFlyers() {
       }
 
 
-      const rowType =
-        typeIndex >= 0
-          ?
-          String(
-            row[
-              typeIndex
-            ] ||
-            "DEFAULT"
-          )
-          .trim()
-          .toUpperCase()
-          :
-          "DEFAULT";
-
-
-      if (
-        rowType === "NO BGM" ||
-        rowType === "NOBGM" ||
-        rowType === "NO_BGM" ||
-        rowType === "MUTE" ||
-        rowType === "SILENT"
-      ) {
-
-        const silenceStart =
-          startIndex >= 0
-            ? String(row[startIndex] || "").trim()
-            : "";
-
-        const silenceEnd =
-          endIndex >= 0
-            ? String(row[endIndex] || "").trim()
-            : "";
-
-        /*
-          NO BGM rows require both times. This prevents an accidental
-          all-day mute if a time cell is left blank.
-        */
-        if (!silenceStart || !silenceEnd) {
-          console.warn("NO BGM row ignored: Start Time and End Time are both required.");
-          continue;
-        }
-
-        silenceWindows.push({
-          weekday:
-            weekdayIndex >= 0
-              ? String(row[weekdayIndex] || "ALL").trim().toUpperCase()
-              : "ALL",
-          startTime: silenceStart,
-          endTime: silenceEnd,
-          order:
-            orderIndex >= 0
-              ? (parseInt(row[orderIndex], 10) || 999)
-              : 999
-        });
-
-        continue;
-      }
-
-
       const original =
         String(
           row[
@@ -3582,6 +3523,52 @@ async function loadBGMPlaylist() {
       }
 
 
+      const rowType =
+        typeIndex >= 0
+          ? String(row[typeIndex] || "DEFAULT").trim().toUpperCase()
+          : "DEFAULT";
+
+
+      if (
+        rowType === "NO BGM" ||
+        rowType === "NOBGM" ||
+        rowType === "NO_BGM" ||
+        rowType === "MUTE" ||
+        rowType === "SILENT"
+      ) {
+
+        const silenceStart =
+          startIndex >= 0
+            ? String(row[startIndex] || "").trim()
+            : "";
+
+        const silenceEnd =
+          endIndex >= 0
+            ? String(row[endIndex] || "").trim()
+            : "";
+
+        if (!silenceStart || !silenceEnd) {
+          console.warn("NO BGM row ignored: Start Time and End Time are both required.");
+          continue;
+        }
+
+        silenceWindows.push({
+          weekday:
+            weekdayIndex >= 0
+              ? String(row[weekdayIndex] || "ALL").trim().toUpperCase()
+              : "ALL",
+          startTime: silenceStart,
+          endTime: silenceEnd,
+          order:
+            orderIndex >= 0
+              ? (parseInt(row[orderIndex], 10) || 999)
+              : 999
+        });
+
+        continue;
+      }
+
+
       const original =
         String(
           row[
@@ -3682,23 +3669,8 @@ async function loadBGMPlaylist() {
         };
 
 
-      const type =
-        typeIndex >= 0
-          ?
-          String(
-            row[
-              typeIndex
-            ] ||
-            "DEFAULT"
-          )
-          .trim()
-          .toUpperCase()
-          :
-          "DEFAULT";
-
-
       if (
-        (type === "SPECIAL" || type === "SCHEDULED")
+        (rowType === "SPECIAL" || rowType === "SCHEDULED")
       ) {
 
         specials.push(
