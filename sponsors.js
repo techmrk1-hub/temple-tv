@@ -21,7 +21,7 @@
   const GVIZ_SPONSOR_CSV =
     "https://docs.google.com/spreadsheets/d/1rljGlqs80q6qdqddXd5Rh6BZE7fAEvG3OsHAny81t1s/gviz/tq?tqx=out:csv&gid=2026101101";
 
-  const REFRESH_MS = 5 * 60 * 1000;
+  const REFRESH_MS = 30 * 1000;
   const MAX_VISIBLE_ROWS = 3;
   const SCROLL_PIXELS_PER_SECOND = 8;
 
@@ -545,7 +545,7 @@
 
 
   async function fetchRows() {
-    const urls = [PUBLISHED_SPONSOR_CSV, GVIZ_SPONSOR_CSV];
+    const urls = [GVIZ_SPONSOR_CSV, PUBLISHED_SPONSOR_CSV];
     let lastError = null;
 
     for (const url of urls) {
