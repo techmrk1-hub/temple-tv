@@ -4646,18 +4646,26 @@ setInterval(
 
 const refreshTime =
 
-  (
+  Math.max(
+    10,
     Number(
       templeContent
-        .remoteRefreshMinutes
+        .remoteRefreshSeconds
     )
     ||
-    5
+    (
+      (
+        Number(
+          templeContent
+            .remoteRefreshMinutes
+        )
+        ||
+        5
+      )
+      *
+      60
+    )
   )
-
-  *
-
-  60
 
   *
 
