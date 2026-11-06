@@ -110,7 +110,21 @@ const templeContent = {
           "Saraswati Devi Abhishekam",
 
         time:
-          "6:30 PM"
+          "10:00 AM",
+
+        endTime:
+          "11:00 AM"
+      },
+
+      {
+        title:
+          "Saraswati Devi Archana",
+
+        time:
+          "11:00 AM",
+
+        endTime:
+          "12:00 PM"
       }
     ]
 
