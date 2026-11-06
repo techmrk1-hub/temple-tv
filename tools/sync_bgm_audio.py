@@ -13,7 +13,7 @@ from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 import requests
 
-BGM_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFYXQmFp7zwXk60tmqmK0aAdrrGJUaRUoTEGmKryumu7pRR1yfLf_AGGzx5pj7ArNQfslONPb948-j/pub?gid=397630639&single=true&output=csv"
+BGM_CSV = "https://docs.google.com/spreadsheets/d/1rljGlqs80q6qdqddXd5Rh6BZE7fAEvG3OsHAny81t1s/gviz/tq?tqx=out:csv&gid=397630639"
 OUT_DIR = Path("music/remote")
 MAP_PATH = OUT_DIR / "bgm-map.json"
 AUDIO_EXTS = {".mp3", ".m4a", ".aac", ".wav", ".ogg", ".oga", ".flac", ".opus", ".webm"}
