@@ -1329,6 +1329,21 @@ async function loadRemoteFlyers() {
         "displayorder"
       );
 
+    const startDateIndex =
+      headers.indexOf(
+        "startdate"
+      );
+
+    const endDateIndex =
+      headers.indexOf(
+        "enddate"
+      );
+
+    const defaultIndex =
+      headers.indexOf(
+        "default"
+      );
+
 
     if (
       imageIndex ===
@@ -1396,6 +1411,71 @@ async function loadRemoteFlyers() {
       ) {
 
         continue;
+
+      }
+
+
+      const defaultValue =
+        defaultIndex >= 0
+          ?
+          String(
+            row[
+              defaultIndex
+            ] ||
+            ""
+          )
+          .trim()
+          .toUpperCase()
+          :
+          "YES";
+
+
+      const isDefault =
+        !defaultValue ||
+        defaultValue === "YES" ||
+        defaultValue === "DEFAULT" ||
+        defaultValue === "ALWAYS";
+
+
+      if (
+        !isDefault
+      ) {
+
+        const startDate =
+          startDateIndex >= 0
+            ? normalizeDate(
+                row[
+                  startDateIndex
+                ]
+              )
+            : "";
+
+        const endDate =
+          endDateIndex >= 0
+            ? normalizeDate(
+                row[
+                  endDateIndex
+                ]
+              )
+            : "";
+
+        const today =
+          dateKey(
+            new Date()
+          );
+
+
+        if (
+          !startDate ||
+          !endDate ||
+          startDate > endDate ||
+          today < startDate ||
+          today > endDate
+        ) {
+
+          continue;
+
+        }
 
       }
 
