@@ -1339,10 +1339,17 @@ async function loadRemoteFlyers() {
         "enddate"
       );
 
-    const defaultIndex =
+    const modeIndex =
       headers.indexOf(
-        "default"
+        "mode"
       );
+
+    const defaultIndex =
+      modeIndex >= 0
+        ? modeIndex
+        : headers.indexOf(
+            "default"
+          );
 
 
     if (
