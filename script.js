@@ -17,6 +17,7 @@ let weeklyScheduleRows = [];
 let weeklyScheduleLoaded = false;
 
 let flyerChanging = false;
+let flyerLoadSequence = 0;
 
 
 /* ==========================================================
@@ -1063,7 +1064,8 @@ function setFlyerOrientation() {
 ========================================================== */
 
 function showFlyer(
-  animate = true
+  animate = true,
+  failedAttempts = 0
 ) {
 
   if (
@@ -1073,6 +1075,9 @@ function showFlyer(
     console.warn(
       "Flyer element #flyer was not found."
     );
+
+    flyerChanging =
+      false;
 
     return;
 
@@ -1085,6 +1090,9 @@ function showFlyer(
     ) ||
     !flyers.length
   ) {
+
+    flyerChanging =
+      false;
 
     return;
 
@@ -1103,84 +1111,336 @@ function showFlyer(
 
 
   const nextURL =
-    flyers[
-      currentFlyerIndex
-    ];
-
-
-  flyerElement.onload =
-    () => {
-
-      setFlyerOrientation();
-
-
-      flyerElement
-        .classList
-        .remove(
-          "flyer-transition-in",
-          "flyer-transition-out"
-        );
-
-
-      requestAnimationFrame(
-        () => {
-
-          flyerElement
-            .classList
-            .add(
-              "flyer-visible"
-            );
-
-        }
-      );
-
-
-      flyerChanging =
-        false;
-
-    };
-
-
-  flyerElement.onerror =
-    () => {
-
-      console.error(
-        "Could not load flyer:",
-        nextURL
-      );
-
-
-      flyerChanging =
-        false;
-
-    };
-
-
-  flyerElement
-    .classList
-    .remove(
-      "flyer-visible",
-      "flyer-transition-out"
-    );
+    String(
+      flyers[
+        currentFlyerIndex
+      ] ||
+      ""
+    ).trim();
 
 
   if (
-    animate
+    !nextURL
   ) {
 
-    flyerElement
-      .classList
-      .add(
-        "flyer-transition-in"
-      );
+    flyerChanging =
+      false;
+
+    return;
 
   }
 
 
-  flyerElement.src =
-    addCacheBuster(
-      nextURL
+  /*
+    IMPORTANT:
+    Keep the current flyer visible while the next image downloads
+    and decodes. The old implementation faded the current flyer to
+    opacity 0 first, so a slow/failed Drive thumbnail left a white
+    panel on the TV.
+  */
+
+  const requestId =
+    ++flyerLoadSequence;
+
+  const preloader =
+    new Image();
+
+  let settled =
+    false;
+
+
+  const loadTimeout =
+    setTimeout(
+      () => {
+
+        failLoad(
+          "timeout"
+        );
+
+      },
+
+      10000
     );
+
+
+  function failLoad(
+    reason
+  ) {
+
+    if (
+      settled ||
+      requestId !==
+        flyerLoadSequence
+    ) {
+
+      return;
+
+    }
+
+    settled =
+      true;
+
+    clearTimeout(
+      loadTimeout
+    );
+
+
+    console.error(
+      "Could not preload flyer:",
+      nextURL,
+      reason
+    );
+
+
+    /*
+      Skip a bad flyer without hiding the current good flyer.
+      Stop after one full pass so an all-bad list cannot loop forever.
+    */
+
+    if (
+      flyers.length > 1 &&
+      failedAttempts + 1 <
+        flyers.length
+    ) {
+
+      currentFlyerIndex =
+        (
+          currentFlyerIndex +
+          1
+        )
+        %
+        flyers.length;
+
+      showFlyer(
+        false,
+        failedAttempts + 1
+      );
+
+      return;
+
+    }
+
+
+    flyerChanging =
+      false;
+
+  }
+
+
+  function installLoadedFlyer() {
+
+    if (
+      settled ||
+      requestId !==
+        flyerLoadSequence
+    ) {
+
+      return;
+
+    }
+
+    settled =
+      true;
+
+    clearTimeout(
+      loadTimeout
+    );
+
+
+    const previousSrc =
+      flyerElement
+        .getAttribute(
+          "src"
+        ) ||
+      flyerElement.src ||
+      "";
+
+
+    const finishDisplay =
+      () => {
+
+        setFlyerOrientation();
+
+
+        flyerElement
+          .classList
+          .remove(
+            "flyer-transition-in",
+            "flyer-transition-out"
+          );
+
+
+        flyerElement
+          .classList
+          .add(
+            "flyer-visible"
+          );
+
+
+        /*
+          A small non-blank settling animation keeps the transition
+          pleasant without ever fading the flyer to white.
+        */
+
+        if (
+          animate &&
+          typeof flyerElement
+            .animate ===
+            "function"
+        ) {
+
+          flyerElement.animate(
+            [
+              {
+                opacity: 0.94,
+                transform:
+                  "scale(1.006)"
+              },
+              {
+                opacity: 1,
+                transform:
+                  "scale(1)"
+              }
+            ],
+            {
+              duration: 350,
+              easing:
+                "ease-out"
+            }
+          );
+
+        }
+
+
+        flyerChanging =
+          false;
+
+      };
+
+
+    flyerElement.onload =
+      finishDisplay;
+
+
+    flyerElement.onerror =
+      () => {
+
+        console.error(
+          "Preloaded flyer failed during final swap:",
+          nextURL
+        );
+
+
+        /*
+          This should be rare because the exact URL was already
+          downloaded and decoded. Restore the previous flyer if the
+          browser nevertheless rejects the final assignment.
+        */
+
+        flyerElement.onload =
+          null;
+
+        flyerElement.onerror =
+          null;
+
+
+        if (
+          previousSrc
+        ) {
+
+          flyerElement.src =
+            previousSrc;
+
+        }
+
+
+        flyerElement
+          .classList
+          .remove(
+            "flyer-transition-in",
+            "flyer-transition-out"
+          );
+
+        flyerElement
+          .classList
+          .add(
+            "flyer-visible"
+          );
+
+
+        flyerChanging =
+          false;
+
+      };
+
+
+    /*
+      Do not add a per-rotation cache buster here. Drive flyers can be
+      several megabytes, and a unique URL every 15 seconds prevents
+      the browser from reusing its image cache. Remote TV refresh is
+      already available when fresh asset bytes are required.
+    */
+
+    flyerElement.src =
+      preloader.src;
+
+
+    if (
+      flyerElement.complete &&
+      flyerElement.naturalWidth >
+        0
+    ) {
+
+      finishDisplay();
+
+    }
+
+  }
+
+
+  preloader.onload =
+    () => {
+
+      if (
+        typeof preloader
+          .decode ===
+          "function"
+      ) {
+
+        preloader
+          .decode()
+          .catch(
+            () => {}
+          )
+          .then(
+            installLoadedFlyer
+          );
+
+      } else {
+
+        installLoadedFlyer();
+
+      }
+
+    };
+
+
+  preloader.onerror =
+    () => {
+
+      failLoad(
+        "load error"
+      );
+
+    };
+
+
+  /*
+    Use a stable URL so successfully loaded flyers stay cached.
+  */
+
+  preloader.src =
+    nextURL;
 
 }
 
@@ -1190,11 +1450,6 @@ function showFlyer(
 ========================================================== */
 
 function rotateFlyer() {
-
-  /*
-    This guard prevents the classList null error
-    that appeared in your browser console.
-  */
 
   if (
     !flyerElement
@@ -1223,7 +1478,7 @@ function rotateFlyer() {
       flyers
     ) ||
     flyers.length <=
-    1
+      1
   ) {
 
     return;
@@ -1235,40 +1490,23 @@ function rotateFlyer() {
     true;
 
 
-  flyerElement
-    .classList
-    .remove(
-      "flyer-visible",
-      "flyer-transition-in"
-    );
+  /*
+    Advance the index, then preload the next flyer while the current
+    one remains visible. showFlyer() swaps only after load/decode.
+  */
+
+  currentFlyerIndex =
+    (
+      currentFlyerIndex +
+      1
+    )
+    %
+    flyers.length;
 
 
-  flyerElement
-    .classList
-    .add(
-      "flyer-transition-out"
-    );
-
-
-  setTimeout(
-    () => {
-
-      currentFlyerIndex =
-        (
-          currentFlyerIndex +
-          1
-        )
-        %
-        flyers.length;
-
-
-      showFlyer(
-        true
-      );
-
-    },
-
-    650
+  showFlyer(
+    true,
+    0
   );
 
 }
